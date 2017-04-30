@@ -43,20 +43,38 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+
+
+
+//My Stuff.. Put somewhere else
+
+assert = require("assert");
+
 const db = require('monk')('localhost/@');
 const atStore = db.get('@');
 
 atStore.index("id");
 
 atStore
-    .find({"id":"@"})
-    .then
-    ( docs =>
-      { console.log(docs);
+  .find({"id":"@"})
+  .then
+  ( docs =>
+    { console.log("docs\n", docs);
+      if (docs.length == 0)
+      { atStore
+          .insert({"id":"@"})
+          .then
+          ( docs =>
+            { console.log("docs\n", docs);
+            }
+          );
       }
-    );
+    }
+  );
 
+AtRoot = require("./atSrc/at.js");
+// AtTest = require("./atSrc/at.test.js");
 
-
+console.log("loaded at.js module: \n",AtRoot);
 
 module.exports = app;
