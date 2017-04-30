@@ -50,6 +50,9 @@ app.use(function(err, req, res, next) {
 
 assert = require("assert");
 
+process.on("unhandledRejection", function(error) {console.log(error); } );
+
+
 const db = require('monk')('localhost/@');
 const atStore = db.get('@');
 
