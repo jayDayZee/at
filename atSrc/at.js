@@ -21,8 +21,23 @@ else
 
 ( function(window)
   { 
-    var AtRoot = function()
-    { 
+    var AtRoot = function(atStore)
+    { atStore
+        .find({"id":"@"})
+        .then
+        ( docs =>
+          { console.log("docs\n", docs);
+            if (docs.length == 0)
+            { atStore
+                .insert({"id":"@"})
+                .then
+                ( docs =>
+                  { console.log("docs\n", docs);
+                  }
+                );
+            }
+          }
+        );
     }
 
 

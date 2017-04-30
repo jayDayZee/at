@@ -55,25 +55,11 @@ const atStore = db.get('@');
 
 atStore.index("id");
 
-atStore
-  .find({"id":"@"})
-  .then
-  ( docs =>
-    { console.log("docs\n", docs);
-      if (docs.length == 0)
-      { atStore
-          .insert({"id":"@"})
-          .then
-          ( docs =>
-            { console.log("docs\n", docs);
-            }
-          );
-      }
-    }
-  );
 
 AtRoot = require("./atSrc/at.js");
 // AtTest = require("./atSrc/at.test.js");
+
+atRoot = new AtRoot(atStore);
 
 console.log("loaded at.js module: \n",AtRoot);
 
