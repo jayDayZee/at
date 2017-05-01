@@ -153,6 +153,18 @@ describe
         );
       }
     );
+
+    describe
+    ( "create one to ten counter",
+      function()
+      { it
+        ( "should log counting to 0 to 9 ten then complete",
+          function(done)
+          { 
+          }
+        );
+      }
+    );
   }
 
 );
