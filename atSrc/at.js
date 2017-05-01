@@ -23,7 +23,15 @@ else
 ( function(window)
   { 
     var AtRoot = function(atStore)
-    { this.createID = function()
+    { if (window.hasOwnProperty("atRoot") )
+      { return;
+      }
+      else
+      { atRoot = this;
+      }
+
+      // fudamental identifier for implementation
+      this.createID = function()
       { var idDict = 
           { "v1": uuid.v1(),
             "v4": uuid.v4(),
@@ -34,33 +42,51 @@ else
 
         return idDict;
       }
-      atStore
-        .find({"id":"@"})
-        .then
-        ( docs =>
-          { console.log("initial docs:\n", docs);
-            var atStoreInitialisePromise = { "then":function(){ console.log("atStore already initialised");} };
-            if (docs.length == 0)
-            { atStoreInitialisePromise = 
-                atStore
-                  .insert({"id":"@", "storeID": new this.createID() })
+      
+
+      // initialise a store for nodes
+      this.connectAtStore = function(atStore)
+      { if (atRoot.connectedAtStore === true)
+          return;
+
+        atStore
+          .find({"id":"@"})
+          .then
+          ( docs =>
+            { console.log("initial docs:\n", docs);
+              var atStoreInitialisePromise = { "then":function(){ atRoot.connectedAtStore = true; console.log("atStore already initialised");} };
+              if (docs.length == 0)
+              { atStoreInitialisePromise = 
+                  atStore
+                    .insert({"id":"@", "storeID": new atRoot.createID() })
+              }
+              else if (docs.length == 1 && ! docs[0].hasOwnProperty("storeID") )
+              { atStoreInitialisePromise = 
+                  atStore
+                    .update
+                    ( { "id": "@" }, 
+                      { "storeID": new atRoot.createID() } 
+                    )
+              }
+              atStoreInitialisePromise
+                .then
+                ( docs =>
+                  { console.log("post atStore initialised: docs\n", docs);
+                    atRoot.connectedAtStore = true;
+                  }
+                );
             }
-            else if (docs.length == 1 && ! docs[0].hasOwnProperty("storeID") )
-            { atStoreInitialisePromise = 
-                atStore
-                  .update
-                  ( { "id": "@" }, 
-                    { "storeID": new this.createID() } 
-                  )
+          )
+          .catch
+          ( function() 
+            { console.log("atStore initialisation failed");
             }
-            atStoreInitialisePromise
-              .then
-              ( docs =>
-                { console.log("post atStore initialised: docs\n", docs);
-                }
-              );
-          }
-        );
+          )
+      };
+     
+
+      if (atStore) atRoot.connectAtStore(atStore);
+
     }
 
 

@@ -59,11 +59,11 @@ const atStore = db.get('@');
 atStore.index("id");
 
 
-AtRoot = require("./atSrc/at.js");
+AtRoot = require("./atSrc/at.js")(atStore);
 // AtTest = require("./atSrc/at.test.js");
+debugger;
 
-atRoot = new AtRoot(atStore);
 
-console.log("loaded at.js module: \n",AtRoot);
+console.log("loaded at.js module");
 
 module.exports = app;
