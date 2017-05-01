@@ -38,25 +38,27 @@ else
         .find({"id":"@"})
         .then
         ( docs =>
-          { console.log("docs\n", docs);
+          { console.log("initial docs:\n", docs);
+            var atStoreInitialisePromise = { "then":function(){ console.log("atStore already initialised");} };
             if (docs.length == 0)
-            { atStore
-                .insert({"id":"@", "storeID": new this.createID() })
-                .then
-                ( docs =>
-                  { console.log("docs\n", docs);
-                  }
-                );
+            { atStoreInitialisePromise = 
+                atStore
+                  .insert({"id":"@", "storeID": new this.createID() })
             }
             else if (docs.length == 1 && ! docs[0].hasOwnProperty("storeID") )
-            { atStore
-                .update( { "id": "@" }, { "storeID": new this.createID() } )
-                .then
-                ( docs =>
-                  { console.log("docs\n", docs);
-                  }
-                );
+            { atStoreInitialisePromise = 
+                atStore
+                  .update
+                  ( { "id": "@" }, 
+                    { "storeID": new this.createID() } 
+                  )
             }
+            atStoreInitialisePromise
+              .then
+              ( docs =>
+                { console.log("post atStore initialised: docs\n", docs);
+                }
+              );
           }
         );
     }
