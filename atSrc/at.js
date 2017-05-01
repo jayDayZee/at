@@ -46,7 +46,7 @@ else
 
       // initialise a store for nodes
       this.connectAtStore = function(atStore)
-      { if (atRoot.connectedAtStore === true)
+      { if (atRoot.connectedAtStore)
           return;
 
         atStore
@@ -54,7 +54,7 @@ else
           .then
           ( docs =>
             { console.log("initial docs:\n", docs);
-              var atStoreInitialisePromise = { "then":function(){ atRoot.connectedAtStore = true; console.log("atStore already initialised");} };
+              var atStoreInitialisePromise = { "then":function(){ atRoot.connectedAtStore = atStore; console.log("atStore already initialised");} };
               if (docs.length == 0)
               { atStoreInitialisePromise = 
                   atStore
@@ -72,7 +72,7 @@ else
                 .then
                 ( docs =>
                   { console.log("post atStore initialised: docs\n", docs);
-                    atRoot.connectedAtStore = true;
+                    atRoot.connectedAtStore = atStore;
                   }
                 );
             }
@@ -83,7 +83,7 @@ else
             }
           )
       };
-     
+
 
       if (atStore) atRoot.connectAtStore(atStore);
 
