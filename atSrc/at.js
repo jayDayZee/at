@@ -23,7 +23,7 @@ else
 ( function(window)
   { 
     var AtRoot = function(atStore)
-    { if (window.hasOwnProperty("atRoot") )
+    { if (window.hasOwnProperty("atRoot") && atRoot != null)
       { return;
       }
       else
@@ -104,6 +104,43 @@ else
 
 
       if (atStore) atRoot.connectAtStore(atStore);
+
+
+      //namespace functions are convenience. Since @ makes namespaces mean anything and everything, its nice to be able to create and use them easily.
+      this.namespace = function(object, address, defaultList)
+      { defaultCounter        = 0;
+        defaultListTestIndex  = defaultList.length -1;
+
+        var current = object;
+        address = address.split(".");
+
+        for (var wayPoint of address)
+        { if (!current.hasOwnProperty(wayPoint) )
+          { var toReturn;
+            eval(defaultList[defaultCounter]);
+            // toReturn.name = wayPoint;
+            current[wayPoint] =  toReturn;
+            console.log("current:", current, "key:", wayPoint, "obj:", current[wayPoint]);
+          }
+          current = current[wayPoint];
+
+          if (defaultCounter < defaultListTestIndex)
+          { defaultCounter ++;
+          }
+        }
+
+        return current;
+      }
+
+      this.namespace.exists = function(object, address)
+      { for (var wayPoint of address)
+        { if (!current.hasOwnProperty(wayPoint) )
+          { return false;
+          }
+          current = current[wayPoint];
+        }
+        return true;
+      }
 
     }
 

@@ -59,9 +59,8 @@ const atStore = db.get('@');
 atStore.index("id");
 
 
-AtRoot = require("./atSrc/at.js")(atStore);
+require("./atSrc/at.js")();
 // AtTest = require("./atSrc/at.test.js");
-debugger;
 
 
 console.log("loaded at.js module");

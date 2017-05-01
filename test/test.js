@@ -1,13 +1,48 @@
 var assert = require("assert");
 
-describe
-( "check or add @ to the DB",
-  function()
-  { it
-    ( "should access the database and show an empty item for the '@' id",
-      function
-      (
-      )
+var app =  require("../app.js");
 
+var testObject = {};
+
+describe
+( "test namespace functions",
+  function()
+  { var testObject = {};
+
+    describe
+    ( "create.nested.namespace.here",
+      function()
+      { it
+        ( "should create a complex object structure using the namespace function",
+          function()
+          { atRoot.namespace(testObject, "create.nested.namespace.here", ["toReturn = {}", "toReturn = {}", "toReturn = {}", "toReturn = ''"]);
+            
+            var createdObjectString = JSON.stringify(testObject);
+            console.log("command: \n", "  ", `atRoot.namespace(testObject, "create.nested.namespace.here", ["toReturn = {}", "toReturn = {}", "toReturn = {}", "toReturn = ''"]);`);
+            console.log("output: \n" , "  ", createdObjectString);
+            
+            assert.equal(createdObjectString, `{"create":{"nested":{"namespace":{"here":""}}}}` );
+          }
+        );
+      }
+    );
+
+    describe
+    ( "extend existing namespace",
+      function()
+      { it
+        ( "extend that namespace with something else",
+          function()
+          { atRoot.namespace(testObject, "create.nested.alternateNamespace.here", ["toReturn = {}", "toReturn = {}", "toReturn = {}", "toReturn = ''"]);
+            
+            var createdObjectString = JSON.stringify(testObject);
+            console.log("command: \n", "  ", `atRoot.namespace(testObject, "create.nested.alternateNamespace.here", ["toReturn = {}", "toReturn = {}", "toReturn = {}", "toReturn = ''"]);`);
+            console.log("output: \n" , "  ", createdObjectString);
+            
+            assert.equal(createdObjectString, `{"create":{"nested":{"namespace":{"here":""},"alternateNamespace":{"here":""}}}}` );
+          }
+        );
+      }
+    );
   }
 );
