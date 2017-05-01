@@ -131,19 +131,24 @@ describe
       function()
       { it
         ( "should result in the traveller having traveller.test.x = 0",
-          function()
+          function(done)
           { namespace( context, "traveller.codeBlock")
             context.traveller.codeBlock = 
             ` namespace(traveller, "test.x", ["leafNode: 0"]);
               console.log("traveller:\\n  ", traveller)\;
             `;
             
-            
+            namespace(traveller, "traveller.callback");
+            traveller.traveller.callback = 
+              function(traveller)
+              { console.log("testResults\n\n\n\n");
+                console.log("traveller:\n  ", traveller);
+                console.log("context:\n  ", context);
+                assert.equal(traveller.test.x, 0);
+                done();
+              };
+
             atRoot.traverse(traveller, context);
-            console.log("testResults\n\n\n\n");
-            console.log("traveller:\n  ", traveller);
-            console.log("context:\n  ", context);
-            assert.equal(traveller.test.x, 0);
           }
         );
       }
