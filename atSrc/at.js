@@ -83,6 +83,24 @@ else
             }
           )
       };
+      
+      this.purgeAtStore = function(atStore)
+      { atStore
+          .find({"id":"@"})
+          .then
+          ( docs =>
+            { var idString = docs[0].storeID.idString;
+              atStore
+                .update
+                ( { "id": "@" }, 
+                  { "id": "@."+idString } 
+                )
+                .then 
+                ( () => { console.log("rewrote the store root from '@' to '@."+idString+"'"); }
+                );
+            }
+          );
+      }
 
 
       if (atStore) atRoot.connectAtStore(atStore);
