@@ -44,5 +44,18 @@ describe
         );
       }
     );
+
+    describe
+    ( "test namespaceExists",
+      function()
+      { it
+        ( "",
+          function()
+          { var result = atRoot.namespaceExists(testObject, "create.nested.alternateNamespace.here");
+            assert.equal(result, true);
+          }
+        );
+      }
+    );
   }
 );

@@ -132,9 +132,12 @@ else
         return current;
       }
 
-      this.namespace.exists = function(object, address)
-      { for (var wayPoint of address)
-        { if (!current.hasOwnProperty(wayPoint) )
+      this.namespaceExists = function(object, address)
+      { var current = object;
+        address = address.split(".");
+
+        for (var wayPoint of address)
+        { if (! current.hasOwnProperty(wayPoint) )
           { return false;
           }
           current = current[wayPoint];
