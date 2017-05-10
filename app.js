@@ -5,10 +5,34 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+
+//My Stuff.. Put somewhere else
+
+assert = require("assert");
+
+process.on("unhandledRejection", function(error) {console.log(error); } );
+
+
+const db = require('monk')('localhost/@');
+const atStore = db.get('@');
+
+atStore.index("id");
+
+
+var AtRoot = require("./atSrc/at.js");
+// AtTest = require("./atSrc/at.test.js");
+
+console.log("loaded at.js module");
+
+var atRoot = new AtRoot();
+
 var index = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
+
+app.atRoot = atRoot;
+app.atStore = atStore;
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -21,6 +45,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(function(req,res,next){
+    req.atRoot  = atRoot;
+    req.atStore = atStore;
+    next();
+});
 
 app.use('/', index);
 app.use('/users', users);
@@ -44,27 +74,5 @@ app.use(function(err, req, res, next) {
 });
 
 
-
-
-//My Stuff.. Put somewhere else
-
-assert = require("assert");
-
-process.on("unhandledRejection", function(error) {console.log(error); } );
-
-
-const db = require('monk')('localhost/@');
-const atStore = db.get('@');
-
-atStore.index("id");
-
-
-var AtRoot = require("./atSrc/at.js");
-// AtTest = require("./atSrc/at.test.js");
-
-console.log("loaded at.js module");
-
-app.atRoot = new AtRoot();
-app.atStore = atStore;
 
 module.exports = app;
