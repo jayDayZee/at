@@ -2,11 +2,11 @@ var assert = require("assert");
 
 var app =  require("../app.js");
 
-var AtRoot = require("../atSrc/at.js");
+// var AtRoot = require("../atSrc/at.js");
 
-var atRoot = new AtRoot();
+var atRoot = app.atRoot;
 
-console.log(AtRoot);
+// console.log(AtRoot);
 console.log(atRoot);
 
 
@@ -155,6 +155,18 @@ describe
     );
 
     describe
+    ( "persist the traveller and the node",
+      function()
+      { it
+        ( "should put the thing in the database",
+          function(done)
+          { 
+          }
+        );
+      }
+    );
+
+    describe
     ( "create one to ten counter",
       function()
       { it
@@ -165,6 +177,8 @@ describe
         );
       }
     );
+
+
   }
 
 );
