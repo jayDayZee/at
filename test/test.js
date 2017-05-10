@@ -5,6 +5,10 @@ var app =  require("../app.js");
 // var AtRoot = require("../atSrc/at.js");
 
 var atRoot = app.atRoot;
+var atStore = app.atStore;
+
+atRoot.connectAtStore(atStore);
+
 
 // console.log(AtRoot);
 console.log(atRoot);

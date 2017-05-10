@@ -65,5 +65,6 @@ var AtRoot = require("./atSrc/at.js");
 console.log("loaded at.js module");
 
 app.atRoot = new AtRoot();
+app.atStore = atStore;
 
 module.exports = app;

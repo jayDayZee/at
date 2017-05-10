@@ -221,7 +221,7 @@ else
     if ( typeof module === 'object' && module && typeof module.exports === 'object' )
     { module.exports = AtRoot;
     } else 
-    { window.atRoot = window.AtRoot || AtRoot;
+    { window.AtRoot = window.AtRoot || AtRoot;
     }
 
 
