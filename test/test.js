@@ -251,13 +251,15 @@ describe
             
             namespace( monkContext, "traveller.codeBlock")
             monkContext.traveller.codeBlock = 
-            ` var aStoreFunction  = namespace(traveller, "traveller.atStore.functionName",    ["leafNode:'find'"]);
-              var searchParameter = namespace(traveller, "traveller.atStore.searchParameter");
+            ` var atStoreFunction = namespace(traveller, "traveller.atStore.functionName",    ["leafNode:'find'"]);
+              var findParameters  = namespace(traveller, "traveller.atStore.findParameters");
+              // var findOptions     = namespace(traveller, "traveller.atStore.findOptions",   ["leafNode:null"]);
+              // var findCallback    = namespace(traveller, "traveller.atStore.findCallback",  ["leafNode:null"]);
 
-              atStore[atStoreFunction](searchParameter)
+              atStore[atStoreFunction].apply(null, findParameters)
                 .then
                 ( function(docs)
-                  { traveller.atStore.result = docs;
+                  { traveller.traveller.atStore.result = docs;
                     console.log("traveller:\\n  ", traveller)\;
                   }
                 )
@@ -266,14 +268,16 @@ describe
             
             
             var monkTraveller = {};
+            namespace(monkTraveller, "traveller.atStore");
+            monkTraveller.traveller.atStore.findParameters = [ {}, "id" ];
 
             namespace(monkTraveller, "traveller.callback");
             monkTraveller.traveller.callback = 
               function(completedTraveller)
               { console.log("testResults\n\n\n\n");
-                console.log("traveller:\n  ", completedTraveller);
+                console.log("traveller:\n  ", JSON.stringify(completedTraveller));
                 console.log("context:\n  ",   monkContext);
-                done( assert(completedTraveller.atStored.result.length != 0) );
+                done( assert(completedTraveller.traveller.atStore.result.length != 0) );
               };
 
             atRoot.traverse(monkTraveller, monkContext);

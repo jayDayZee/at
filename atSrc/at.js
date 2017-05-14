@@ -187,18 +187,20 @@ else
         // }
       }
       
-      this.traverse = function(traveller, context)
+      this.traverse = function(traveller, context, atStore)
       { //function which takes the traveller and the context. this avoids hard coding the name of the codeBlock / program field into the objects
         setImmediate(
             function()
             { var namespace = atRoot.namespace
+              var atStore = atStore || atRoot.connectedAtStore;
               
               //evaluate the code in the context against the traveller              
               //  the node has the ability to set a suggested exit. A difference traverse function could ignore it (e.g. visualisation traveller)
               var toEval = namespace(context, "traveller.codeBlock", ["toReturn = {}", "toReturn = ''"])
               console.log("traverse.toEval:\n  ", toEval);
-              toEvalFunction = new Function("traveller", "context", toEval);
-              toEvalFunction(traveller, context);
+              // toEvalFunction = new Function("traveller", "context", toEval);
+              // toEvalFunction(traveller, context);
+              eval(toEval);
 
 
               var destination = namespace(traveller, "traveller.suggestedExit", ["toReturn = {}", "toReturn = null"]) || namespace(context, "traveller.exit", ["toReturn = {}", "toReturn = null"]);
