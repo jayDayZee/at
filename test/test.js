@@ -287,6 +287,8 @@ describe
     );
 
 
+
+
     describe
     ( "create one to ten counter",
       function()
@@ -298,8 +300,21 @@ describe
         );
       }
     );
-
-
   }
 
 );
+
+
+describe
+  ( "DESTROY THE AT COLLECTION DO NOT DO THIS",
+    function()
+    { it
+      ( "DETROY",
+        function(done)
+        { atStore.drop().then( () => done() );
+
+
+        }
+      );
+    }
+  );
