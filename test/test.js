@@ -123,7 +123,7 @@ describe
 );
 
 describe
-( "basic node and traverse functionality (no persistance)",
+( "basic node and traverse, moving on to persistance",
   function()
   { var context   = new atRoot.AtNode();
     var traveller = new atRoot.AtNode();
@@ -159,12 +159,183 @@ describe
     );
 
     describe
-    ( "persist the traveller and the node",
+    ( "persist the traveller and the node, check if they are there",
       function()
       { it
         ( "should put the thing in the database",
           function(done)
-          { 
+          { atStore.insert([ context, traveller ]);
+            
+            atStore
+              .find(context)
+              .then
+              ( function(docs)
+                { console.log ("length of contextDocs:", docs.length);
+
+                  atStore.find(traveller)
+                  .then
+                  ( function(docs2)
+                    { console.log ("length of traveller docs:", docs2.length);
+
+                      done(assert(docs.length==1 && docs2.length ==1) );                      
+                    }
+                  )
+
+                }
+              );
+          }
+        );
+      }
+    );
+
+    describe
+    ( "delete the traveller and the context,  check they are not there",
+      function()
+      { it
+        ( "should delete the things from database",
+          function(done)
+          { atStore.remove(context);
+            atStore.remove(traveller);
+            
+            atStore
+              .find(context)
+              .then
+              ( function(docs)
+                { console.log ("length of contextDocs:", docs.length);
+
+                  atStore.find(traveller)
+                  .then
+                  ( function(docs2)
+                    { console.log ("length of traveller docs:", docs2.length);
+
+                      done(assert(docs.length==0 && docs2.length ==0) );                      
+                    }
+                  )
+
+                }
+              );
+          }
+        );
+      }
+    );
+
+    describe
+    ( "remove old traveller from database",
+      function()
+      { it
+        ( "should results in zero travellers found",
+          function(done)
+          { var findObject = {};
+            namespace(findObject, "traveller.test.x", ["leafNode:0"]);
+            atStore
+              .find( findObject )
+              .then
+              ( function(docs)
+                { console.log ("length of traveller history docs:", docs.length);
+
+                  var removePromise = atStore.remove(findObject)
+                    .then
+                    ( function()
+                      { atStore.find(findObject)
+                          .then
+                          ( function(docs2)
+                            { console.log("length of traveller history docs, after removed:", docs2.length);
+
+                              done( assert(docs2.length == 0) );
+                            }
+                          )
+                      }
+                    )
+                }
+              );
+            }
+          );
+      }
+    );
+
+    describe
+    ( "remove old context from database",
+      function()
+      { it
+        ( "should result in zero contexts found",
+          function(done)
+          { var findObject = {};
+            namespace( findObject, "traveller.codeBlock");
+            findObject.traveller.codeBlock = 
+                ` namespace(traveller, "test.x", ["leafNode: 0"]);
+                console.log("traveller:\\n  ", traveller)\;
+                `;
+
+            atStore
+                .find( findObject )
+                .then
+                ( function(docs)
+                  { console.log ("length of context history docs:", docs.length);
+
+                    atStore.remove(findObject)
+                      .then
+                      ( function()
+                        { atStore.find(findObject)
+                            .then
+                            ( function(docs2)
+                              { console.log("length of context history docs, after removed:", docs2.length);
+
+                                done( assert(docs2.length == 0) );
+                              }
+                            )
+                        }
+                      );
+                  }
+                );
+          }
+        );
+      }
+    );
+
+    describe
+    ( "check there's not old travellers in the database",
+      function()
+      { it
+        ( "should results in zero travellers found",
+          function(done)
+          { var findObject = {};
+            namespace(findObject, "traveller.test.x", ["leafNode:0"]);
+            atStore
+              .find( findObject )
+              .then
+              ( function(docs)
+                { console.log ("length of traveller history docs:", docs.length);
+
+                  done( assert(docs.length == 0) );
+                }
+              );
+            }
+          );
+      }
+    );
+
+    describe
+    ( "check there are no old contexts in the database",
+      function()
+      { it
+        ( "should results in zero contexts found",
+          function(done)
+          { var findObject = {}
+            namespace( findObject, "traveller.codeBlock");
+            findObject.traveller.codeBlock = 
+                ` namespace(traveller, "test.x", ["leafNode: 0"]);
+                console.log("traveller:\\n  ", traveller)\;
+                `;
+
+            atStore
+                .find( findObject )
+                .then
+                ( function(docs)
+                  { console.log ("length of context history docs:", docs.length);
+
+                    done( assert(docs.length == 0) );
+                  }
+                );
           }
         );
       }
