@@ -242,6 +242,48 @@ describe
     );
 
     describe
+    ( "create a node in the database that wraps the monk functionality, and give it a special name",
+      function()
+      { it
+        ( "should find all the documents in the database",
+          function(done)
+          { var monkContext = {};
+            
+            namespace( monkContext, "traveller.codeBlock")
+            monkContext.traveller.codeBlock = 
+            ` var aStoreFunction  = namespace(traveller, "traveller.atStore.functionName",    ["leafNode:'find'"]);
+              var searchParameter = namespace(traveller, "traveller.atStore.searchParameter");
+
+              atStore[atStoreFunction](searchParameter)
+                .then
+                ( function(docs)
+                  { traveller.atStore.result = docs;
+                    console.log("traveller:\\n  ", traveller)\;
+                  }
+                )
+              
+            `;
+            
+            
+            var monkTraveller = {};
+
+            namespace(monkTraveller, "traveller.callback");
+            monkTraveller.traveller.callback = 
+              function(completedTraveller)
+              { console.log("testResults\n\n\n\n");
+                console.log("traveller:\n  ", completedTraveller);
+                console.log("context:\n  ",   monkContext);
+                done( assert(completedTraveller.atStored.result.length != 0) );
+              };
+
+            atRoot.traverse(monkTraveller, monkContext);
+          }
+        );
+      }
+    );
+
+
+    describe
     ( "create one to ten counter",
       function()
       { it
