@@ -219,7 +219,27 @@ describe
       }
     );
 
-    // 
+    describe
+    ( "re add the context to the database",
+      function()
+      { it
+        ( "should put the context in the database",
+          function(done)
+          { atStore.insert([ context ]);
+            
+            atStore
+              .find(context)
+              .then
+              ( function(docs)
+                { console.log ("length of contextDocs:", docs.length);
+
+                  done( assert(docs.length == 1) );                      
+                }
+              );
+          }
+        );
+      }
+    );
 
     describe
     ( "create one to ten counter",
