@@ -256,13 +256,21 @@ describe
               // var findOptions     = namespace(traveller, "traveller.atStore.findOptions",   ["leafNode:null"]);
               // var findCallback    = namespace(traveller, "traveller.atStore.findCallback",  ["leafNode:null"]);
 
-              atStore[atStoreFunction].apply(null, findParameters)
-                .then
-                ( function(docs)
-                  { traveller.traveller.atStore.result = docs;
-                    console.log("traveller:\\n  ", traveller)\;
-                  }
-                )
+              try
+              { atStore[atStoreFunction].apply(null, findParameters)
+                    .then
+                    ( function(docs)
+                      { traveller.traveller.atStore.result = docs;
+                        console.log("traveller:\\n  ", traveller)\;
+                      }
+                    )
+              }
+              catch (error)
+              { //console.log(error);
+                console.log("ERROR STRING\\n", JSON.stringify(error.toString()) );
+                traveller.traveller.atStore.result  = error.toString();
+                traveller.traveller.atStore.error   = atStore == null;
+              }
               
             `;
             
@@ -277,7 +285,14 @@ describe
               { console.log("testResults\n\n\n\n");
                 console.log("traveller:\n  ", JSON.stringify(completedTraveller));
                 console.log("context:\n  ",   monkContext);
-                done( assert(completedTraveller.traveller.atStore.result.length != 0) );
+                
+                assert
+                (   completedTraveller.traveller.atStore.result == "TypeError: Cannot read property 'find' of null"
+                  &&
+                    completedTraveller.traveller.atStore.error  == true
+                );
+
+                done();
               };
 
             atRoot.traverse(monkTraveller, monkContext);
