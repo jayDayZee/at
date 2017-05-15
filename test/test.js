@@ -301,6 +301,33 @@ describe
       }
     );
 
+    describe
+    ( "test the built in db access, now in the traverse function. This also has the wonderfulness of allowing a db access call and an eval block in one single pass",
+      function()
+      { it
+        ( "should find all the documents in the database",
+          function(done)
+          { var monkTraveller = {"atStore": { "functionName": "find", "functionParams": [ {} ] } };
+
+            namespace(monkTraveller, "traveller.callback");
+            monkTraveller.traveller.callback = 
+              function(completedTraveller)
+              { console.log("testResults\n\n\n\n");
+                console.log("traveller:\n  ", JSON.stringify(completedTraveller));
+                
+                assert
+                (   completedTraveller.atStore.result != null
+                );
+
+                done();
+              };
+
+            atRoot.traverse(monkTraveller, {});
+          }
+        );
+      }
+    );
+
 
 
 
