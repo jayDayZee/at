@@ -58,13 +58,39 @@ describe
     );
 
     describe
-    ( "test namespaceExists",
+    ( "test namespaceExists true",
       function()
       { it
         ( "",
           function()
           { var result = atRoot.namespaceExists(testObject, "create.nested.alternateNamespace.here");
             assert.equal(result, true);
+          }
+        );
+      }
+    );
+
+    describe
+    ( "test namespaceExists false",
+      function()
+      { it
+        ( "",
+          function()
+          { var result = atRoot.namespaceExists(testObject, "create.nested.alternateNamespace.here.should.be.false");
+            assert.equal(result, false);
+          }
+        );
+      }
+    );
+
+    describe
+    ( "test namespace exists using namespace checkExists parameter",
+      function()
+      { it
+        ( "",
+          function()
+          { var result = atRoot.namespace(testObject, "create.nested.alternateNamespace.here.should.be.false", null, true);
+            assert.equal(result, false);
           }
         );
       }
