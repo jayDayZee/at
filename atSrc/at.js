@@ -194,24 +194,38 @@ else
             { var namespace = atRoot.namespace
               var atStore = atStore || atRoot.connectedAtStore;
               
-              //evaluate the code in the context against the traveller              
-              //  the node has the ability to set a suggested exit. A difference traverse function could ignore it (e.g. visualisation traveller)
-              var toEval = namespace(context, "traveller.codeBlock", ["toReturn = {}", "toReturn = ''"])
-              console.log("traverse.toEval:\n  ", toEval);
-              // toEvalFunction = new Function("traveller", "context", toEval);
-              // toEvalFunction(traveller, context);
-              eval(toEval);
+              var dataAccessPromise = {"then": function(then) { then(); } };
 
-
-              var destination = namespace(traveller, "traveller.suggestedExit", ["toReturn = {}", "toReturn = null"]) || namespace(context, "traveller.exit", ["toReturn = {}", "toReturn = null"]);
-              traveller.traveller.suggestedExit = null;
-
-              if (!destination) 
-              { console.log("End context:", traveller)
-                if (traveller.traveller.callback) setImmediate(function(){traveller.traveller.callback(traveller);});
+              var atStoreFunctionName = namespace(traveller, "atStore.functionName", ["leafNode:null"] );
+              if (atStoreFunctionName)
+              { dataAccessPromise = atStore[atStoreFunctionName].apply(null, traveller.atStore.functionParams);
               }
-              else 
-                atRoot.traverse(traveller, register(destination) );
+
+              dataAccessPromise.then
+              ( () =>
+                // overload the atRoot variable, so that node code does not have access
+                { var atRoot = {};
+
+                  //evaluate the code in the context against the traveller              
+                  //  the node has the ability to set a suggested exit. A difference traverse function could ignore it (e.g. visualisation traveller)
+                  var toEval = namespace(context, "traveller.codeBlock", ["toReturn = {}", "toReturn = ''"])
+                  console.log("traverse.toEval:\n  ", toEval);
+                  // toEvalFunction = new Function("traveller", "context", toEval);
+                  // toEvalFunction(traveller, context);
+                  eval(toEval);
+
+
+                  var destination = namespace(traveller, "traveller.suggestedExit", ["toReturn = {}", "toReturn = null"]) || namespace(context, "traveller.exit", ["toReturn = {}", "toReturn = null"]);
+                  traveller.traveller.suggestedExit = null;
+
+                  if (!destination) 
+                  { console.log("End context:", traveller)
+                    if (traveller.traveller.callback) setImmediate(function(){traveller.traveller.callback(traveller);});
+                  }
+                  else 
+                    atRoot.traverse(traveller, register(destination) );
+                }
+              );
             }
         );
         
