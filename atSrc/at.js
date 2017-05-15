@@ -194,7 +194,7 @@ else
             { var namespace = atRoot.namespace
               var atStore = atStore || atRoot.connectedAtStore;
               
-              var dataAccessPromise = {"then": function(then) { then(); } };
+              var dataAccessPromise = Promise.resolve({});
 
               var atStoreFunctionName = namespace(traveller, "atStore.functionName", ["leafNode:null"] );
               if (atStoreFunctionName)
@@ -202,9 +202,12 @@ else
               }
 
               dataAccessPromise.then
-              ( () =>
+              ( (docs) =>
                 // overload the atRoot variable, so that node code does not have access
-                { var atRoot = {};
+                { traveller.atStore.result = docs;
+                  var atRoot  = null;
+                  var atStore = null;
+                  var docs    = null;
 
                   //evaluate the code in the context against the traveller              
                   //  the node has the ability to set a suggested exit. A difference traverse function could ignore it (e.g. visualisation traveller)
