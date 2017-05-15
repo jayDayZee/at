@@ -219,7 +219,7 @@ else
                   // toEvalFunction(traveller, context);
                   eval(toEval);
 
-                  var destination = namespace(traveller, "traveller.suggestedExit", ["toReturn = {}", "toReturn = null"]) || namespace(context, "traveller.exit", ["toReturn = {}", "toReturn = null"]);
+                  var destination = namespace(traveller, "traveller.suggestedExit", null, true) || namespace(context, "traveller.exit", null, true);
                   traveller.traveller.suggestedExit = null;
 
                   if (!destination) 
