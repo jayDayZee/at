@@ -55,14 +55,14 @@ else
               if (docs.length == 0)
               { atStoreInitialisePromise = 
                   atStore
-                    .insert({"id":"@", "storeID": new atRoot.createID() })
+                    .insert({"id":"@", "storeID": new atRoot.createID().idString })
               }
               else if (docs.length == 1 && ! docs[0].hasOwnProperty("storeID") )
               { atStoreInitialisePromise = 
                   atStore
                     .update
                     ( { "id": "@" }, 
-                      { "storeID": new atRoot.createID() } 
+                      { "storeID": new atRoot.createID().idString } 
                     )
               }
               atStoreInitialisePromise
@@ -178,9 +178,9 @@ else
         //  references to other node id's. This means that this object can be persisted "as is" into the database (well mongo anyway). Some other database might want
         //  to pull it apart a bit, but the "id" field should be enough for most things
 
-        this.idDict = new atRoot.createID();
+        var idDict = new atRoot.createID();
         // the id is indexed in the store
-        this.id     = this.idDict.idString;
+        this.id     = idDict.idString;
 
         // if (nodeContent)
         // { extend(this, nodeContent);
