@@ -562,9 +562,9 @@ describe
             
             //The idea is that the traveller should automatically follow the id along the graph.
             //  this definately wont work, since its not implemented :)
+            // Works now :)
             context.traveller.exit = adder.id;
 
-            //Test will fail since it will not complete
             namespace(traveller, "traveller.callback");
             traveller.traveller.callback = 
               function(traveller)
@@ -575,13 +575,19 @@ describe
                 done();
               };
 
-            atRoot.traverse(traveller, context);
+            atStore
+              .insert( adder )
+              .then
+              ( ()  =>
+                { atRoot.traverse(traveller, context);
+                }
+              );
           }
         );
       }
     );
 
-    var adder     = new atRoot.AtNode();
+    
     describe
     ( "create one to ten counter",
       function()
