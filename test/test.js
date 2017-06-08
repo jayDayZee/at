@@ -391,134 +391,136 @@ describe
     );
 
 
-    // describe
-    // ( "create a node in the database that wraps the monk functionality, and give it a special name. This should FAIL since the atStore is not accessible except through direct access managed by the traverse function",
-    //   function()
-    //   { it
-    //     ( "should find all the documents in the database",
-    //       function(done)
-    //       { var monkContext = {};
+    describe
+    ( "create a node in the database that wraps the monk functionality, and give it a special name. This should FAIL since the atStore is not accessible except through direct access managed by the traverse function",
+      function()
+      { it
+        ( "should find all the documents in the database",
+          function(done)
+          { var monkContext = {};
             
-    //         namespace( monkContext, "traveller.codeBlock")
-    //         monkContext.traveller.codeBlock = 
-    //         ` var atStoreFunction = namespace(traveller, "traveller.atStore.functionName",    ["leafNode:'find'"]);
-    //           var findParameters  = namespace(traveller, "traveller.atStore.findParameters");
-    //           // var findOptions     = namespace(traveller, "traveller.atStore.findOptions",   ["leafNode:null"]);
-    //           // var findCallback    = namespace(traveller, "traveller.atStore.findCallback",  ["leafNode:null"]);
+            namespace( monkContext, "traveller.codeBlock")
+            monkContext.traveller.codeBlock = 
+            ` var atStoreFunction = namespace(traveller, "traveller.atStore.functionName",    ["leafNode:'find'"]);
+              var findParameters  = namespace(traveller, "traveller.atStore.findParameters");
+              // var findOptions     = namespace(traveller, "traveller.atStore.findOptions",   ["leafNode:null"]);
+              // var findCallback    = namespace(traveller, "traveller.atStore.findCallback",  ["leafNode:null"]);
 
-    //           try
-    //           { atStore[atStoreFunction].apply(null, findParameters)
-    //                 .then
-    //                 ( function(docs)
-    //                   { traveller.traveller.atStore.result = docs;
-    //                     console.log("traveller:\\n  ", traveller)\;
-    //                   }
-    //                 )
-    //           }
-    //           catch (error)
-    //           { //console.log(error);
-    //             console.log("ERROR STRING\\n", JSON.stringify(error.toString()) );
-    //             traveller.traveller.atStore.result  = error.toString();
-    //             traveller.traveller.atStore.error   = atStore == null;
-    //           }
+              try
+              { atStore[atStoreFunction].apply(null, findParameters)
+                    .then
+                    ( function(docs)
+                      { traveller.traveller.atStore.result = docs;
+                        console.log("traveller:\\n  ", traveller)\;
+                      }
+                    )
+              }
+              catch (error)
+              { //console.log(error);
+                console.log("ERROR STRING\\n", JSON.stringify(error.toString()) );
+                traveller.traveller.atStore.result  = error.toString();
+                traveller.traveller.atStore.error   = atStore == null;
+              }
               
-    //         `;
+            `;
             
             
-    //         var monkTraveller = {};
-    //         namespace(monkTraveller, "traveller.atStore");
-    //         monkTraveller.traveller.atStore.findParameters = [ {}, "id" ];
+            var monkTraveller = {};
+            namespace(monkTraveller, "traveller.atStore");
+            monkTraveller.traveller.atStore.findParameters = [ {}, "id" ];
 
-    //         namespace(monkTraveller, "traveller.callback");
-    //         monkTraveller.traveller.callback = 
-    //           function(completedTraveller)
-    //           { console.log("testResults\n\n\n\n");
-    //             console.log("traveller:\n  ", JSON.stringify(completedTraveller));
-    //             console.log("context:\n  ",   monkContext);
+            namespace(monkTraveller, "traveller.callback");
+            monkTraveller.traveller.callback = 
+              function(completedTraveller)
+              { console.log("testResults\n\n\n\n");
+                console.log("traveller:\n  ", JSON.stringify(completedTraveller));
+                console.log("context:\n  ",   monkContext);
                 
-    //             assert
-    //             (   completedTraveller.traveller.atStore.result == "TypeError: Cannot read property 'find' of null"
-    //               &&
-    //                 completedTraveller.traveller.atStore.error  == true
-    //             );
+                assert
+                (   completedTraveller.traveller.atStore.result == "TypeError: Cannot read property 'find' of null"
+                  &&
+                    completedTraveller.traveller.atStore.error  == true
+                );
 
-    //             done();
-    //           };
+                done();
+              };
 
-    //         atRoot.traverse(monkTraveller, monkContext);
-    //       }
-    //     );
-    //   }
-    // );
+            atRoot.traverse(monkTraveller, monkContext);
+          }
+        );
+      }
+    );
 
-    // describe
-    // ( "test the built in db access, now in the traverse function. This also has the wonderfulness of allowing a db access call and an eval block in one single pass",
-    //   function()
-    //   { it
-    //     ( "should find all the documents in the database",
-    //       function(done)
-    //       { var monkTraveller = {"atStore": { "functionName": "find", "functionParams": [ {} ] } };
+    describe
+    ( "test the built in db access, now in the traverse function. This also has the wonderfulness of allowing a db access call and an eval block in one single pass",
+      function()
+      { it
+        ( "find all, return one single @ root with storeID",
+          function(done)
+          { var monkTraveller = {"atStore": { "functionName": "find", "functionParams": [ {} ] } };
 
-    //         namespace(monkTraveller, "traveller.callback");
-    //         monkTraveller.traveller.callback = 
-    //           function(completedTraveller)
-    //           { console.log("testResults\n\n\n\n");
-    //             console.log("traveller:\n  ", JSON.stringify(completedTraveller));
+            namespace(monkTraveller, "traveller.callback");
+            monkTraveller.traveller.callback = 
+              function(completedTraveller)
+              { console.log("testResults\n\n\n\n");
+                console.log("traveller:\n  ", JSON.stringify(completedTraveller));
                 
-    //             assert
-    //             (   completedTraveller.atStore.result != null
-    //             );
+                assert
+                (   completedTraveller.atStore.result.length == 1
+                  &&
+                    completedTraveller.atStore.result[0].hasOwnProperty("storeID")
+                );
 
-    //             done();
-    //           };
+                done();
+              };
 
-    //         atRoot.traverse(monkTraveller, {});
-    //       }
-    //     );
-    //   }
-    // );
+            atRoot.traverse(monkTraveller, {});
+          }
+        );
+      }
+    );
 
-    // describe
-    // ( "check if there is only ONE at root id=@ in the db. (there were two when this test was created. This should be a prerequisite sanity check anyway",
-    //   function()
-    //   { it
-    //     ( "should find all the documents in the database",
-    //       function(done)
-    //       { var monkTraveller = {"atStore": { "functionName": "find", "functionParams": [ {"id": "@"} ] } };
+    describe
+    ( "check if there is only ONE at root id=@ in the db. (there were two when this test was created. This should be a prerequisite sanity check anyway",
+      function()
+      { it
+        ( "deliberately find just that one record, using the id",
+          function(done)
+          { var monkTraveller = {"atStore": { "functionName": "find", "functionParams": [ {"id":"@"} ] } };
 
-    //         namespace(monkTraveller, "traveller.callback");
-    //         monkTraveller.traveller.callback = 
-    //           function(completedTraveller)
-    //           { console.log("testResults\n\n\n\n");
-    //             console.log("traveller.atStore.result:\n  ", JSON.stringify(completedTraveller.atStore.result));
+            namespace(monkTraveller, "traveller.callback");
+            monkTraveller.traveller.callback = 
+              function(completedTraveller)
+              { console.log("testResults\n\n\n\n");
+                console.log("traveller.atStore.result:\n  ", JSON.stringify(completedTraveller.atStore.result));
                 
-    //             assert
-    //             (   completedTraveller.atStore.result.length == 1
-    //             );
+                assert
+                (   completedTraveller.atStore.result.length == 1
+                );
 
-    //             done();
-    //           };
+                done();
+              };
 
-    //         atRoot.traverse(monkTraveller, {});
-    //       }
-    //     );
-    //   }
-    // );
-
-
+            atRoot.traverse(monkTraveller, {});
+          }
+        );
+      }
+    );
 
 
-    // describe
-    // ( "create one to ten counter",
-    //   function()
-    //   { it
-    //     ( "should log counting to 0 to 9 ten then complete",
-    //       function(done)
-    //       { 
-    //       }
-    //     );
-    //   }
-    // );
+
+
+    describe
+    ( "create one to ten counter",
+      function()
+      { it
+        ( "should log counting to 0 to 9 ten then complete",
+          function(done)
+          { 
+          }
+        );
+      }
+    );
   }
 
 );
