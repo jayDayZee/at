@@ -205,6 +205,8 @@ else
             { var namespace = atRoot.namespace
               var atStore = atStore || atRoot.connectedAtStore;
               
+              //We can possible do something with security, vis the atStore storeID. Somehow bake it into the traveller, like with merkel trees maybe?
+              //  since the atStore and its value are not accessible to any code within the running code.
               var dataAccessPromise = Promise.resolve({});
 
               var atStoreFunctionName = namespace(traveller, "atStore.functionName", ["leafNode:null"] );
