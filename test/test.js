@@ -268,6 +268,28 @@ describe
     );
 
     describe
+    ( "check there is only on doc in the DB altogether, by looking for ALL documents. Must be the same as the document above. I.e. only the context we just added",
+      function()
+      { it
+        ( "should result in docs.length == 1",
+          function(done)
+          { atStore
+              .find({})
+              .then
+              ( function(docs)
+                { console.log ("length of All Docs:", docs.length);
+
+                  done( assert(docs.length == 1) );                      
+                }
+              );
+          }
+        );
+      }
+    );
+
+    
+
+    describe
     ( "create a node in the database that wraps the monk functionality, and give it a special name. This should FAIL since the atStore is not accessible except through direct access managed by the traverse function",
       function()
       { it
