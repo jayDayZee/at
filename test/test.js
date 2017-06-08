@@ -354,6 +354,33 @@ describe
       }
     );
 
+    describe
+    ( "check if there is only ONE at root id=@ in the db. (there were two when this test was created. This should be a prerequisite sanity check anyway",
+      function()
+      { it
+        ( "should find all the documents in the database",
+          function(done)
+          { var monkTraveller = {"atStore": { "functionName": "find", "functionParams": [ {"id": "@"} ] } };
+
+            namespace(monkTraveller, "traveller.callback");
+            monkTraveller.traveller.callback = 
+              function(completedTraveller)
+              { console.log("testResults\n\n\n\n");
+                console.log("traveller.atStore.result:\n  ", JSON.stringify(completedTraveller.atStore.result));
+                
+                assert
+                (   completedTraveller.atStore.result.length == 1
+                );
+
+                done();
+              };
+
+            atRoot.traverse(monkTraveller, {});
+          }
+        );
+      }
+    );
+
 
 
 
