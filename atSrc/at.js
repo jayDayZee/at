@@ -214,10 +214,11 @@ else
               { dataAccessPromise = atStore[atStoreFunctionName].apply(null, traveller.atStore.functionParams);
               }
 
+
               dataAccessPromise.then
               ( (docs) =>
-                // overload the atRoot variable, so that node code does not have access to the store
                 { traveller.atStore.result = docs;
+                  // overload the atRoot variable, so that node code does not have access to the store
                   var atRoot  = null;
                   var atStore = null;
                   var docs    = null;
@@ -228,6 +229,7 @@ else
                   console.log("traverse.toEval:\n  ", toEval);
                   // toEvalFunction = new Function("traveller", "context", toEval);
                   // toEvalFunction(traveller, context);
+                  // SOME SHIT ABOUT ACCESSING CLOSURES OVER LOCALS ANALYSE AND DESTROY. MIGHT HAVE TO PUT "traverse" INTO A CONTEXT OBJECT in the atStore
                   eval(toEval);
 
                   //determine the next destination of the traveller.
@@ -243,12 +245,32 @@ else
                   if (!destination) 
                   { console.log("End context:", traveller)
                     if (traveller.traveller.callback) 
-                      setImmediate(function(){traveller.traveller.callback(traveller);});
+                    { setImmediate(function(){traveller.traveller.callback(traveller);});
+                    }
                   }
-                  else 
-                    atRoot.traverse(traveller, atStore.findOne({"id": destination}) );
+                  else
+                  { traveller.destination = destination;
+                  }
                 }
-              );
+              )
+              .then 
+              ( () =>
+                { //THIS namespace is why there is also a "traveller.traveller" namespace, even though it looks wierd. Maybe it could be called defaultDimension
+                  if (traveller.hasOwnProperty("destination"))
+                  { debugger;
+                    var destination = traveller.destination;
+                    delete traveller.destination;
+                    return atStore
+                      .findOne({"id": destination})
+                      .then
+                      ( (doc) =>
+                        { debugger;
+                          atRoot.traverse(traveller, doc);
+                        }
+                      );
+                  }
+                }
+              )
             }
         );
         
