@@ -219,8 +219,13 @@ else
                   // toEvalFunction(traveller, context);
                   eval(toEval);
 
-                  var destination = namespace(traveller, "traveller.suggestedExit", null, true) || namespace(context, "traveller.exit", null, true);
-                  traveller.traveller.suggestedExit = null;
+                  //determine the next destination of the traveller.
+                  //  other traveller code may override this completely, the node can make a suggestion, or the traveller can follow the node's default exit
+                  //  if there is no destination, then the traveller may have completed its journey, and can call its callback
+                  var travellerSuggestedExit = namespace(traveller, "traveller.suggestedExit", null, true);
+                  var destination =  travellerSuggestedExit || namespace(context, "traveller.exit", null, true);
+                  if (travellerSuggestedExit)
+                    delete traveller.traveller.suggestedExit;
 
                   if (!destination) 
                   { console.log("End context:", traveller)
