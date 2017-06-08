@@ -287,7 +287,7 @@ describe
       }
     );
 
-    
+
 
     describe
     ( "create a node in the database that wraps the monk functionality, and give it a special name. This should FAIL since the atStore is not accessible except through direct access managed by the traverse function",

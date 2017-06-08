@@ -46,28 +46,34 @@ else
       { if (atRoot.connectedAtStore)
           return;
 
-        atStore
+        return atStore
           .find({"id":"@"})
           .then
           ( docs =>
             { // basic sanity checks on the atStore
-              assert( docs.length == 1,                     "atStore sanity check. docs.length !=1. https://github.com/christopherreay/at/wiki/Errors#atstoreconnect1" );
+              if ( docs.length != 1 ) throw "atStore sanity check. docs.length !=1. https://github.com/christopherreay/at/wiki/Errors#atstoreconnect1";
               var atStoreID = docs[0]
-              assert( atStoreID.hasOwnProperty("storeID"),  "atStore sanity check. no storeID. https://github.com/christopherreay/at/wiki/Errors#atstoreconnect2" );
+              if ( ! atStoreID.hasOwnProperty("storeID") ) throw "atStore sanity check. no storeID. https://github.com/christopherreay/at/wiki/Errors#atstoreconnect2";
               //TODO. Fix the length of the storeID, and add it here.
-
-              atRoot.connectedAtStore = atStore
+            }
+          )
+          .then
+          ( () =>
+            { atRoot.connectedAtStore = atStore;
             }
           );
       };
       this.initialiseAtStore = function(atStore)
       { //make sure the store is empty
-        atStore.find({})
-        .then
-        ( docs =>
-          { assert( docs.length != 0, "atStore sanity check. store not empty. https://github.com/christopherreay/at/wiki/Errors#atstoreinitialise1" );
-
-            atStore
+        return atStore
+          .find({})
+          .then
+          ( docs =>
+            { if ( docs.length != 0 ) throw "atStore sanity check. store not empty. https://github.com/christopherreay/at/wiki/Errors#atstoreinitialise1";
+            }
+          )
+          .then
+          ( atStore
               .insert
               ( { "id": "@", "storeID": new atRoot.createID().idString } 
               )
@@ -75,14 +81,8 @@ else
               ( result =>
                 { console.log("new atStore initialised with storeID=", result);
                 }
-              );
-          }
-        )
-        .catch
-        ( function() 
-          { console.log("atStore initialisation failed");
-          }
-        )
+              )
+          );
       }
 
 
