@@ -75,7 +75,7 @@ else
           )
           .then
           ( () =>
-            { atStore
+            { return atStore
                 .insert
                 ( { "id": "@", "storeID": new atRoot.createID().idString } 
                 )
