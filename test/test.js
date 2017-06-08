@@ -508,7 +508,17 @@ describe
     );
 
 
-
+    describe
+    ( "create graph builder context",
+      function()
+      { it
+        ( "should accept a traveller defining a graph it would like to construct, and build the graph, and put the result in the traveller",
+          function(done)
+          { 
+          }
+        );
+      }
+    );
 
     describe
     ( "create one to ten counter",
@@ -521,6 +531,8 @@ describe
         );
       }
     );
+
+    //Theres something very narly to do with types going to happen pretty soon. Something about dimensions of travel.
   }
 
 );
