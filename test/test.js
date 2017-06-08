@@ -387,3 +387,30 @@ describe
     }
   );
 
+describe
+  ( "Check the DB is empty",
+    function()
+    { it
+      ( "should find a length of 0 documents in the database",
+        function(done)
+        { var monkTraveller = {"atStore": { "functionName": "find", "functionParams": [ {} ] } };
+
+          namespace(monkTraveller, "traveller.callback");
+          monkTraveller.traveller.callback = 
+            function(completedTraveller)
+            { console.log("testResults\n\n\n\n");
+              console.log("traveller:\n  ", JSON.stringify(completedTraveller));
+              
+              console.log("completedTraveller.atStore.result.length", completedTraveller.atStore.result.length);
+              assert
+              (   completedTraveller.atStore.result.length == 0
+              );
+
+              done();
+            };
+
+          atRoot.traverse(monkTraveller, {});
+        }
+      );
+    }
+  );
