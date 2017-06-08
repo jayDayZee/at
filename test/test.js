@@ -149,7 +149,7 @@ describe
 );
 
 describe
-( "basic node and traverse, moving on to persistance",
+( "create a simple node, and move onto persistance",
   function()
   { var context   = new atRoot.AtNode();
     var traveller = new atRoot.AtNode();
@@ -506,8 +506,57 @@ describe
         );
       }
     );
+  }
 
+);
 
+describe
+( "travelling around a graph",
+  function()
+  { var context   = new atRoot.AtNode();
+    var traveller = new atRoot.AtNode();
+
+    namespace = atRoot.namespace;
+
+    describe
+    ( "create a single node for the traveller",
+      function()
+      { it
+        ( "should result in the traveller having traveller.test.x = 0",
+          function(done)
+          { namespace( context, "traveller.codeBlock")
+            context.traveller.codeBlock = 
+            ` namespace(traveller, "test.x", ["leafNode: 0"]);
+              console.log("traveller:\\n  ", traveller)\;
+            `;
+            
+            namespace(traveller, "traveller.callback");
+            traveller.traveller.callback = 
+              function(traveller)
+              { console.log("testResults\n\n\n\n");
+                console.log("traveller:\n  ", traveller);
+                console.log("context:\n  ", context);
+                assert.equal(traveller.test.x, 0);
+                done();
+              };
+
+            atRoot.traverse(traveller, context);
+          }
+        );
+      }
+    );
+
+    describe
+    ( "create one to ten counter",
+      function()
+      { it
+        ( "should log counting to 0 to 9 ten then complete",
+          function(done)
+          { //start = new atRoot
+          }
+        );
+      }
+    );
     describe
     ( "create graph builder context",
       function()
@@ -520,23 +569,9 @@ describe
       }
     );
 
-    describe
-    ( "create one to ten counter",
-      function()
-      { it
-        ( "should log counting to 0 to 9 ten then complete",
-          function(done)
-          { 
-          }
-        );
-      }
-    );
-
     //Theres something very narly to do with types going to happen pretty soon. Something about dimensions of travel.
   }
-
 );
-
 
 describe
   ( "DESTROY THE AT COLLECTION DO NOT DO THIS",
