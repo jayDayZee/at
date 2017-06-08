@@ -218,17 +218,17 @@ else
               ( (docs) =>
                 // overload the atRoot variable, so that node code does not have access to the store
                 { traveller.atStore.result = docs;
-                  // var atRoot  = null;
-                  // var atStore = null;
-                  // var docs    = null;
+                  var atRoot  = null;
+                  var atStore = null;
+                  var docs    = null;
 
                   //evaluate the code in the context against the traveller              
                   //  the node has the ability to set a suggested exit. A difference traverse function could ignore it (e.g. visualisation traveller)
                   var toEval = namespace(context, "traveller.codeBlock", ["toReturn = {}", "toReturn = ''"])
                   console.log("traverse.toEval:\n  ", toEval);
-                  toEvalFunction = new Function("traveller", "context", toEval);
-                  toEvalFunction(traveller, context);
-                  // eval(toEval);
+                  // toEvalFunction = new Function("traveller", "context", toEval);
+                  // toEvalFunction(traveller, context);
+                  eval(toEval);
 
                   //determine the next destination of the traveller.
                   //  other traveller code may override this completely, the node can make a suggestion, or the traveller can follow the node's default exit
