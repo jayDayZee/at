@@ -286,6 +286,28 @@ describe
         );
       }
     );
+    
+    describe
+    ( "connect an unintialised atStore. Should fail",
+      function()
+      { it
+        ( "should result in some atStore sanity check error",
+          function(done)
+          { atRoot.connectAtStore(atStore)
+              .then
+              ( () => { done(assert( false, "this should never run" )); }
+              )
+              .catch 
+              ( error =>
+                { console.log("ERROR: ", error.toString());
+                  assert ( error.toString() == "atStore sanity check. docs.length !=1. https://github.com/christopherreay/at/wiki/Errors#atstoreconnect1" )
+                  done();
+                }
+              )
+          }
+        );
+      }
+    );
 
 
     // describe
