@@ -214,7 +214,7 @@ else
 
               dataAccessPromise.then
               ( (docs) =>
-                // overload the atRoot variable, so that node code does not have access
+                // overload the atRoot variable, so that node code does not have access to the store
                 { traveller.atStore.result = docs;
                   var atRoot  = null;
                   var atStore = null;
@@ -231,14 +231,17 @@ else
                   //determine the next destination of the traveller.
                   //  other traveller code may override this completely, the node can make a suggestion, or the traveller can follow the node's default exit
                   //  if there is no destination, then the traveller may have completed its journey, and can call its callback
-                  var travellerSuggestedExit = namespace(traveller, "traveller.suggestedExit", null, true);
-                  var destination =  travellerSuggestedExit || namespace(context, "traveller.exit", null, true);
+                  //  the default place to look "traveller.exit" just allows us to create simple graphs without putting code 
+                  //    in the codeblock
+                  var travellerSuggestedExit  = namespace(traveller, "traveller.suggestedExit", null, true);
+                  var destination             = travellerSuggestedExit || namespace(context, "traveller.exit", null, true);
                   if (travellerSuggestedExit)
                     delete traveller.traveller.suggestedExit;
 
                   if (!destination) 
                   { console.log("End context:", traveller)
-                    if (traveller.traveller.callback) setImmediate(function(){traveller.traveller.callback(traveller);});
+                    if (traveller.traveller.callback) 
+                      setImmediate(function(){traveller.traveller.callback(traveller);});
                   }
                   else 
                     atRoot.traverse(traveller, register(destination) );
