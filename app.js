@@ -26,7 +26,7 @@ console.log("loaded at.js module");
 
 var atRoot = new AtRoot();
 
-atRoot.connectAtStore(atStore);
+// atRoot.connectAtStore(atStore);
 
 var index = require('./routes/index');
 var users = require('./routes/users');

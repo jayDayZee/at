@@ -7,7 +7,7 @@ var app =  require("../app.js");
 var atRoot = app.atRoot;
 var atStore = app.atStore;
 
-atRoot.connectAtStore(atStore);
+// atRoot.connectAtStore(atStore);
 
 
 // console.log(AtRoot);

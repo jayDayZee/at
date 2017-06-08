@@ -22,7 +22,7 @@ else
 
 ( function(window)
   { 
-    var AtRoot = function(atStore)
+    var AtRoot = function()
     { var atRoot = this;
 
       this.regex = {};
@@ -100,7 +100,7 @@ else
       }
 
 
-      if (atStore) atRoot.connectAtStore(atStore);
+      // if (atStore) atRoot.connectAtStore(atStore);
 
 
       atRoot.regex.startsWithToReturn = /^\s*toReturn\s*=/;
