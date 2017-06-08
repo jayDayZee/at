@@ -278,6 +278,7 @@ describe
               .then
               ( function(docs)
                 { console.log ("length of All Docs:", docs.length);
+                  console.log ("contents of Docs:", JSON.stringify(docs));
 
                   done( assert(docs.length == 1) );                      
                 }
@@ -300,8 +301,88 @@ describe
               .catch 
               ( error =>
                 { console.log("ERROR: ", error.toString());
-                  assert ( error.toString() == "atStore sanity check. docs.length !=1. https://github.com/christopherreay/at/wiki/Errors#atstoreconnect1" )
+                  assert ( error.toString() == "atStore sanity check. docs.length !=1. https://github.com/christopherreay/at/wiki/Errors#atstoreconnect1" );
+                  assert ( ! atRoot.connectedAtStore );
+                  console.log("atRoot.connectedAtStore is still empty");
                   done();
+                }
+              )
+          }
+        );
+      }
+    );
+
+    describe
+    ( "initialise the non-empty DB. Should fail",
+      function()
+      { it
+        ( "should result in some atStore initialise sanity check error",
+          function(done)
+          { atRoot.initialiseAtStore(atStore)
+              .then
+              ( () => { done(assert( false, "this should never run" )); }
+              )
+              .catch 
+              ( error =>
+                { console.log("ERROR: ", error.toString());
+                  assert ( error.toString() == "atStore sanity check. store not empty. https://github.com/christopherreay/at/wiki/Errors#atstoreinitialise1" )
+                  done();
+                }
+              )
+          }
+        );
+      }
+    );
+
+    describe
+    ( "delete the context document (to make DB empty for initialisation)",
+      function()
+      { it
+        ( "should leave DB enpty",
+          function(done)
+          { atStore
+              .remove(context)
+              .then
+              ( () =>
+                { atStore
+                    .find({})
+                    .then
+                    ( docs =>
+                      { console.log("DOCS\n", JSON.stringify(docs));
+                        done(assert(docs.length==0) );                      
+                      }
+                    ) 
+                }
+              );
+            
+          }
+        );
+      }
+    );
+
+    describe
+    ( "initialise the NOW empty DB. Should pass, and allow atRoot.connectAtStore",
+      function()
+      { it
+        ( "should result in having a storeID document",
+          function(done)
+          { atRoot.initialiseAtStore(atStore)
+              .then
+              ( () => 
+                { console.log("running connectAtStore");
+                  return atRoot.connectAtStore(atStore)
+                }
+              )
+              .then
+              ( () => 
+                { console.log("checking if connected: ", atRoot.connectedAtStore == atStore);
+                  done( assert(atRoot.connectedAtStore == atStore) ); 
+                }
+              )
+              .catch 
+              ( error =>
+                { console.log("ERROR: ", error.toString());
+                  done( assert(false, "atRoot.connectedAtStore was no initialised") );
                 }
               )
           }
