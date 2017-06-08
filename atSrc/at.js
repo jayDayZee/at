@@ -69,19 +69,22 @@ else
           .find({})
           .then
           ( docs =>
-            { if ( docs.length != 0 ) throw "atStore sanity check. store not empty. https://github.com/christopherreay/at/wiki/Errors#atstoreinitialise1";
+            { console.log("initialiseAtStore, find{}:", JSON.stringify(docs) );
+              if ( docs.length != 0 ) throw "atStore sanity check. store not empty. https://github.com/christopherreay/at/wiki/Errors#atstoreinitialise1";
             }
           )
           .then
-          ( atStore
-              .insert
-              ( { "id": "@", "storeID": new atRoot.createID().idString } 
-              )
-              .then
-              ( result =>
-                { console.log("new atStore initialised with storeID=", result);
-                }
-              )
+          ( () =>
+            { atStore
+                .insert
+                ( { "id": "@", "storeID": new atRoot.createID().idString } 
+                )
+                .then
+                ( result =>
+                  { console.log("new atStore initialised with storeID=", result);
+                  }
+                )
+            }
           );
       }
 
