@@ -50,36 +50,42 @@ else
           .find({"id":"@"})
           .then
           ( docs =>
-            { console.log("initial docs:\n", docs);
-              var atStoreInitialisePromise = { "then":function(){ atRoot.connectedAtStore = atStore; console.log("atStore already initialised");} };
-              if (docs.length == 0)
-              { atStoreInitialisePromise = 
-                  atStore
-                    .insert({"id":"@", "storeID": new atRoot.createID().idString })
-              }
-              else if (docs.length == 1 && ! docs[0].hasOwnProperty("storeID") )
-              { atStoreInitialisePromise = 
-                  atStore
-                    .update
-                    ( { "id": "@" }, 
-                      { "storeID": new atRoot.createID().idString } 
-                    )
-              }
-              atStoreInitialisePromise
-                .then
-                ( docs =>
-                  { console.log("post atStore initialised: docs\n", docs);
-                    atRoot.connectedAtStore = atStore;
-                  }
-                );
+            { // basic sanity checks on the atStore
+              assert( docs.length == 1,                     "atStore sanity check. docs.length !=1. https://github.com/christopherreay/at/wiki/Errors#atstoreconnect1" );
+              var atStoreID = docs[0]
+              assert( atStoreID.hasOwnProperty("storeID"),  "atStore sanity check. no storeID. https://github.com/christopherreay/at/wiki/Errors#atstoreconnect2" );
+              //TODO. Fix the length of the storeID, and add it here.
+
+              atRoot.connectedAtStore = atStore
             }
-          )
-          .catch
-          ( function() 
-            { console.log("atStore initialisation failed");
-            }
-          )
+          );
       };
+      this.initialiseAtStore = function(atStore)
+      { //make sure the store is empty
+        atStore.find({})
+        .then
+        ( docs =>
+          { assert( docs.length != 0, "atStore sanity check. store not empty. https://github.com/christopherreay/at/wiki/Errors#atstoreinitialise1" );
+
+            atStore
+              .insert
+              ( { "id": "@", "storeID": new atRoot.createID().idString } 
+              )
+              .then
+              ( result =>
+                { console.log("new atStore initialised with storeID=", result);
+                }
+              );
+          }
+        )
+        .catch
+        ( function() 
+          { console.log("atStore initialisation failed");
+          }
+        )
+      }
+
+
       
       this.purgeAtStore = function(atStore)
       { atStore
