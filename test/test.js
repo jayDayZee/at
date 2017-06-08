@@ -546,28 +546,64 @@ describe
       }
     );
 
+    var adder     = new atRoot.AtNode();
+    describe
+    ( "travel along one branch on a graph",
+      function()
+      { it
+        ( "make traveller.test.x = 1",
+          function(done)
+          { //create a simple adder context that adds 1 to test.x
+            namespace (adder, "traveller.codeBlock");
+            adder.traveller.codeBlock = 
+            ` traveller.test.x = traveller.test.x + 1;
+              console.log("traveller:\\n  ", traveller);
+            `;
+            
+            //The idea is that the traveller should automatically follow the id along the graph.
+            //  this definately wont work, since its not implemented :)
+            context.traveller.exit = adder.id;
+
+            //Test will fail since it will not complete
+            namespace(traveller, "traveller.callback");
+            traveller.traveller.callback = 
+              function(traveller)
+              { console.log("\n\n\n\ntestResults");
+                console.log("traveller:\n  ", traveller);
+                console.log("context:\n  ", context);
+                assert.equal(traveller.test.x, 1);
+                done();
+              };
+
+            atRoot.traverse(traveller, context);
+          }
+        );
+      }
+    );
+
+    var adder     = new atRoot.AtNode();
     describe
     ( "create one to ten counter",
       function()
       { it
         ( "should log counting to 0 to 9 ten then complete",
           function(done)
-          { //start = new atRoot
-          }
-        );
-      }
-    );
-    describe
-    ( "create graph builder context",
-      function()
-      { it
-        ( "should accept a traveller defining a graph it would like to construct, and build the graph, and put the result in the traveller",
-          function(done)
           { 
           }
         );
       }
     );
+    // describe
+    // ( "create graph builder context",
+    //   function()
+    //   { it
+    //     ( "should accept a traveller defining a graph it would like to construct, and build the graph, and put the result in the traveller",
+    //       function(done)
+    //       { 
+    //       }
+    //     );
+    //   }
+    // );
 
     //Theres something very narly to do with types going to happen pretty soon. Something about dimensions of travel.
   }
