@@ -725,19 +725,18 @@ describe
       }
     );
 
-    var createNode     = new atRoot.AtNode();
     describe
-    ( "make a basic node, using newAtNode",
+    ( "test the atRoot access",
       function()
       { it
-        ( "should return the same as the last test, but use createNode to create the adder. Can you say 'count to three' ? :)",
+        ( "Just creates an empty node, and checks that it has an id property",
           function(done)
           { traveller.atRoot = 
             { "myNewNode": { "newAtNode": [] },
             }
 
             traveller.traveller.mocha.done = done;
-            traveller.traveller.mocha.assertConditions["containsNewNode"] = { "left": [traveller, "atRootResults.myNewNode.id"], "right": [""], "not":true }
+            traveller.traveller.mocha.assertConditions["containsNewNode"] = { "left": [traveller, "atRootResults.myNewNode.id"], "right": [null], "not":true }
 
             atRoot.traverse(traveller, addTestCallback);
 
