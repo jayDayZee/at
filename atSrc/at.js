@@ -12,6 +12,7 @@ console.log("loading at.js module");
 if ( typeof module === 'object' && module && typeof module.exports === 'object' )
 { //NODE
   uuid = require("uuid");
+  extend = require("extend");
 }
 else
 { //BROWSER
@@ -131,7 +132,7 @@ else
         var nonLeafNodes;
         if ( defaultList[0].startsWith("nonLeafNodes:") )
         { nonLeafNodes = defaultList[0].replace(/nonLeafNodes:/, "");
-          console.log("nonLeafNodes: \n  ", nonLeafNodes);
+          //####console.log("nonLeafNodes: \n  ", nonLeafNodes);
         }
         else if ( defaultList[0].startsWith("leafNode:") )
         { defaultList[0] = defaultList[0].replace(/leafNode:/, "");
@@ -152,11 +153,11 @@ else
             { toEval = defaultList[defaultCounter];
             }
             if (! atRoot.regex.startsWithToReturn.test(toEval) ) toEval = "toReturn = "+toEval+";";
-            console.log("toEval:", toEval);
+            //####console.log("toEval:", toEval);
             eval(toEval);
             // toReturn.name = wayPoint;
             current[wayPoint] =  toReturn;
-            console.log("current:", current, "key:", wayPoint, "obj:", current[wayPoint]);
+            //####console.log("current:", current, "key:", wayPoint, "obj:", current[wayPoint]);
           }
           current = current[wayPoint];
 
@@ -167,6 +168,12 @@ else
         }
 
         return current;
+      }
+      this.namespace.move = function(object, moveDict)
+      { for (key in moveDict)
+        { object[moveDict[key]] = object[key]
+          delete object[key];
+        }
       }
 
       this.namespaceExists = function(object, address)
@@ -207,18 +214,47 @@ else
               
               //We can possible do something with security, vis the atStore storeID. Somehow bake it into the traveller, like with merkel trees maybe?
               //  since the atStore and its value are not accessible to any code within the running code
-              var dataAccessPromise = Promise.resolve({});
+              var dataAccessPromise     = Promise.resolve({});
+              var dataAccessPromiseList = [];
 
-              var atStoreFunctionName = namespace(traveller, "atStore.functionName", ["leafNode:null"] );
-              if (atStoreFunctionName)
-              { dataAccessPromise = atStore[atStoreFunctionName].apply(null, traveller.atStore.functionParams);
+              if (namespace(traveller,"atStore.functionName", null, true))
+              { var functionName = traveller.atStore.functionName;
+                var functionParams = traveller.atStore.functionParams;
+                dataAccessPromise = 
+                  atStore[functionName].apply(null, functionParams)
+                    .then
+                    ( (docs) =>
+                      { namespace.move(traveller.atStore, {"functionName": "__functionName", "functionParams": "__functionParams"} );
+                        traveller.atStore.result = docs;
+                      }
+                    );
               }
+
+              // great error here. This code doesnt clear the atStore configuration. So when the traveller moves onto the second node, it tried to
+              //   write the same object to the atStore, which had the mongo _id in it, and it failed. cool beans :)
+              // for (key in traveller.atStore)
+              // { if ( ! key.startsWith("__") )
+              //   { var atStoreFunctionName = traveller.atStore[key].functionName
+              //     console.log("traverse: traveller.atStore:\n\n", JSON.stringify(traveller.atStore) );
+              //     dataAccessPromiseList.push
+              //     ( (key) => 
+              //       { return atStore[atStoreFunctionName].apply(null, traveller.atStore[key].functionParams) )
+              //           .then
+              //           ( (docs) =>
+              //             { traveller.atStore.__results[key] = docs;
+              //             }
+              //           );
+              //       }
+              //     }
+              //   }
+              // }
+              
+              // if (dataAccessPromiseList.length > 0) dataAccessPromise = Promise.all(dataAccessPromiseList)
 
 
               dataAccessPromise.then
-              ( (docs) =>
-                { traveller.atStore.result = docs;
-                  // overload the atRoot variable, so that node code does not have access to the store
+              ( () =>
+                { // overload the atRoot variable, so that node code does not have access to the store
                   var atRoot  = null;
                   var atStore = null;
                   var docs    = null;
@@ -257,15 +293,13 @@ else
               ( () =>
                 { //THIS namespace is why there is also a "traveller.traveller" namespace, even though it looks wierd. Maybe it could be called defaultDimension
                   if (traveller.hasOwnProperty("destination"))
-                  { debugger;
-                    var destination = traveller.destination;
+                  { var destination = traveller.destination;
                     delete traveller.destination;
                     return atStore
                       .findOne({"id": destination})
                       .then
                       ( (doc) =>
-                        { debugger;
-                          atRoot.traverse(traveller, doc);
+                        { atRoot.traverse(traveller, doc);
                         }
                       );
                   }

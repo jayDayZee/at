@@ -587,7 +587,40 @@ describe
       }
     );
 
-    
+    var adder2     = new atRoot.AtNode();
+    describe
+    ( "travel along one branch on a graph",
+      function()
+      { it
+        ( "make traveller.test.x = 1",
+          function(done)
+          { //create a simple adder context that adds 1 to test.x
+            namespace (adder2, "traveller.codeBlock");
+            adder2.traveller.codeBlock = 
+            ` traveller.test.x = traveller.test.x + 1;
+              console.log("traveller:\\n  ", traveller);
+            `;
+            
+            //add adder2 to the atStore using the traveller DB phase
+            traveller.atStore = { "functionName": "insert", "functionParams": [ adder2 ] };
+            context.traveller.exit = adder2.id;
+
+            namespace(traveller, "traveller.callback");
+            traveller.traveller.callback = 
+              function(traveller)
+              { console.log("\n\n\n\ntestResults");
+                console.log("traveller:\n  ", traveller);
+                console.log("context:\n  ", context);
+                assert.equal(traveller.test.x, 1);
+                done();
+              };
+
+            atRoot.traverse(traveller, context);
+          }
+        );
+      }
+    );
+
     describe
     ( "create one to ten counter",
       function()
