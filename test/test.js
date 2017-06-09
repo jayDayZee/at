@@ -737,10 +737,7 @@ describe
             }
 
             traveller.traveller.mocha.done = done;
-            traveller.traveller.mocha.assertConditions = 
-                { "x==2": { "left": [traveller, "test.x"], "right": [2] },
-                  "x!=3": { "left": [traveller, "test.x"], "right": [3], "not": true } 
-                };
+            traveller.traveller.mocha.assertConditions["containsNewNode"] = { "left": [traveller, "atRootResults.myNewNode.id"], "right": [""], "not":true }
 
             atRoot.traverse(traveller, addTestCallback);
 

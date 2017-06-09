@@ -225,7 +225,7 @@ else
         // }
       }
       this.newAtNode = function()
-      { return new atRoot.atNode();
+      { return new atRoot.AtNode();
       }
 
       //create public accessible tools for travellers to use
@@ -262,8 +262,8 @@ else
               //write the same object to the atStore, which had the mongo _id in it, and it failed. cool beans :)
               for (key in traveller.atRoot)
               { if ( ! key.startsWith("__"))
-                { var functionName    = traveller.atRoot[key].functionName;
-                  var functionParams  = traveller.atRoot[key].functionParams;
+                { var functionName    = Object.keys(traveller.atRoot[key])[0];
+                  var functionParams  = traveller.atRoot[key][functionName];
                   console.log("traverse: traveller.atStore:\n\n", JSON.stringify(traveller.atStore) );
                   //should this be atRoot.results? or atRoot.__results? I like this because it leaves the namespaces clean, and noone ever has to remember anything anyway.
                   //  people should be using some kind of sub namespace for all their stuff. this is root root stuff, which is why I have made everything traveller.traveller.xyzetc
