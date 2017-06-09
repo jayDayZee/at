@@ -759,6 +759,7 @@ describe
                 var codeBlock = 
                   () =>
                   { var nodeDefinitions = namespace(traveller, "traveller.createGraph.nodeDefinitions", null, true) || [];
+                    debugger;
                     nodeDefinitions.forEach
                     ( (nodeDefinition) =>
                       { namespace(traveller, "atRoot");
@@ -769,9 +770,9 @@ describe
             createGraph.traveller.codeBlock = codeBlock.toString().slice(6);
 
             // we can factor this out to work ina single loop, by changing the atStore code to run a promise.All
-            var saveNodes = new atRoot.AtNode();
-            saveNodes.id        = "createGraph.saveNodes"; //awesome :)
-            namespace(saveNodes, "traveller");
+            var addNodesToSaveQueue = new atRoot.AtNode();
+            addNodesToSaveQueue.id        = "createGraph.addNodesToSaveQueue"; //awesome :)
+            namespace(addNodesToSaveQueue, "traveller");
                 var codeBlock = 
                   () =>
                   { var nodeDefinitions = namespace(traveller, "traveller.createGraph.nodeDefinitions", null, true) || [];
@@ -790,10 +791,22 @@ describe
                       }
                     }
                   };
-            saveNodes.traveller.codeBlock = codeBlock.toString().slice(6);
+            addNodesToSaveQueue.traveller.codeBlock = codeBlock.toString().slice(6);
+
+            var buildGraph = new atRoot.AtNode();
+            buildGraph.id        = "createGraph.buildGraph"; //awesome :)
+            namespace(buildGraph, "traveller");
+                var codeBlock = 
+                  () =>
+                  { var nodeDefinitions = namespace(traveller, "traveller.createGraph.nodeDefinitions", null, true) || [];
+
+                    //doStuff. Want to check if addNodesToSaveQueue works
+                  };
+            buildGraph.traveller.codeBlock = codeBlock.toString().slice(6);
 
             //link the two nodes into a graph, using namedNodes
-            createGraph.traveller.exit = "createGraph.saveNodes";
+            createGraph.traveller.exit          = "createGraph.addNodesToSaveQueue";
+            addNodesToSaveQueue.traveller.exit  = "createGraph.buildGraph";
 
 
             //Once the nodes are saved, we can use the nodeDefinitions to build the graph, by attaching branches using the node id's
@@ -817,7 +830,7 @@ describe
             //  using suggestedExit, as below :) #namedNodes #12
             traveller.atStore =
             { "functionName":   "insert",
-              "functionParams": [ [ createGraph, saveNodes ] ],
+              "functionParams": [ [ createGraph, addNodesToSaveQueue, buildGraph ] ],
             }
 
             //configre the mocha callback
