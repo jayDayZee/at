@@ -621,18 +621,61 @@ describe
       }
     );
 
-    var createNode     = new atRoot.AtNode();
+    var addTestCallback = new atRoot.AtNode();
     describe
-    ( "make a context node that takes a traveller and uses it to create a new node in the atStore",
+    ( "make traveller.traveller.callback do stuff and call done",
       function()
       { it
-        ( "should return the same as the last test, but use createNode to create the adder. Can you say 'count to three' ? :)",
+        ( "returns a traveller with its callback set to the passed done function",
           function(done)
-          { 
+          { //create a simple adder context that adds 1 to test.x
+            namespace (addTestCallback, "traveller");
+            addTestCallback.traveller.codeBlock = 
+            ` traveller.traveller.callback = 
+                (traveller) => 
+                { console.log("\\n\\n\\ntestResults");
+                  console.log("traveller:\\n  ", traveller);
+                  console.log("context:\\n  ", context);
+                  var conditions = namespace(traveller, "traveller.mocha.assertConditions", null, true);
+                  for (key in conditions)
+                  { assert.equal( namespace.apply(null, conditions[key].left), namespace.apply(null, conditions[key].right) );
+                    console.log("passed condition:", key);
+                  }
+                  var done = traveller.traveller.mocha.done;
+                  // or just delete "done" and have like.. travelling constraints.. This could be done with eval.. Cool
+                  delete traveller.traveller.mocha;
+                  done();
+                };
+            `
+            
+            // should just pass since there are no conditions given.
+            namespace(traveller, "traveller.mocha");
+
+            traveller.traveller.mocha.done = done;
+            traveller.traveller.mocha.assertConditions = { "x=2": { "left": [traveller, "test.x"], "right": [2] } };
+
+            atRoot.traverse(traveller, addTestCallback);
           }
         );
       }
     );
+
+    // var createNode     = new atRoot.AtNode();
+    // describe
+    // ( "make a basic node, using newAtNode",
+    //   function()
+    //   { it
+    //     ( "should return the same as the last test, but use createNode to create the adder. Can you say 'count to three' ? :)",
+    //       function(done)
+    //       { traveller.atRoot = 
+    //         { "myNewNode": { "newAtNode": [] },
+    //         }
+
+
+    //       }
+    //     );
+    //   }
+    // );
 
     describe
     ( "create one to ten counter",
