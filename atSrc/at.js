@@ -250,11 +250,11 @@ else
               { if ( ! key.startsWith("__"))
                 { var functionName    = Object.keys(traveller.atRoot[key])[0];
                   var functionParams  = traveller.atRoot[key][functionName];
-                  console.dir("traverse: traveller.atStore:\n\n", traveller.atStore );
+                  ls("traverse: traveller.atRoot:", functionName, functionParams );
                   //should this be atRoot.results? or atRoot.__results? I like this because it leaves the namespaces clean, and noone ever has to remember anything anyway.
                   //  people should be using some kind of sub namespace for all their stuff. this is root root stuff, which is why I have made everything traveller.traveller.xyzetc
-                  namespace(traveller, "atRootResults");
-                  traveller.atRootResults[key] = atRoot.public[functionName].apply(null, functionParams);
+                  namespace(traveller, "results.atRoot");
+                  traveller.results.atRoot[key] = atRoot.public[functionName].apply(null, functionParams);
                 }
               }
               
@@ -264,18 +264,41 @@ else
               var dataAccessPromise     = Promise.resolve({});
               var dataAccessPromiseList = [];
 
-              if (namespace(traveller,"atStore.functionName", null, true))
-              { var functionName = traveller.atStore.functionName;
-                var functionParams = traveller.atStore.functionParams;
-                dataAccessPromise = 
-                  atStore[functionName].apply(null, functionParams)
+              for (key in traveller.atStore)
+              { if ( ! key.startsWith("__"))
+                { var functionName    = Object.keys(traveller.atStore[key])[0];
+                  var functionParams  = traveller.atStore[key][functionName];
+                  ls("traverse: traveller.atStore:", functionName, functionParams );
+                  //should this be atRoot.results? or atRoot.__results? I like this because it leaves the namespaces clean, and noone ever has to remember anything anyway.
+                  //  people should be using some kind of sub namespace for all their stuff. this is root root stuff, which is why I have made everything traveller.traveller.xyzetc
+                  namespace(traveller, "results.atStore");
+                  
+                  dataAccessPromiseList.push
+                  ( atStore[functionName].apply(null, functionParams)
                     .then
                     ( (docs) =>
-                      { namespace.move(traveller.atStore, {"functionName": "__functionName", "functionParams": "__functionParams"} );
-                        traveller.atStore.result = docs;
+                      { traveller.results.atStore[key] = docs;
                       }
-                    );
+                    )
+                  )
+                }
               }
+
+              if (dataAccessPromiseList.length > 0) dataAccessPromise = Promise.all(dataAccessPromiseList);
+
+              // if (namespace(traveller,"atStore.functionName", null, true))
+              // { var functionName = traveller.atStore.functionName;
+              //   var functionParams = traveller.atStore.functionParams;
+              //   dataAccessPromise = 
+              //     atStore[functionName].apply(null, functionParams)
+              //       .then
+              //       ( (docs) =>
+              //         { namespace.move(traveller.atStore, {"functionName": "__functionName", "functionParams": "__functionParams"} );
+              //           traveller.atStore.result = docs;
+              //         }
+              //       );
+              // }
+
 
               dataAccessPromise.then
               ( () =>
@@ -335,7 +358,7 @@ else
       }
 
       this.ls = function(listOfStuff)
-      { listOfStuff.forEach
+      { Array.from(arguments).forEach
         ( (thing) =>
           { console.dir(thing);
           }
