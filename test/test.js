@@ -736,11 +736,11 @@ describe
         ( "Just creates an empty node, and checks that it has an id property",
           function(done)
           { traveller.atRoot = 
-            { "myNewNode": { "newAtNode": [] },
+            { "emptyNode": { "newAtNode": [] },
             }
 
             traveller.traveller.mocha.done = done;
-            traveller.traveller.mocha.assertConditions["containsNewNode"] = { "left": [traveller, "atRootResults.myNewNode.id"], "right": [null], "not":true }
+            traveller.traveller.mocha.assertConditions["containsNewNode"] = { "left": [traveller, "results.atRoot.emptyNode.id", null, true], "right": [null], "not":true }
 
             atRoot.traverse(traveller, addTestCallback);
 
@@ -801,6 +801,7 @@ describe
                   () =>
                   { var nodeDefinitions = namespace(traveller, "traveller.createGraph.nodeDefinitions", null, true) || [];
                     var graph;
+                    var updateList = [];
 
                     nodeDefinitions.forEach
                     ( (nodeDefinition) =>
@@ -816,10 +817,12 @@ describe
                     for (name in graph)
                     { node = graph[name];
                       if (namespace(node, "traveller.exit", null, true) )
-                      { debugger;
-                        node.traveller.exit = graph[node.traveller.exit].id;
+                      { node.traveller.exit = graph[node.traveller.exit].id;
                       }
+                      traveller.atStore["createGraph.savedNodes."+name] = {"update": [ {"id":node.id}, node ]};
                     }
+                    // traveller.traveller.suggestedExit = "emptyNode";
+
 
                     ls("\n\n\n", "createGraph.buildGraph: results:", graph);
                   };
@@ -864,6 +867,21 @@ describe
       }
     );
 
+    describe
+    ( "run traveller over createGraph's graph :) :)",
+      function()
+      { it
+        ( "should print createGraph: printer: 2",
+          function(done)
+          { traveller.traveller.suggestedExit = traveller.traveller.createGraph.results.graph.start.id;
+            
+            traveller.traveller.mocha.done = done;
+            atRoot.traverse(traveller, addTestCallback);            
+          }
+        );
+      }
+    );
+  
     describe
     ( "create one to ten counter",
       function()
