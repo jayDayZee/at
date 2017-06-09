@@ -589,10 +589,10 @@ describe
 
     var adder2     = new atRoot.AtNode();
     describe
-    ( "travel along one branch on a graph",
+    ( "use the traveller atStore command to add the new adder2 object to the atStore",
       function()
       { it
-        ( "make traveller.test.x = 1",
+        ( "make traveller.test.x = 2",
           function(done)
           { //create a simple adder context that adds 1 to test.x
             namespace (adder2, "traveller.codeBlock");
@@ -611,7 +611,7 @@ describe
               { console.log("\n\n\n\ntestResults");
                 console.log("traveller:\n  ", traveller);
                 console.log("context:\n  ", context);
-                assert.equal(traveller.test.x, 1);
+                assert.equal(traveller.test.x, 2);
                 done();
               };
 
