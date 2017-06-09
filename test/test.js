@@ -621,6 +621,19 @@ describe
       }
     );
 
+    var createNode     = new atRoot.AtNode();
+    describe
+    ( "make a context node that takes a traveller and uses it to create a new node in the atStore",
+      function()
+      { it
+        ( "should return the same as the last test, but use createNode to create the adder. Can you say 'count to three' ? :)",
+          function(done)
+          { 
+          }
+        );
+      }
+    );
+
     describe
     ( "create one to ten counter",
       function()
