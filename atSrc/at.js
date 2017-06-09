@@ -267,7 +267,8 @@ else
 
               for (key in traveller.atStore)
               { if ( ! key.startsWith("__"))
-                { var functionName    = Object.keys(traveller.atStore[key])[0];
+                { debugger;
+                  var functionName    = Object.keys(traveller.atStore[key])[0];
                   var functionParams  = traveller.atStore[key][functionName];
                   ls("traverse: traveller.atStore:", functionName, functionParams );
                   //should this be atRoot.results? or atRoot.__results? I like this because it leaves the namespaces clean, and noone ever has to remember anything anyway.

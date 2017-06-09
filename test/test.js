@@ -451,7 +451,8 @@ describe
       }
     );
 
-
+    //TODO: replace this with real security testing
+    
     describe
     ( "create a node in the database that wraps the monk functionality, and give it a special name. This should FAIL since the atStore is not accessible except through direct access managed by the traverse function",
       function()
@@ -778,19 +779,17 @@ describe
                 var codeBlock = 
                   () =>
                   { var nodeDefinitions = namespace(traveller, "traveller.createGraph.nodeDefinitions", null, true) || [];
-
                     var insertList = [];
+
                     nodeDefinitions.forEach
                     ( (nodeDefinition) =>
                       { //there must be things in here since because :) namespaces are awesome :)
-                        insertList.push(traveller.atRootResults[nodeDefinition.name])
+                        insertList.push(traveller.results.atRoot[nodeDefinition.name])
                       }
                     );
                     if (insertList != [])
-                    { traveller.atStore =
-                      { "functionName": "insert",
-                        "functionParams": [ insertList ],
-                      }
+                    { namespace(traveller, "atStore");
+                      traveller.atStore["createGraph.savedNodes"] = {"insert": [ insertList ]};
                     }
                   };
             addNodesToSaveQueue.traveller.codeBlock = codeBlock.toString().slice(6);
@@ -800,20 +799,7 @@ describe
             namespace(buildGraph, "traveller");
                 var codeBlock = 
                   () =>
-                  { var nodeDefinitions = namespace(traveller, "traveller.createGraph.nodeDefinitions", null, true) || [];
-
-                    nodeDefinitions.forEach
-                    ( (nodeDefinition) =>
-                      { //there must be things in here since because :) namespaces are awesome :)
-                        insertList.push(traveller.atRootResults[nodeDefinition.name])
-                      }
-                    );
-                    if (insertList != [])
-                    { traveller.atStore =
-                      { "functionName": "insert",
-                        "functionParams": [ insertList ],
-                      }
-                    }
+                  { 
                   };
             buildGraph.traveller.codeBlock = codeBlock.toString().slice(6);
 
@@ -841,10 +827,7 @@ describe
             
             //at the same time as we install the callback, also save the two nodes we have just made above, into the atStore, so we can traverse to them
             //  using suggestedExit, as below :) #namedNodes #12
-            traveller.atStore =
-            { "functionName":   "insert",
-              "functionParams": [ [ createGraph, addNodesToSaveQueue, buildGraph ] ],
-            }
+            traveller.atStore.bootstrapGraphBuilder = { "insert": [ [ createGraph, addNodesToSaveQueue, buildGraph ] ]};
 
             //configre the mocha callback
             traveller.traveller.mocha.done = done;
