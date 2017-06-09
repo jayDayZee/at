@@ -691,12 +691,12 @@ describe
             addTestCallback.traveller.codeBlock = 
             ` traveller.traveller.callback = 
                 (traveller) => 
-                { //console.log("\\n\\n\\ntestResults");
-                  // console.log("traveller:\\n  ", traveller);
-                  // console.log("context:\\n  ", context);
+                { console.log("\\n\\n\\n", "testResults");
+                  console.log("\\n  ", "traveller:\\n  ", traveller);
+                  console.log("\\n  ", "context:  \\n  ", context);
                   var conditions = namespace(traveller, "traveller.mocha.assertConditions", null, true);
                   var success = true;
-                  console.log("traveller.mocha: conditions:");
+                  console.log("\\n  ","\\n  ","traveller.mocha: conditions:");
                   for (key in conditions)
                   { var pass      = true;
 
@@ -725,22 +725,29 @@ describe
       }
     );
 
-    // var createNode     = new atRoot.AtNode();
-    // describe
-    // ( "make a basic node, using newAtNode",
-    //   function()
-    //   { it
-    //     ( "should return the same as the last test, but use createNode to create the adder. Can you say 'count to three' ? :)",
-    //       function(done)
-    //       { traveller.atRoot = 
-    //         { "myNewNode": { "newAtNode": [] },
-    //         }
+    var createNode     = new atRoot.AtNode();
+    describe
+    ( "make a basic node, using newAtNode",
+      function()
+      { it
+        ( "should return the same as the last test, but use createNode to create the adder. Can you say 'count to three' ? :)",
+          function(done)
+          { traveller.atRoot = 
+            { "myNewNode": { "newAtNode": [] },
+            }
 
+            traveller.traveller.mocha.done = done;
+            traveller.traveller.mocha.assertConditions = 
+                { "x==2": { "left": [traveller, "test.x"], "right": [2] },
+                  "x!=3": { "left": [traveller, "test.x"], "right": [3], "not": true } 
+                };
 
-    //       }
-    //     );
-    //   }
-    // );
+            atRoot.traverse(traveller, addTestCallback);
+
+          }
+        );
+      }
+    );
 
     describe
     ( "create one to ten counter",

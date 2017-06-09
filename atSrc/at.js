@@ -266,7 +266,8 @@ else
                   //should this be atRoot.results? or atRoot.__results? I like this because it leaves the namespaces clean, and noone ever has to remember anything anyway.
                   //  people should be using some kind of sub namespace for all their stuff. this is root root stuff, which is why I have made everything traveller.traveller.xyzetc
                   namespace(traveller, "atRootResults");
-                  traveller.atRootResults[key] = traveller.atRoot.public[functionName].apply(null, functionParams);
+                  debugger;
+                  traveller.atRootResults[key] = atRoot.public[functionName].apply(null, functionParams);
                 }
               }
               
