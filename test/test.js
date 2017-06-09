@@ -641,10 +641,7 @@ describe
                   { assert.equal( namespace.apply(null, conditions[key].left), namespace.apply(null, conditions[key].right) );
                     console.log("passed condition:", key);
                   }
-                  var done = traveller.traveller.mocha.done;
-                  // or just delete "done" and have like.. travelling constraints.. This could be done with eval.. Cool
-                  delete traveller.traveller.mocha;
-                  done();
+                  namespace.rm(traveller, "traveller.mocha.done")();
                 };
             `
             
