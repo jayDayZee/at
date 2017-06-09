@@ -276,8 +276,8 @@ else
               //We can possible do something with security, vis the atStore storeID. Somehow bake it into the traveller, like with merkel trees maybe?
               //  since the atStore and its value are not accessible to any code within the running code
               // TODO. Make this work like above, with using a Promise.All
-              var dataAccessPromise     = Promise.resolve({});
-              var dataAccessPromiseList = [];
+              var dataAccessPromise       = Promise.resolve({});
+              var dataAccessPromiseList   = [];
 
               for (key in traveller.atStore)
               { if ( ! key.startsWith("__"))
@@ -288,14 +288,18 @@ else
                   //  people should be using some kind of sub namespace for all their stuff. this is root root stuff, which is why I have made everything traveller.traveller.xyzetc
                   namespace(traveller, "results.atStore");
                   
+                  var storeAndDeleteKey = function(key, functionName, functionParams)
+                  { return atStore[functionName].apply(null, functionParams)
+                      .then
+                      ( (docs) => 
+                        { traveller.results.atStore[key] = docs;
+                          delete traveller.atStore[key];
+                        }
+                     );
+                  }
+
                   dataAccessPromiseList.push
-                  ( atStore[functionName].apply(null, functionParams)
-                    .then
-                    ( (docs) =>
-                      { traveller.results.atStore[key] = docs;
-                        delete traveller.atStore[key];
-                      }
-                    )
+                  ( storeAndDeleteKey(key, functionName, functionParams);
                   )
                 }
               }
@@ -341,6 +345,7 @@ else
                   var destination             = travellerSuggestedExit || namespace(context, "traveller.exit", null, true);
                   if (travellerSuggestedExit)
                     delete traveller.traveller.suggestedExit;
+                  ls("traverse.setExit: ", destination);
 
                   if (!destination) 
                   { console.dir("End context:", traveller)
