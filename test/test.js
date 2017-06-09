@@ -11,11 +11,13 @@ var atStore = app.atStore;
 
 
 // console.log(AtRoot);
-console.log(atRoot);
+
 
 
 var testObject = {};
 var ls = atRoot.ls;
+
+ls(atRoot);
 
 describe
 ( "test namespace functions",
@@ -31,8 +33,8 @@ describe
           { atRoot.namespace(testObject, "create.nested.namespace.here", ["toReturn = {}", "toReturn = {}", "toReturn = {}", "toReturn = ''"]);
             
             var createdObjectString = JSON.stringify(testObject);
-            console.log("command: \n", "  ", `atRoot.namespace(testObject, "create.nested.namespace.here", ["toReturn = {}", "toReturn = {}", "toReturn = {}", "toReturn = ''"]);`);
-            console.log("output: \n" , "  ", createdObjectString);
+            ls("command: \n", "  ", `atRoot.namespace(testObject, "create.nested.namespace.here", ["toReturn = {}", "toReturn = {}", "toReturn = {}", "toReturn = ''"]);`);
+            ls("output: \n" , "  ", createdObjectString);
             
             assert.equal(createdObjectString, `{"create":{"nested":{"namespace":{"here":""}}}}` );
           }
@@ -49,8 +51,8 @@ describe
           { atRoot.namespace(testObject, "create.nested.alternateNamespace.here", ["toReturn = {}", "toReturn = {}", "toReturn = {}", "toReturn = ''"]);
             
             var createdObjectString = JSON.stringify(testObject);
-            console.log("command: \n", "  ", `atRoot.namespace(testObject, "create.nested.alternateNamespace.here", ["toReturn = {}", "toReturn = {}", "toReturn = {}", "toReturn = ''"]);`);
-            console.log("output: \n" , "  ", createdObjectString);
+            ls("command: \n", "  ", `atRoot.namespace(testObject, "create.nested.alternateNamespace.here", ["toReturn = {}", "toReturn = {}", "toReturn = {}", "toReturn = ''"]);`);
+            ls("output: \n" , "  ", createdObjectString);
             
             assert.equal(createdObjectString, `{"create":{"nested":{"namespace":{"here":""},"alternateNamespace":{"here":""}}}}` );
           }
@@ -224,15 +226,15 @@ describe
           { namespace( context, "traveller.codeBlock")
             context.traveller.codeBlock = 
             ` namespace(traveller, "test.x", ["leafNode: 0"]);
-              console.log("traveller:\\n  ", traveller)\;
+              ls("traveller:\\n  ", traveller)\;
             `;
             
             namespace(traveller, "traveller.callback");
             traveller.traveller.callback = 
               function(traveller)
-              { console.log("testResults\n\n\n\n");
-                console.log("traveller:\n  ", traveller);
-                console.log("context:\n  ", context);
+              { ls("\n\n\n\n", "testResults");
+                ls("traveller:\n  ", traveller);
+                ls("context:\n  ", context);
                 assert.equal(traveller.test.x, 0);
                 done();
               };
@@ -255,12 +257,12 @@ describe
               .find(context)
               .then
               ( function(docs)
-                { console.log ("length of contextDocs:", docs.length);
+                { ls ("length of contextDocs:", docs.length);
 
                   atStore.find(traveller)
                   .then
                   ( function(docs2)
-                    { console.log ("length of traveller docs:", docs2.length);
+                    { ls ("length of traveller docs:", docs2.length);
 
                       done(assert(docs.length==1 && docs2.length ==1) );                      
                     }
@@ -286,12 +288,12 @@ describe
               .find(context)
               .then
               ( function(docs)
-                { console.log ("length of contextDocs:", docs.length);
+                { ls ("length of contextDocs:", docs.length);
 
                   atStore.find(traveller)
                   .then
                   ( function(docs2)
-                    { console.log ("length of traveller docs:", docs2.length);
+                    { ls ("length of traveller docs:", docs2.length);
 
                       done(assert(docs.length==0 && docs2.length ==0) );                      
                     }
@@ -316,7 +318,7 @@ describe
               .find(context)
               .then
               ( function(docs)
-                { console.log ("length of contextDocs:", docs.length);
+                { ls ("length of contextDocs:", docs.length);
 
                   done( assert(docs.length == 1) );                      
                 }
@@ -336,8 +338,8 @@ describe
               .find({})
               .then
               ( function(docs)
-                { console.log ("length of All Docs:", docs.length);
-                  console.log ("contents of Docs:", JSON.stringify(docs));
+                { ls ("length of All Docs:", docs.length);
+                  ls ("contents of Docs:", docs);
 
                   done( assert(docs.length == 1) );                      
                 }
@@ -359,10 +361,10 @@ describe
               )
               .catch 
               ( error =>
-                { console.log("ERROR: ", error.toString());
+                { ls("ERROR: ", error.toString());
                   assert ( error.toString() == "atStore sanity check. docs.length !=1. https://github.com/christopherreay/at/wiki/Errors#atstoreconnect1" );
                   assert ( ! atRoot.connectedAtStore );
-                  console.log("atRoot.connectedAtStore is still empty");
+                  ls("atRoot.connectedAtStore is still empty");
                   done();
                 }
               )
@@ -383,7 +385,7 @@ describe
               )
               .catch 
               ( error =>
-                { console.log("ERROR: ", error.toString());
+                { ls("ERROR: ", error.toString());
                   assert ( error.toString() == "atStore sanity check. store not empty. https://github.com/christopherreay/at/wiki/Errors#atstoreinitialise1" )
                   done();
                 }
@@ -407,7 +409,7 @@ describe
                     .find({})
                     .then
                     ( docs =>
-                      { console.log("DOCS\n", JSON.stringify(docs));
+                      { ls("DOCS\n", docs);
                         done(assert(docs.length==0) );                      
                       }
                     ) 
@@ -428,19 +430,19 @@ describe
           { atRoot.initialiseAtStore(atStore)
               .then
               ( () => 
-                { console.log("running connectAtStore");
+                { ls("running connectAtStore");
                   return atRoot.connectAtStore(atStore)
                 }
               )
               .then
               ( () => 
-                { console.log("checking if connected: ", atRoot.connectedAtStore == atStore);
+                { ls("checking if connected: ", atRoot.connectedAtStore == atStore);
                   done( assert(atRoot.connectedAtStore == atStore) ); 
                 }
               )
               .catch 
               ( error =>
-                { console.log("ERROR: ", error.toString());
+                { ls("ERROR: ", error.toString());
                   done( assert(false, "atRoot.connectedAtStore was no initialised") );
                 }
               )
@@ -470,13 +472,13 @@ describe
                     .then
                     ( function(docs)
                       { traveller.traveller.atStore.result = docs;
-                        console.log("traveller:\\n  ", traveller)\;
+                        ls("traveller:\\n  ", traveller);
                       }
                     )
               }
               catch (error)
-              { //console.log(error);
-                console.log("ERROR STRING\\n", JSON.stringify(error.toString()) );
+              { //ls(error);
+                ls("ERROR STRING\\n", JSON.stringify(error.toString()) );
                 traveller.traveller.atStore.result  = error.toString();
                 traveller.traveller.atStore.error   = atStore == null;
               }
@@ -491,9 +493,9 @@ describe
             namespace(monkTraveller, "traveller.callback");
             monkTraveller.traveller.callback = 
               function(completedTraveller)
-              { console.log("testResults\n\n\n\n");
-                console.log("traveller:\n  ", JSON.stringify(completedTraveller));
-                console.log("context:\n  ",   monkContext);
+              { ls("\n\n\n\n", "testResults");
+                ls("traveller:\n  ", completedTraveller);
+                ls("context:\n  ",   monkContext);
                 
                 assert
                 (   completedTraveller.traveller.atStore.result == "TypeError: Cannot read property 'find' of null"
@@ -510,34 +512,34 @@ describe
       }
     );
 
-    describe
-    ( "test the built in db access, now in the traverse function. This also has the wonderfulness of allowing a db access call and an eval block in one single pass",
-      function()
-      { it
-        ( "find all, return one single @ root with storeID",
-          function(done)
-          { var monkTraveller = {"atStore": { "functionName": "find", "functionParams": [ {} ] } };
+    // describe
+    // ( "test the built in db access, now in the traverse function. This also has the wonderfulness of allowing a db access call and an eval block in one single pass",
+    //   function()
+    //   { it
+    //     ( "find all, return one single @ root with storeID",
+    //       function(done)
+    //       { var monkTraveller = {"atStore": { "myFirstDBAccess": { "find": [ {} ] } } };
 
-            namespace(monkTraveller, "traveller.callback");
-            monkTraveller.traveller.callback = 
-              function(completedTraveller)
-              { console.log("testResults\n\n\n\n");
-                console.log("traveller:\n  ", JSON.stringify(completedTraveller));
+    //         namespace(monkTraveller, "traveller.callback");
+    //         monkTraveller.traveller.callback = 
+    //           function(completedTraveller)
+    //           { ls("\n\n\n\n", "testResults");
+    //             ls("traveller:\n  ", completedTraveller);
                 
-                assert
-                (   completedTraveller.atStore.result.length == 1
-                  &&
-                    completedTraveller.atStore.result[0].hasOwnProperty("storeID")
-                );
+    //             assert
+    //             (   completedTraveller.results.atStore.myFirstDBAccess.length == 1
+    //               &&
+    //                 completedTraveller.results.atStore.myFirstDBAccess[0].hasOwnProperty("storeID")
+    //             );
 
-                done();
-              };
+    //             done();
+    //           };
 
-            atRoot.traverse(monkTraveller, {});
-          }
-        );
-      }
-    );
+    //         atRoot.traverse(monkTraveller, {});
+    //       }
+    //     );
+    //   }
+    // );
 
     describe
     ( "check if there is only ONE at root id=@ in the db. (there were two when this test was created. This should be a prerequisite sanity check anyway",
@@ -550,8 +552,8 @@ describe
             namespace(monkTraveller, "traveller.callback");
             monkTraveller.traveller.callback = 
               function(completedTraveller)
-              { console.log("testResults\n\n\n\n");
-                console.log("traveller.atStore.result:\n  ", JSON.stringify(completedTraveller.atStore.result));
+              { ls("\n\n\n\n", "testResults");
+                ls("traveller.atStore.result:\n  ", completedTraveller.atStore.result);
                 
                 assert
                 (   completedTraveller.atStore.result.length == 1
@@ -586,15 +588,15 @@ describe
           { namespace( context, "traveller.codeBlock")
             context.traveller.codeBlock = 
             ` namespace(traveller, "test.x", ["leafNode: 0"]);
-              console.log("traveller:\\n  ", traveller)\;
+              ls("traveller:\\n  ", traveller)\;
             `;
             
             namespace(traveller, "traveller.callback");
             traveller.traveller.callback = 
               function(traveller)
-              { console.log("testResults\n\n\n\n");
-                console.log("traveller:\n  ", traveller);
-                console.log("context:\n  ", context);
+              { ls("\n\n\n\n", "testResults");
+                ls("traveller:\n  ", traveller);
+                ls("context:\n  ", context);
                 assert.equal(traveller.test.x, 0);
                 done();
               };
@@ -616,7 +618,7 @@ describe
             namespace (adder, "traveller.codeBlock");
             adder.traveller.codeBlock = 
             ` traveller.test.x = traveller.test.x + 1;
-              console.log("traveller:\\n  ", traveller);
+              ls("traveller:\\n  ", traveller);
             `;
             
             //The idea is that the traveller should automatically follow the id along the graph.
@@ -627,9 +629,9 @@ describe
             namespace(traveller, "traveller.callback");
             traveller.traveller.callback = 
               function(traveller)
-              { console.log("\n\n\n\ntestResults");
-                console.log("traveller:\n  ", traveller);
-                console.log("context:\n  ", context);
+              { ls("\n\n\n\ntestResults");
+                ls("traveller:\n  ", traveller);
+                ls("context:\n  ", context);
                 assert.equal(traveller.test.x, 1);
                 done();
               };
@@ -657,7 +659,7 @@ describe
             namespace (adder2, "traveller.codeBlock");
             adder2.traveller.codeBlock = 
             ` traveller.test.x = traveller.test.x + 1;
-              console.log("traveller:\\n  ", traveller);
+              ls("traveller:\\n  ", traveller);
             `;
             
             //add adder2 to the atStore using the traveller DB phase
@@ -667,9 +669,9 @@ describe
             namespace(traveller, "traveller.callback");
             traveller.traveller.callback = 
               function(traveller)
-              { console.log("\n\n\n\ntestResults");
-                console.log("traveller:\n  ", traveller);
-                console.log("context:\n  ", context);
+              { ls("\n\n\n\ntestResults");
+                ls("traveller:\n  ", traveller);
+                ls("context:\n  ", context);
                 assert.equal(traveller.test.x, 2);
                 done();
               };
@@ -692,12 +694,12 @@ describe
             addTestCallback.traveller.codeBlock = 
             ` traveller.traveller.callback = 
                 (traveller) => 
-                { console.log("\\n\\n\\n", "testResults");
-                  ls(["\\n  ", "traveller:\\n  ", traveller]);
-                  ls(["\\n  ", "context:  \\n  ", context  ]);
+                { ls("\\n\\n\\n", "testResults");
+                  ls("\\n  ", "traveller:\\n  ", traveller);
+                  ls("\\n  ", "context:  \\n  ", context  );
                   var conditions = namespace(traveller, "traveller.mocha.assertConditions", null, true);
                   var success = true;
-                  console.log("\\n  ","\\n  ","traveller.mocha: conditions:");
+                  ls("\\n  ","\\n  ","traveller.mocha: conditions:");
                   for (key in conditions)
                   { var pass      = true;
 
@@ -705,7 +707,7 @@ describe
                     if (conditions[key].hasOwnProperty("not")) operator = "!=";
                     eval( "pass = namespace.apply(null, conditions[key].left) "+operator+" namespace.apply(null, conditions[key].right)" );
                     if (pass) { pass = "passed"; } else { pass = "failed"; success = false; }
-                    console.log("  ", key, pass);
+                    ls("  ", key, pass);
                   }
                   namespace.rm(traveller, "traveller.mocha.done")(assert(success));
                 };
@@ -800,7 +802,18 @@ describe
                   () =>
                   { var nodeDefinitions = namespace(traveller, "traveller.createGraph.nodeDefinitions", null, true) || [];
 
-                    //doStuff. Want to check if addNodesToSaveQueue works
+                    nodeDefinitions.forEach
+                    ( (nodeDefinition) =>
+                      { //there must be things in here since because :) namespaces are awesome :)
+                        insertList.push(traveller.atRootResults[nodeDefinition.name])
+                      }
+                    );
+                    if (insertList != [])
+                    { traveller.atStore =
+                      { "functionName": "insert",
+                        "functionParams": [ insertList ],
+                      }
+                    }
                   };
             buildGraph.traveller.codeBlock = codeBlock.toString().slice(6);
 
@@ -819,7 +832,7 @@ describe
                 "traveller.exit"      : "printer",
               },
               { "name"                : "printer",
-                "traveller.codeBlock" : "console.log('createGraph: printer: ', traveller.test.x)",
+                "traveller.codeBlock" : "ls('createGraph: printer: ', traveller.test.x)",
                 "traveller.exit"      : "end",
               },
               { "name": "end",
@@ -898,10 +911,10 @@ describe
           namespace(monkTraveller, "traveller.callback");
           monkTraveller.traveller.callback = 
             function(completedTraveller)
-            { console.log("testResults\n\n\n\n");
-              console.log("traveller:\n  ", JSON.stringify(completedTraveller));
+            { ls("testResults\n\n\n\n");
+              ls("traveller:\n  ", JSON.stringify(completedTraveller));
               
-              console.log("completedTraveller.atStore.result.length", completedTraveller.atStore.result.length);
+              ls("completedTraveller.atStore.result.length", completedTraveller.atStore.result.length);
               assert
               (   completedTraveller.atStore.result.length == 0
               );
