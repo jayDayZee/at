@@ -11,8 +11,9 @@ console.log("loading at.js module");
 
 if ( typeof module === 'object' && module && typeof module.exports === 'object' )
 { //NODE
-  uuid = require("uuid");
-  extend = require("extend");
+  uuid    = require("uuid");
+  extend  = require("extend");
+  util    = require("util");
 }
 else
 { //BROWSER
@@ -246,7 +247,7 @@ else
               { if ( ! key.startsWith("__"))
                 { var functionName    = Object.keys(traveller.atRoot[key])[0];
                   var functionParams  = traveller.atRoot[key][functionName];
-                  console.log("traverse: traveller.atStore:\n\n", JSON.stringify(traveller.atStore) );
+                  console.dir("traverse: traveller.atStore:\n\n", traveller.atStore );
                   //should this be atRoot.results? or atRoot.__results? I like this because it leaves the namespaces clean, and noone ever has to remember anything anyway.
                   //  people should be using some kind of sub namespace for all their stuff. this is root root stuff, which is why I have made everything traveller.traveller.xyzetc
                   namespace(traveller, "atRootResults");
@@ -300,7 +301,7 @@ else
                     delete traveller.traveller.suggestedExit;
 
                   if (!destination) 
-                  { console.log("End context:", traveller)
+                  { console.dir("End context:", traveller)
                     if (traveller.traveller.callback) 
                     { setImmediate(function(){var callback = traveller.traveller.callback; delete traveller.traveller.callback; callback(traveller);});
                     }

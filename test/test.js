@@ -692,8 +692,8 @@ describe
             ` traveller.traveller.callback = 
                 (traveller) => 
                 { console.log("\\n\\n\\n", "testResults");
-                  console.log("\\n  ", "traveller:\\n  ", traveller);
-                  console.log("\\n  ", "context:  \\n  ", context);
+                  console.dir("\\n  ", "traveller:\\n  ", traveller);
+                  console.dir("\\n  ", "context:  \\n  ", context  );
                   var conditions = namespace(traveller, "traveller.mocha.assertConditions", null, true);
                   var success = true;
                   console.log("\\n  ","\\n  ","traveller.mocha: conditions:");
