@@ -691,15 +691,22 @@ describe
             addTestCallback.traveller.codeBlock = 
             ` traveller.traveller.callback = 
                 (traveller) => 
-                { console.log("\\n\\n\\ntestResults");
-                  console.log("traveller:\\n  ", traveller);
-                  console.log("context:\\n  ", context);
+                { //console.log("\\n\\n\\ntestResults");
+                  // console.log("traveller:\\n  ", traveller);
+                  // console.log("context:\\n  ", context);
                   var conditions = namespace(traveller, "traveller.mocha.assertConditions", null, true);
+                  var success = true;
+                  console.log("traveller.mocha: conditions:");
                   for (key in conditions)
-                  { assert.equal( namespace.apply(null, conditions[key].left), namespace.apply(null, conditions[key].right) );
-                    console.log("passed condition:", key);
+                  { var pass      = true;
+
+                    var operator  = "==";
+                    if (conditions[key].hasOwnProperty("not")) operator = "!=";
+                    eval( "pass = namespace.apply(null, conditions[key].left) "+operator+" namespace.apply(null, conditions[key].right)" );
+                    if (pass) { pass = "passed"; } else { pass = "failed"; success = false; }
+                    console.log("  ", key, pass);
                   }
-                  namespace.rm(traveller, "traveller.mocha.done")();
+                  namespace.rm(traveller, "traveller.mocha.done")(assert(success));
                 };
             `
             
@@ -707,7 +714,10 @@ describe
             namespace(traveller, "traveller.mocha");
 
             traveller.traveller.mocha.done = done;
-            traveller.traveller.mocha.assertConditions = { "x=2": { "left": [traveller, "test.x"], "right": [2] } };
+            traveller.traveller.mocha.assertConditions = 
+                { "x==2": { "left": [traveller, "test.x"], "right": [2] },
+                  "x!=3": { "left": [traveller, "test.x"], "right": [3], "not": true } 
+                };
 
             atRoot.traverse(traveller, addTestCallback);
           }
