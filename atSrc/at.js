@@ -258,8 +258,7 @@ else
                     );
               }
 
-              //great error here. This code doesnt clear the atStore configuration. So when the traveller moves onto the second node, it tried to
-              //write the same object to the atStore, which had the mongo _id in it, and it failed. cool beans :)
+              //atRoot and atStore should be in "named contexts", rather than embedded here like this
               for (key in traveller.atRoot)
               { if ( ! key.startsWith("__"))
                 { var functionName    = Object.keys(traveller.atRoot[key])[0];
