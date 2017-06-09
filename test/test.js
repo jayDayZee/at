@@ -145,6 +145,64 @@ describe
         );
       }
     );
+    describe
+    ( "test namespace.rm",
+      function()
+      { it
+        ( "",
+          function()
+          { atRoot.namespace(testObject, "create.using.leafNode.going.on.for.a.while", ["leafNode: 'someFunnyComment'"]);
+            console.log("testObject\n  ", JSON.stringify(testObject));
+            console.log(JSON.stringify(testObject.create.using.leafNode.going.on.for.a));
+            var removed = atRoot.namespace.rm(testObject, "create.using.leafNode.going.on.for.a.while");
+            assert
+            (     removed =="someFunnyComment"
+              &&
+                  ! testObject.create.using.leafNode.going.on.for.a.hasOwnProperty("while")
+            );
+          }
+        );
+      }
+    );
+    //First implement them properly. Then make the tests
+    // describe
+    // ( "test namespace.mv",
+    //   function()
+    //   { it
+    //     ( "",
+    //       function()
+    //       { atRoot.namespace(testObject, "create.using.leafNode.going.on.for.a.while", ["leafNode: 'someFunnyComment'"]);
+    //         console.log("testObject\n  ", JSON.stringify(testObject));
+    //         console.log(JSON.stringify(testObject.create.using.leafNode.going.on.for.a));
+    //         var removed = atRoot.namespace.rm(testObject, "create.using.leafNode.going.on.for.a.while");
+    //         assert
+    //         (     removed =="someFunnyComment"
+    //           &&
+    //               ! testObject.create.using.leafNode.going.on.for.a.hasOwnProperty("while")
+    //         );
+    //       }
+    //     );
+    //   }
+    // );
+    // describe
+    // ( "test namespace.rm",
+    //   function()
+    //   { it
+    //     ( "",
+    //       function()
+    //       { atRoot.namespace(testObject, "create.using.leafNode.going.on.for.a.while", ["leafNode: 'someFunnyComment'"]);
+    //         console.log("testObject\n  ", JSON.stringify(testObject));
+    //         console.log(JSON.stringify(testObject.create.using.leafNode.going.on.for.a));
+    //         var removed = atRoot.namespace.rm(testObject, "create.using.leafNode.going.on.for.a.while");
+    //         assert
+    //         (     removed =="someFunnyComment"
+    //           &&
+    //               ! testObject.create.using.leafNode.going.on.for.a.hasOwnProperty("while")
+    //         );
+    //       }
+    //     );
+    //   }
+    // );
   }
 );
 
