@@ -798,6 +798,19 @@ describe
             //Once the nodes are saved, we can use the nodeDefinitions to build the graph, by attaching branches using the node id's
             //  We hard code the ID's (i.e. namedNodes) of THESE nodes, because they are the ones we need to build graphs, which we can then namespace automaticeasily
 
+            //Make some Nodes with this stuff
+            namespace(traveller, "traveller.createGraph");
+            traveller.traveller.createGraph.nodeDefinitions =
+            [ { "name"                : "start",
+                "traveller.exit"      : "printer",
+              },
+              { "name"                : "printer",
+                "traveller.codeBlock" : "console.log('createGraph: printer: ', traveller.test.x)",
+                "traveller.exit"      : "end",
+              },
+              { "name": "end",
+              },
+            ];
             
             //at the same time as we install the callback, also save the two nodes we have just made above, into the atStore, so we can traverse to them
             //  using suggestedExit, as below :) #namedNodes #12
