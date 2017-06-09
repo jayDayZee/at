@@ -117,7 +117,10 @@ else
       atRoot.regex.startsWithToReturn = /^\s*toReturn\s*=/;
       //namespace functions are convenience. Since @ makes namespaces mean anything and everything, its nice to be able to create and use them easily.
       this.namespace = function(object, address, defaultList, checkExists)
-      { var current  = object;
+      { //can use namespace to return constants too
+        if (address == null) return object;
+
+        var current  = object;
 
         var addressList           = address.split(".");
         var addressListTestIndex  = addressList.length -1;
@@ -291,7 +294,7 @@ else
                   if (!destination) 
                   { console.log("End context:", traveller)
                     if (traveller.traveller.callback) 
-                    { setImmediate(function(){traveller.traveller.callback(traveller);});
+                    { setImmediate(function(){var callback = traveller.traveller.callback; delete traveller.traveller.callback; callback(traveller);});
                     }
                   }
                   else
