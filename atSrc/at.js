@@ -137,12 +137,18 @@ else
         // if the address is more than one item long, and the defaultList is one item long, populate the default list with empty objects, up until 
         //   the leaf address
         var nonLeafNodes;
+        var leafObject;
         if ( defaultList[0].startsWith("nonLeafNodes:") )
         { nonLeafNodes = defaultList[0].replace(/nonLeafNodes:/, "");
           //####console.log("nonLeafNodes: \n  ", nonLeafNodes);
         }
         else if ( defaultList[0].startsWith("leafNode:") )
         { defaultList[0] = defaultList[0].replace(/leafNode:/, "");
+          if (defaultList[0].length == 0) 
+          { defaultList[0]  = "null";
+            leafObject      = checkExists;
+            checkExists     = false;
+          }
           nonLeafNodes = "toReturn = {}";
         }
 
@@ -174,6 +180,10 @@ else
           { defaultCounter ++;
           }
         }
+        if (leafObject != null)
+        { current = last[wayPoint] = leafObject;
+        }
+          
 
         if (checkExists == "delete") delete last[wayPoint];
         return current;
