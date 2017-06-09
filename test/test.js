@@ -547,16 +547,16 @@ describe
       { it
         ( "deliberately find just that one record, using the id",
           function(done)
-          { var monkTraveller = {"atStore": { "functionName": "find", "functionParams": [ {"id":"@"} ] } };
+          { var monkTraveller = {"atStore": { "thereIsOnlyOne": { "find": [ {"id":"@"} ] } } };
 
             namespace(monkTraveller, "traveller.callback");
             monkTraveller.traveller.callback = 
               function(completedTraveller)
               { ls("\n\n\n\n", "testResults");
-                ls("traveller.atStore.result:\n  ", completedTraveller.atStore.result);
+                ls("traveller.results.atStore:\n  ", completedTraveller.results.atStore);
                 
                 assert
-                (   completedTraveller.atStore.result.length == 1
+                (   completedTraveller.results.atStore.thereIsOnlyOne.length == 1
                 );
 
                 done();
@@ -663,7 +663,7 @@ describe
             `;
             
             //add adder2 to the atStore using the traveller DB phase
-            traveller.atStore = { "functionName": "insert", "functionParams": [ adder2 ] };
+            traveller.atStore = {"add adder2": {"insert":[adder2]} };
             context.traveller.exit = adder2.id;
 
             namespace(traveller, "traveller.callback");
