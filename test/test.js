@@ -746,6 +746,80 @@ describe
     );
 
     describe
+    ( "make a graph, using a traveller config",
+      function()
+      { it
+        ( "should accept sensible config, and build graphs too. Graphs are dependency dependent like",
+          function(done)
+          { //going to have to persist some things in the database so we can use a graph to make a graph NICE
+            var createGraph       = new atRoot.AtNode();
+            createGraph.id        = "createGraph"; //awesome :)
+            namespace(createGraph, "traveller");
+                var codeBlock = 
+                  () =>
+                  { var nodeDefinitions = namespace(traveller, "traveller.createGraph.nodeDefinitions", null, true) || [];
+                    nodeDefinitions.forEach
+                    ( (nodeDefinition) =>
+                      { namespace(traveller, "atRoot");
+                        traveller.atRoot[nodeDefinition.name] = { "newAtNode": [] };
+                      }
+                    );
+                  };
+            createGraph.traveller.codeBlock = codeBlock.toString().slice(6);
+
+            // we can factor this out to work ina single loop, by changing the atStore code to run a promise.All
+            var saveNodes = new atRoot.AtNode();
+            saveNodes.id        = "createGraph.saveNodes"; //awesome :)
+            namespace(saveNodes, "traveller");
+                var codeBlock = 
+                  () =>
+                  { var nodeDefinitions = namespace(traveller, "traveller.createGraph.nodeDefinitions", null, true) || [];
+
+                    var insertList = [];
+                    nodeDefinitions.forEach
+                    ( (nodeDefinition) =>
+                      { //there must be things in here since because :) namespaces are awesome :)
+                        insertList.push(traveller.atRootResults[nodeDefinition.name])
+                      }
+                    );
+                    if (insertList != [])
+                    { traveller.atStore =
+                      { "functionName": "insert",
+                        "functionParams": [ insertList ],
+                      }
+                    }
+                  };
+            saveNodes.traveller.codeBlock = codeBlock.toString().slice(6);
+
+            //link the two nodes into a graph, using namedNodes
+            createGraph.traveller.exit = "createGraph.saveNodes";
+
+
+            //Once the nodes are saved, we can use the nodeDefinitions to build the graph, by attaching branches using the node id's
+            //  We hard code the ID's (i.e. namedNodes) of THESE nodes, because they are the ones we need to build graphs, which we can then namespace automaticeasily
+
+            
+            //at the same time as we install the callback, also save the two nodes we have just made above, into the atStore, so we can traverse to them
+            //  using suggestedExit, as below :) #namedNodes #12
+            traveller.atStore =
+            { "functionName":   "insert",
+              "functionParams": [ [ createGraph, saveNodes ] ],
+            }
+
+            //configre the mocha callback
+            traveller.traveller.mocha.done = done;
+            // traveller.traveller.mocha.assertConditions["containsNewNode"] = { "left": [traveller, "atRootResults.myNewNode.id"], "right": [""], "not":true }
+            
+            //exit onto "createGraph" our new node, when the callback is installed (this is gaffy, but will do for now)
+            traveller.traveller.suggestedExit = "createGraph";
+            atRoot.traverse(traveller, addTestCallback);
+
+          }
+        );
+      }
+    );
+
+    describe
     ( "create one to ten counter",
       function()
       { it
