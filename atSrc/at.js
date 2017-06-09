@@ -235,8 +235,12 @@ else
         // { extend(this, nodeContent);
         // }
       }
-      this.newAtNode = function(command)
-      { return new atRoot.AtNode();
+      this.newAtNode = function(object)
+      { if (object == null) object = {};
+        
+        object.id = atRoot.createID().idString;
+
+        return object
       }
 
       //create public accessible tools for travellers to use
@@ -277,8 +281,7 @@ else
 
               for (key in traveller.atStore)
               { if ( ! key.startsWith("__"))
-                { debugger;
-                  var functionName    = Object.keys(traveller.atStore[key])[0];
+                { var functionName    = Object.keys(traveller.atStore[key])[0];
                   var functionParams  = traveller.atStore[key][functionName];
                   ls("traverse: traveller.atStore:", functionName, functionParams );
                   //should this be atRoot.results? or atRoot.__results? I like this because it leaves the namespaces clean, and noone ever has to remember anything anyway.

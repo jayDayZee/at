@@ -762,7 +762,7 @@ describe
                 var codeBlock = 
                   () =>
                   { var nodeDefinitions = namespace(traveller, "traveller.createGraph.nodeDefinitions", null, true) || [];
-                    debugger;
+
                     nodeDefinitions.forEach
                     ( (nodeDefinition) =>
                       { namespace(traveller, "atRoot");
@@ -799,7 +799,29 @@ describe
             namespace(buildGraph, "traveller");
                 var codeBlock = 
                   () =>
-                  { 
+                  { var nodeDefinitions = namespace(traveller, "traveller.createGraph.nodeDefinitions", null, true) || [];
+                    var graph;
+
+                    nodeDefinitions.forEach
+                    ( (nodeDefinition) =>
+                      { graph = namespace(traveller, "traveller.createGraph.results.graph");
+                        //there must be things in here since because :) namespaces are awesome :)
+                        var name = nodeDefinition.name;
+                        var node = graph[name] = traveller.results.atRoot[name];
+                        for (key in nodeDefinition)
+                        { namespace(node, key, ["leafNode:"], nodeDefinition[key]);
+                        }                        
+                      }
+                    );
+                    for (name in graph)
+                    { node = graph[name];
+                      if (namespace(node, "traveller.exit", null, true) )
+                      { debugger;
+                        node.traveller.exit = graph[node.traveller.exit].id;
+                      }
+                    }
+
+                    ls("\n\n\n", "createGraph.buildGraph: results:", graph);
                   };
             buildGraph.traveller.codeBlock = codeBlock.toString().slice(6);
 
