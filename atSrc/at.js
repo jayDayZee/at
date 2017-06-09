@@ -224,7 +224,7 @@ else
         // { extend(this, nodeContent);
         // }
       }
-      this.newAtNode = function()
+      this.newAtNode = function(command)
       { return new atRoot.AtNode();
       }
 
@@ -240,8 +240,23 @@ else
             { var namespace = atRoot.namespace
               var atStore = atStore || atRoot.connectedAtStore;
               
+              //atRoot and atStore should be in "named contexts", rather than embedded here like this
+              //  that requires graphBuilding. Which is doable.
+              for (key in traveller.atRoot)
+              { if ( ! key.startsWith("__"))
+                { var functionName    = Object.keys(traveller.atRoot[key])[0];
+                  var functionParams  = traveller.atRoot[key][functionName];
+                  console.log("traverse: traveller.atStore:\n\n", JSON.stringify(traveller.atStore) );
+                  //should this be atRoot.results? or atRoot.__results? I like this because it leaves the namespaces clean, and noone ever has to remember anything anyway.
+                  //  people should be using some kind of sub namespace for all their stuff. this is root root stuff, which is why I have made everything traveller.traveller.xyzetc
+                  namespace(traveller, "atRootResults");
+                  traveller.atRootResults[key] = atRoot.public[functionName].apply(null, functionParams);
+                }
+              }
+              
               //We can possible do something with security, vis the atStore storeID. Somehow bake it into the traveller, like with merkel trees maybe?
               //  since the atStore and its value are not accessible to any code within the running code
+              // TODO. Make this work like above, with using a Promise.All
               var dataAccessPromise     = Promise.resolve({});
               var dataAccessPromiseList = [];
 
@@ -257,23 +272,6 @@ else
                       }
                     );
               }
-
-              //atRoot and atStore should be in "named contexts", rather than embedded here like this
-              for (key in traveller.atRoot)
-              { if ( ! key.startsWith("__"))
-                { var functionName    = Object.keys(traveller.atRoot[key])[0];
-                  var functionParams  = traveller.atRoot[key][functionName];
-                  console.log("traverse: traveller.atStore:\n\n", JSON.stringify(traveller.atStore) );
-                  //should this be atRoot.results? or atRoot.__results? I like this because it leaves the namespaces clean, and noone ever has to remember anything anyway.
-                  //  people should be using some kind of sub namespace for all their stuff. this is root root stuff, which is why I have made everything traveller.traveller.xyzetc
-                  namespace(traveller, "atRootResults");
-                  debugger;
-                  traveller.atRootResults[key] = atRoot.public[functionName].apply(null, functionParams);
-                }
-              }
-              
-              // if (dataAccessPromiseList.length > 0) dataAccessPromise = Promise.all(dataAccessPromiseList)
-
 
               dataAccessPromise.then
               ( () =>
