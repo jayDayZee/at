@@ -61,6 +61,7 @@ else
           .then
           ( () =>
             { atRoot.connectedAtStore = atStore;
+              atRoot.public.atStore   = atStore;
             }
           );
       };
@@ -170,9 +171,15 @@ else
         return current;
       }
       this.namespace.move = function(object, moveDict)
-      { for (key in moveDict)
+      { //extend this to use dot notation for addresses. And maybe a target object
+        for (key in moveDict)
         { object[moveDict[key]] = object[key]
           delete object[key];
+        }
+      }
+      this.namespace.cp = function(source, target, cpList)
+      { for (key in cpList)
+        { target[key] = source[key];
         }
       }
 
@@ -204,6 +211,14 @@ else
         // { extend(this, nodeContent);
         // }
       }
+      this.newAtNode = function()
+      { return new atRoot.atNode();
+      }
+
+      //create public accessible tools for travellers to use
+      this.public = {}
+      this.namespace.cp(this, this.public, ["newAtNode", "namespace", "createID"]);
+
       
       this.traverse = function(traveller, context, atStore)
       { //function which takes the traveller and the context. this avoids hard coding the name of the codeBlock / program field into the objects
@@ -230,24 +245,19 @@ else
                     );
               }
 
-              // great error here. This code doesnt clear the atStore configuration. So when the traveller moves onto the second node, it tried to
-              //   write the same object to the atStore, which had the mongo _id in it, and it failed. cool beans :)
-              // for (key in traveller.atStore)
-              // { if ( ! key.startsWith("__") )
-              //   { var atStoreFunctionName = traveller.atStore[key].functionName
-              //     console.log("traverse: traveller.atStore:\n\n", JSON.stringify(traveller.atStore) );
-              //     dataAccessPromiseList.push
-              //     ( (key) => 
-              //       { return atStore[atStoreFunctionName].apply(null, traveller.atStore[key].functionParams) )
-              //           .then
-              //           ( (docs) =>
-              //             { traveller.atStore.__results[key] = docs;
-              //             }
-              //           );
-              //       }
-              //     }
-              //   }
-              // }
+              //great error here. This code doesnt clear the atStore configuration. So when the traveller moves onto the second node, it tried to
+              //write the same object to the atStore, which had the mongo _id in it, and it failed. cool beans :)
+              for (key in traveller.atRoot)
+              { if ( ! key.startsWith("__"))
+                { var functionName    = traveller.atRoot[key].functionName;
+                  var functionParams  = traveller.atRoot[key].functionParams;
+                  console.log("traverse: traveller.atStore:\n\n", JSON.stringify(traveller.atStore) );
+                  //should this be atRoot.results? or atRoot.__results? I like this because it leaves the namespaces clean, and noone ever has to remember anything anyway.
+                  //  people should be using some kind of sub namespace for all their stuff. this is root root stuff, which is why I have made everything traveller.traveller.xyzetc
+                  namespace(traveller, "atRootResults");
+                  traveller.atRootResults[key] = traveller.atRoot.public[functionName].apply(null, functionParams);
+                }
+              }
               
               // if (dataAccessPromiseList.length > 0) dataAccessPromise = Promise.all(dataAccessPromiseList)
 
