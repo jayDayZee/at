@@ -889,17 +889,17 @@ describe
     { it
       ( "should find a length of 0 documents in the database",
         function(done)
-        { var monkTraveller = {"atStore": { "functionName": "find", "functionParams": [ {} ] } };
+        { var monkTraveller = {"atStore": { "checkEmptyDB": {"find":[{}]} } };
 
           namespace(monkTraveller, "traveller.callback");
           monkTraveller.traveller.callback = 
             function(completedTraveller)
             { ls("testResults\n\n\n\n");
-              ls("traveller:\n  ", JSON.stringify(completedTraveller));
+              ls("traveller:\n  ", completedTraveller);
               
-              ls("completedTraveller.atStore.result.length", completedTraveller.atStore.result.length);
+              ls("completedTraveller.results.atStore.checkEmptyDB.length", completedTraveller.results.atStore.checkEmptyDB.length);
               assert
-              (   completedTraveller.atStore.result.length == 0
+              (   completedTraveller.results.atStore.checkEmptyDB.length == 0
               );
 
               done();
