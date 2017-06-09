@@ -238,8 +238,11 @@ else
       { //function which takes the traveller and the context. this avoids hard coding the name of the codeBlock / program field into the objects
         setImmediate(
             function()
-            { var namespace = atRoot.namespace
-              var atStore = atStore || atRoot.connectedAtStore;
+            { var ls        = atRoot.ls;
+
+              var namespace = atRoot.namespace
+              var atStore   = atStore || atRoot.connectedAtStore;
+              
               
               //atRoot and atStore should be in "named contexts", rather than embedded here like this
               //  that requires graphBuilding. Which is doable.
@@ -329,7 +332,14 @@ else
               )
             }
         );
-        
+      }
+
+      this.ls = function(listOfStuff)
+      { listOfStuff.forEach
+        ( (thing) =>
+          { console.dir(thing);
+          }
+        );
       }
 
     }

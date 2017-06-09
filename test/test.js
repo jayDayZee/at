@@ -15,6 +15,7 @@ console.log(atRoot);
 
 
 var testObject = {};
+var ls = atRoot.ls;
 
 describe
 ( "test namespace functions",
@@ -692,8 +693,8 @@ describe
             ` traveller.traveller.callback = 
                 (traveller) => 
                 { console.log("\\n\\n\\n", "testResults");
-                  console.dir("\\n  ", "traveller:\\n  ", traveller);
-                  console.dir("\\n  ", "context:  \\n  ", context  );
+                  ls(["\\n  ", "traveller:\\n  ", traveller]);
+                  ls(["\\n  ", "context:  \\n  ", context  ]);
                   var conditions = namespace(traveller, "traveller.mocha.assertConditions", null, true);
                   var success = true;
                   console.log("\\n  ","\\n  ","traveller.mocha: conditions:");
