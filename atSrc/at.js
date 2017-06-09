@@ -185,9 +185,11 @@ else
         }
       }
       this.namespace.cp = function(source, target, cpList)
-      { for (key in cpList)
-        { target[key] = source[key];
-        }
+      { cpList.forEach
+        ( (key) =>
+          { target[key] = source[key];
+          }
+        );
       }
       this.namespace.rm = function(object, address)
       { return namespace(object, address, null, "delete");
