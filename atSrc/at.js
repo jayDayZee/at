@@ -255,6 +255,7 @@ else
                   //  people should be using some kind of sub namespace for all their stuff. this is root root stuff, which is why I have made everything traveller.traveller.xyzetc
                   namespace(traveller, "results.atRoot");
                   traveller.results.atRoot[key] = atRoot.public[functionName].apply(null, functionParams);
+                  delete traveller.atRoot[key];
                 }
               }
               
@@ -278,6 +279,7 @@ else
                     .then
                     ( (docs) =>
                       { traveller.results.atStore[key] = docs;
+                        delete traveller.atStore[key];
                       }
                     )
                   )
