@@ -119,8 +119,10 @@ else
       this.namespace = function(object, address, defaultList, checkExists)
       { //can use namespace to return constants too
         if (address == null) return object;
+        if (checkExists == null) checkExists = false;
 
-        var current  = object;
+        var current   = object;
+        var last      = null;
 
         var addressList           = address.split(".");
         var addressListTestIndex  = addressList.length -1;
@@ -146,7 +148,7 @@ else
 
         for (var wayPoint of addressList)
         { if (!current.hasOwnProperty(wayPoint) )
-          { if (checkExists == true) return false;
+          { if (! checkExists == false) return false;
 
             var toReturn;
             var toEval;
@@ -163,6 +165,7 @@ else
             current[wayPoint] =  toReturn;
             //####console.log("current:", current, "key:", wayPoint, "obj:", current[wayPoint]);
           }
+          last    = current;
           current = current[wayPoint];
 
           addressCounter ++;
@@ -171,6 +174,7 @@ else
           }
         }
 
+        if (checkExists == "delete") delete last[wayPoint];
         return current;
       }
       this.namespace.move = function(object, moveDict)
@@ -184,6 +188,10 @@ else
       { for (key in cpList)
         { target[key] = source[key];
         }
+      }
+      this.namespace.rm = function(object, address)
+      { return namespace(object, address, null, "delete");
+
       }
 
       this.namespaceExists = function(object, address)
