@@ -512,34 +512,34 @@ describe
       }
     );
 
-    // describe
-    // ( "test the built in db access, now in the traverse function. This also has the wonderfulness of allowing a db access call and an eval block in one single pass",
-    //   function()
-    //   { it
-    //     ( "find all, return one single @ root with storeID",
-    //       function(done)
-    //       { var monkTraveller = {"atStore": { "myFirstDBAccess": { "find": [ {} ] } } };
+    describe
+    ( "test the built in db access, now in the traverse function. This also has the wonderfulness of allowing a db access call and an eval block in one single pass",
+      function()
+      { it
+        ( "find all, return one single @ root with storeID",
+          function(done)
+          { var monkTraveller = {"atStore": { "myFirstDBAccess": { "find": [ {} ] } } };
 
-    //         namespace(monkTraveller, "traveller.callback");
-    //         monkTraveller.traveller.callback = 
-    //           function(completedTraveller)
-    //           { ls("\n\n\n\n", "testResults");
-    //             ls("traveller:\n  ", completedTraveller);
+            namespace(monkTraveller, "traveller.callback");
+            monkTraveller.traveller.callback = 
+              function(completedTraveller)
+              { ls("\n\n\n\n", "testResults");
+                ls("traveller:\n  ", completedTraveller);
                 
-    //             assert
-    //             (   completedTraveller.results.atStore.myFirstDBAccess.length == 1
-    //               &&
-    //                 completedTraveller.results.atStore.myFirstDBAccess[0].hasOwnProperty("storeID")
-    //             );
+                assert
+                (   completedTraveller.results.atStore.myFirstDBAccess.length == 1
+                  &&
+                    completedTraveller.results.atStore.myFirstDBAccess[0].hasOwnProperty("storeID")
+                );
 
-    //             done();
-    //           };
+                done();
+              };
 
-    //         atRoot.traverse(monkTraveller, {});
-    //       }
-    //     );
-    //   }
-    // );
+            atRoot.traverse(monkTraveller, {});
+          }
+        );
+      }
+    );
 
     describe
     ( "check if there is only ONE at root id=@ in the db. (there were two when this test was created. This should be a prerequisite sanity check anyway",
