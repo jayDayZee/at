@@ -836,6 +836,13 @@ describe
                   () =>
                   { var nodeDefinitions = namespace(traveller, "traveller.createGraph.nodeDefinitions", null, true) || [];
 
+                    // this needs to be thought about carefully. Basically the traveller should have to copy the results of the createGraph behaviour pretty quick sharp
+                    //   perhaps that is what traveller.results is for? It is writable, by nodes, but acts like a tmp directory.
+                    if (nodeDefinitions.length != 0)
+                    { namespace(traveller, "traveller.createGraph");
+                      traveller.traveller.createGraph.results = {};
+                    }
+
                     nodeDefinitions.forEach
                     ( (nodeDefinition) =>
                       { namespace(traveller, "atRoot");
@@ -894,10 +901,18 @@ describe
                       { node.traveller.exit = graph[node.traveller.exit].id;
                       }
                       traveller.atStore["createGraph.savedNodes."+name] = {"update": [ {"id":node.id}, node ]};
+
+                      //store all the node addresses in this graph in every node, so that they can access each other.
+                      // TODO this needs to change so that there is one "graph" node in the store, which has
+                      //      has this data in it, and each node on the graph references that "graph" node
+                      //      from which they can all look up each other's addresses
+                      var addressGraph = namespace(node, "graph");
+                      for (var name2 in graph)
+                      { addressGraph[name2] = graph[name2].id;
+                      }
                     }
-                    // traveller.traveller.suggestedExit = "commitChanges";
 
-
+                    traveller.traveller.suggestedExit = "commitChanges";
                     ls("\n\n\n", "createGraph.buildGraph: results:", graph);
                   };
             buildGraph.traveller.codeBlock = codeBlock.toString().slice(6);
@@ -905,7 +920,6 @@ describe
             //link the two nodes into a graph, using namedNodes
             createGraph.traveller.exit          = "createGraph.addNodesToSaveQueue";
             addNodesToSaveQueue.traveller.exit  = "createGraph.buildGraph";
-            buildGraph.traveller.exit           = "commitChanges";
 
 
             //Once the nodes are saved, we can use the nodeDefinitions to build the graph, by attaching branches using the node id's
@@ -973,7 +987,45 @@ describe
       { it
         ( "should log counting to 0 to 9 ten then complete",
           function(done)
-          { 
+          { namespace(traveller, "traveller.createGraph");
+
+            traveller.traveller.createGraph.nodeDefinitions =
+            [ { "name"                : "start",
+                "traveller.codeBlock" : "namespace(traveller, 'traveller.countToTen.counter', ['leafNode:'] , 0);",
+                "traveller.exit"      : "printer",
+              },
+              { "name"                : "printer",
+                "traveller.codeBlock" : "ls('countToTen: printer: ', traveller.traveller.countToTen.counter);",
+                "traveller.exit"      : "adder",
+              },
+              { "name": "adder",
+                "traveller.codeBlock" : "traveller.traveller.countToTen.counter ++;",
+                "traveller.exit"      : "condition",
+              },
+              { "name": "condition",
+                "traveller.codeBlock" : "if (traveller.traveller.countToTen.counter == 10) traveller.traveller.suggestedExit = context.graph.exit",
+                "traveller.exit"      : "printer",
+              },
+              { "name": "exit",
+              },
+            ];
+
+            traveller.traveller.callback = 
+                (traveller) =>
+                { traveller.traveller.suggestedExit = traveller.traveller.createGraph.results.graph.start.id;
+
+                  namespace(traveller, "traveller.mocha");
+                  traveller.traveller.mocha.assertConditions = 
+                      { "ranOverOneToTenGraph": "pass = traveller.traveller.countToTen.counter == 10",
+                      };
+
+                  traveller.traveller.mocha.done = done;
+                  atRoot.traverse(traveller, addTestCallback);
+
+                };
+            
+            traveller.traveller.suggestedExit = "createGraph";
+            atRoot.traverse(traveller, {});
           }
         );
       }
