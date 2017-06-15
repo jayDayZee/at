@@ -741,6 +741,9 @@ describe
                     }
                     if (pass) { pass = "passed"; } else { pass = "failed"; success = false; }
                     ls("  " + pass + "  " + key + "  " + message);
+                    var resultLog = namespace(traveller, "traveller.mocha.results.assertConditions."+key);
+                    resultLog.pass = pass
+                    resultLog.message = message;
                   }
 
                   //call the customCallback, which can set success too
@@ -751,6 +754,7 @@ describe
                   // namespace.rm(traveller, "traveller.mocha.customCallback");
 
                   //complete mocha test
+                  namespace.rm(traveller, "traveller.mocha.assertConditions");
                   namespace.rm(traveller, "traveller.mocha.done")(assert(success));
                 };
             }
@@ -781,8 +785,11 @@ describe
             { "newNode": { "newAtNode": [] },
             }
 
+            namespace(traveller, "traveller.mocha");
             traveller.traveller.mocha.done = done;
-            traveller.traveller.mocha.assertConditions["containsNewNode"] = "pass = traveller.results.atRoot.newNode.id.length > 1";
+            traveller.traveller.mocha.assertConditions = 
+            { "containsNewNode": "pass = traveller.results.atRoot.newNode.id.length > 1"
+            };
 
             atRoot.traverse(traveller, addTestCallback);
 
@@ -791,17 +798,20 @@ describe
       }
     );
     describe
-    ( "create a generic emptyNode for graphs to use to commit changed",
+    ( "create a generic commitChanges for graphs to use to commit changed",
       function()
       { it
         ( "Just creates an empty node, and checks that it has an id property",
           function(done)
-          { atStore.insert( { "id": "emptyNode"} );
+          { atStore.insert( { "id": "commitChanges"} );
 
-            traveller.atStore = {"checkForEmptyNode": { "findOne": [ {"id": "emptyNode" } ] } };
+            traveller.atStore = {"checkForCommitChanges": { "findOne": [ {"id": "commitChanges" } ] } };
 
+            namespace(traveller, "traveller.mocha");
             traveller.traveller.mocha.done = done;
-            traveller.traveller.mocha.assertConditions["containsEmptyNode"] = "pass = traveller.results.atStore.checkForEmptyNode.id == 'emptyNode'";
+            traveller.traveller.mocha.assertConditions = 
+            { "containsCommitChanges": "pass = traveller.results.atStore.checkForCommitChanges.id == 'commitChanges'",
+            };
 
             atRoot.traverse(traveller, addTestCallback);
 
@@ -885,7 +895,7 @@ describe
                       }
                       traveller.atStore["createGraph.savedNodes."+name] = {"update": [ {"id":node.id}, node ]};
                     }
-                    // traveller.traveller.suggestedExit = "emptyNode";
+                    // traveller.traveller.suggestedExit = "commitChanges";
 
 
                     ls("\n\n\n", "createGraph.buildGraph: results:", graph);
@@ -895,7 +905,7 @@ describe
             //link the two nodes into a graph, using namedNodes
             createGraph.traveller.exit          = "createGraph.addNodesToSaveQueue";
             addNodesToSaveQueue.traveller.exit  = "createGraph.buildGraph";
-            buildGraph.traveller.exit           = "emptyNode";
+            buildGraph.traveller.exit           = "commitChanges";
 
 
             //Once the nodes are saved, we can use the nodeDefinitions to build the graph, by attaching branches using the node id's
@@ -920,11 +930,14 @@ describe
             traveller.atStore.bootstrapGraphBuilder = { "insert": [ [ createGraph, addNodesToSaveQueue, buildGraph ] ]};
 
             //configre the mocha callback
+            namespace(traveller, "traveller.mocha");
             traveller.traveller.mocha.done = done;
-            traveller.traveller.mocha.assertConditions["createGraph.threeNodesCreated"] = 
+            traveller.traveller.mocha.assertConditions = 
+            { "createGraph.threeNodesCreated" :
                 ` message   = Object.keys(traveller.traveller.createGraph.results.graph);
                   pass      = namespace.contains(traveller, "traveller.createGraph.results.graph", ["start", "printer", "end"]);
-                `;
+                `,
+            }
             
             //exit onto "createGraph" our new node, when the callback is installed (this is gaffy, but will do for now)
             traveller.traveller.suggestedExit = "createGraph";
@@ -942,7 +955,10 @@ describe
           function(done)
           { traveller.traveller.suggestedExit = traveller.traveller.createGraph.results.graph.start.id;
             
-            traveller.traveller.mocha.assertConditions["ranOverTestGraph"] = "pass = traveller.test.createGraphPrinterRan == true";
+            namespace(traveller, "traveller.mocha");
+            traveller.traveller.mocha.assertConditions = 
+            { "ranOverTestGraph": "pass = traveller.test.createGraphPrinterRan == true"
+            };
 
             traveller.traveller.mocha.done = done;
             atRoot.traverse(traveller, addTestCallback);            
