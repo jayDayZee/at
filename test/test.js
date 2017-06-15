@@ -206,6 +206,24 @@ describe
     //     );
     //   }
     // );
+
+    //TODO: add test for namespace.contains
+    describe
+    ( "test namespace.contains",
+      function()
+      { it
+        ( "",
+          function()
+          { var testContains = { "one": {}, "two": {}, "three": {} };
+            assert
+            (     atRoot.namespace.contains(testContains, "", ["one", "two", "three"])
+              &&
+                  ! atRoot.namespace.contains(testContains, "", ["four"])
+            );
+          }
+        );
+      }
+    );
   }
 );
 
@@ -693,10 +711,11 @@ describe
           { //create a simple adder context that adds 1 to test.x
             namespace (addTestCallback, "traveller");
             addTestCallback.traveller.codeBlock = 
-            ` traveller.traveller.callback = 
+            () =>
+            { traveller.traveller.callback = 
                 (traveller) => 
-                { ls("\\n\\n\\n", "testResults");
-                  ls("\\n  ", "traveller:\\n  ", traveller);
+                { ls("\n\n\n", "testResults");
+                  ls("\n  ", "traveller:\n  ", traveller);
 
                   //set final test success value
                   var success = true;
@@ -704,36 +723,46 @@ describe
                   //get the test asset conditions in the traveller
                   var conditions = namespace(traveller, "traveller.mocha.assertConditions", null, true);
                   //run through conditions, set success to false if any fail
-                  ls("\\n  ","\\n  ","traveller.mocha: conditions:");
-                  for (key in conditions)
+                  ls("\n  ","\n  ","traveller.mocha: conditions:");
+                  for (var key in conditions)
                   { var pass      = true;
-
-                    var operator  = "==";
-                    if (conditions[key].hasOwnProperty("not")) operator = "!=";
-                    eval( "pass = namespace.apply(null, conditions[key].left) "+operator+" namespace.apply(null, conditions[key].right)" );
+                    var message   = "";
+                    // var operator  = "==";
+                    // if (conditions[key].hasOwnProperty("not")) operator = "!=";
+                    // var left  = [traveller].concat(conditions[key].left)
+                    // var right = [traveller].concat(conditions[key].right);
+                    // eval( "pass = namespace.apply(null, left) "+operator+" namespace.apply(null, right)" );
+                    try
+                    { eval(conditions[key]);
+                    }
+                    catch (e)
+                    { pass = false;
+                      message = ": "+ e.toString();
+                    }
                     if (pass) { pass = "passed"; } else { pass = "failed"; success = false; }
-                    ls("  ", key, pass);
+                    ls("  " + pass + "  " + key + "  " + message);
                   }
 
                   //call the customCallback, which can set success too
-                  customCallback = namespace(traveller, "traveller.mocha.customCallback", null, true);
-                  if (customCallback)
-                  { customCallback(traveller, success);
-                  }
-                  namespace.rm(traveller, "traveller.mocha.customCallback");
+                  // customCallback = namespace(traveller, "traveller.mocha.customCallback", null, true);
+                  // if (customCallback)
+                  // { customCallback(traveller, success);
+                  // }
+                  // namespace.rm(traveller, "traveller.mocha.customCallback");
 
                   //complete mocha test
                   namespace.rm(traveller, "traveller.mocha.done")(assert(success));
                 };
-            `
-            
+            }
+            addTestCallback.traveller.codeBlock = addTestCallback.traveller.codeBlock.toString().slice(6);
+
             // should just pass since there are no conditions given.
             namespace(traveller, "traveller.mocha");
 
             traveller.traveller.mocha.done = done;
             traveller.traveller.mocha.assertConditions = 
-                { "x==2": { "left": [traveller, "test.x"], "right": [2] },
-                  "x!=3": { "left": [traveller, "test.x"], "right": [3], "not": true } 
+                { "x==2": "pass = traveller.test.x == 2",
+                  "x!=3": "pass = traveller.test.x != 3",
                 };
 
             atRoot.traverse(traveller, addTestCallback);
@@ -753,7 +782,7 @@ describe
             }
 
             traveller.traveller.mocha.done = done;
-            traveller.traveller.mocha.assertConditions["containsNewNode"] = { "left": [traveller, "results.atRoot.emptyNode.id", null, true], "right": [null], "not":true }
+            traveller.traveller.mocha.assertConditions["containsNewNode"] = "pass = traveller.results.atRoot.emptyNode.id.length > 1";
 
             atRoot.traverse(traveller, addTestCallback);
 
@@ -762,6 +791,7 @@ describe
       }
     );
 
+    var printerNodeID = null;
     describe
     ( "make a graph, using a traveller config",
       function()
@@ -822,12 +852,12 @@ describe
                         //there must be things in here since because :) namespaces are awesome :)
                         var name = nodeDefinition.name;
                         var node = graph[name] = traveller.results.atRoot[name];
-                        for (key in nodeDefinition)
+                        for (var key in nodeDefinition)
                         { namespace(node, key, ["leafNode:"], nodeDefinition[key]);
                         }                        
                       }
                     );
-                    for (name in graph)
+                    for (var name in graph)
                     { node = graph[name];
                       if (namespace(node, "traveller.exit", null, true) )
                       { node.traveller.exit = graph[node.traveller.exit].id;
@@ -844,6 +874,7 @@ describe
             //link the two nodes into a graph, using namedNodes
             createGraph.traveller.exit          = "createGraph.addNodesToSaveQueue";
             addNodesToSaveQueue.traveller.exit  = "createGraph.buildGraph";
+            buildGraph.exit                     = "emptyNode";
 
 
             //Once the nodes are saved, we can use the nodeDefinitions to build the graph, by attaching branches using the node id's
@@ -856,7 +887,7 @@ describe
                 "traveller.exit"      : "printer",
               },
               { "name"                : "printer",
-                "traveller.codeBlock" : "ls('createGraph: printer: ', traveller.test.x)",
+                "traveller.codeBlock" : "ls('createGraph: printer: ', traveller.test.x); traveller.test.createGraphPrinterRan = true;",
                 "traveller.exit"      : "end",
               },
               { "name": "end",
@@ -869,12 +900,14 @@ describe
 
             //configre the mocha callback
             traveller.traveller.mocha.done = done;
-            // traveller.traveller.mocha.assertConditions["containsNewNode"] = { "left": [traveller, "atRootResults.myNewNode.id"], "right": [""], "not":true }
+            traveller.traveller.mocha.assertConditions["createGraph.threeNodesCreated"] = 
+                ` message   = Object.keys(traveller.traveller.createGraph.results.graph);
+                  pass      = namespace.contains(traveller, "traveller.createGraph.results.graph", ["start", "printer", "end"]);
+                `;
             
             //exit onto "createGraph" our new node, when the callback is installed (this is gaffy, but will do for now)
             traveller.traveller.suggestedExit = "createGraph";
             atRoot.traverse(traveller, addTestCallback);
-
           }
         );
       }
@@ -888,6 +921,8 @@ describe
           function(done)
           { traveller.traveller.suggestedExit = traveller.traveller.createGraph.results.graph.start.id;
             
+            traveller.traveller.mocha.assertConditions["ranOverTestGraph"] = "pass = traveller.test.createGraphPrinterRan == true";
+
             traveller.traveller.mocha.done = done;
             atRoot.traverse(traveller, addTestCallback);            
           }
