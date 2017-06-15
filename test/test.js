@@ -998,15 +998,15 @@ describe
                 "traveller.codeBlock" : "ls('countToTen: printer: ', traveller.traveller.countToTen.counter);",
                 "traveller.exit"      : "adder",
               },
-              { "name": "adder",
+              { "name"                : "adder",
                 "traveller.codeBlock" : "traveller.traveller.countToTen.counter ++;",
                 "traveller.exit"      : "condition",
               },
-              { "name": "condition",
+              { "name"                : "condition",
                 "traveller.codeBlock" : "if (traveller.traveller.countToTen.counter == 10) traveller.traveller.suggestedExit = context.graph.exit",
                 "traveller.exit"      : "printer",
               },
-              { "name": "exit",
+              { "name"                : "exit",
               },
             ];
 
@@ -1030,19 +1030,6 @@ describe
         );
       }
     );
-    // describe
-    // ( "create graph builder context",
-    //   function()
-    //   { it
-    //     ( "should accept a traveller defining a graph it would like to construct, and build the graph, and put the result in the traveller",
-    //       function(done)
-    //       { 
-    //       }
-    //     );
-    //   }
-    // );
-
-    //Theres something very narly to do with types going to happen pretty soon. Something about dimensions of travel.
   }
 );
 
