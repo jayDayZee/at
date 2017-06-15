@@ -996,14 +996,14 @@ describe
               },
               { "name"                : "printer",
                 "traveller.codeBlock" : "ls('countToTen: printer: ', traveller.traveller.countToTen.counter);",
+                "traveller.exit"      : "condition",
+              },
+              { "name"                : "condition",
+                "traveller.codeBlock" : "if (traveller.traveller.countToTen.counter == 9) traveller.traveller.suggestedExit = context.graph.exit",
                 "traveller.exit"      : "adder",
               },
               { "name"                : "adder",
                 "traveller.codeBlock" : "traveller.traveller.countToTen.counter ++;",
-                "traveller.exit"      : "condition",
-              },
-              { "name"                : "condition",
-                "traveller.codeBlock" : "if (traveller.traveller.countToTen.counter == 10) traveller.traveller.suggestedExit = context.graph.exit",
                 "traveller.exit"      : "printer",
               },
               { "name"                : "exit",
@@ -1016,7 +1016,7 @@ describe
 
                   namespace(traveller, "traveller.mocha");
                   traveller.traveller.mocha.assertConditions = 
-                      { "ranOverOneToTenGraph": "pass = traveller.traveller.countToTen.counter == 10",
+                      { "ranOverOneToTenGraph": "pass = traveller.traveller.countToTen.counter == 9",
                       };
 
                   traveller.traveller.mocha.done = done;
