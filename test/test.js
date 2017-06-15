@@ -778,11 +778,11 @@ describe
         ( "Just creates an empty node, and checks that it has an id property",
           function(done)
           { traveller.atRoot = 
-            { "emptyNode": { "newAtNode": [] },
+            { "newNode": { "newAtNode": [] },
             }
 
             traveller.traveller.mocha.done = done;
-            traveller.traveller.mocha.assertConditions["containsNewNode"] = "pass = traveller.results.atRoot.emptyNode.id.length > 1";
+            traveller.traveller.mocha.assertConditions["containsNewNode"] = "pass = traveller.results.atRoot.newNode.id.length > 1";
 
             atRoot.traverse(traveller, addTestCallback);
 
@@ -790,6 +790,26 @@ describe
         );
       }
     );
+    describe
+    ( "create a generic emptyNode for graphs to use to commit changed",
+      function()
+      { it
+        ( "Just creates an empty node, and checks that it has an id property",
+          function(done)
+          { atStore.insert( { "id": "emptyNode"} );
+
+            traveller.atStore = {"checkForEmptyNode": { "findOne": [ {"id": "emptyNode" } ] } };
+
+            traveller.traveller.mocha.done = done;
+            traveller.traveller.mocha.assertConditions["containsEmptyNode"] = "pass = traveller.results.atStore.checkForEmptyNode.id == 'emptyNode'";
+
+            atRoot.traverse(traveller, addTestCallback);
+
+          }
+        );
+      }
+    );
+
 
     var printerNodeID = null;
     describe
@@ -859,6 +879,7 @@ describe
                     );
                     for (var name in graph)
                     { node = graph[name];
+                      //loop through nodes and set their "exit" to the id's of the newly saved nodes.
                       if (namespace(node, "traveller.exit", null, true) )
                       { node.traveller.exit = graph[node.traveller.exit].id;
                       }
@@ -874,7 +895,7 @@ describe
             //link the two nodes into a graph, using namedNodes
             createGraph.traveller.exit          = "createGraph.addNodesToSaveQueue";
             addNodesToSaveQueue.traveller.exit  = "createGraph.buildGraph";
-            buildGraph.exit                     = "emptyNode";
+            buildGraph.traveller.exit           = "emptyNode";
 
 
             //Once the nodes are saved, we can use the nodeDefinitions to build the graph, by attaching branches using the node id's
