@@ -299,7 +299,7 @@ else
                   }
 
                   dataAccessPromiseList.push
-                  ( storeAndDeleteKey(key, functionName, functionParams);
+                  ( storeAndDeleteKey(key, functionName, functionParams)
                   )
                 }
               }
@@ -381,7 +381,12 @@ else
       this.ls = function(listOfStuff)
       { Array.from(arguments).forEach
         ( (thing) =>
-          { console.dir(thing);
+          { if (typeof thing == "string")
+            { console.log(thing);
+            }
+            else
+            { console.log(util.inspect(thing, false, null))
+            }
           }
         );
       }
