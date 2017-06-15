@@ -120,6 +120,9 @@ else
       this.namespace = function(object, address, defaultList, checkExists)
       { //can use namespace to return constants too
         if (address == null) return object;
+        if (address == "")   return object;
+
+
         if (checkExists == null) checkExists = false;
 
         var current   = object;
@@ -190,7 +193,7 @@ else
       }
       this.namespace.move = function(object, moveDict)
       { //extend this to use dot notation for addresses. And maybe a target object
-        for (key in moveDict)
+        for (var key in moveDict)
         { object[moveDict[key]] = object[key]
           delete object[key];
         }
@@ -204,7 +207,17 @@ else
       }
       this.namespace.rm = function(object, address)
       { return namespace(object, address, null, "delete");
+      }
+      this.namespace.contains = function(object, address, listOfKeys)
+      { var checkThisObject = atRoot.namespace(object, address, null, true);
+        if (! checkThisObject) return false;
 
+        for (var index in listOfKeys)
+        { if (! checkThisObject.hasOwnProperty(listOfKeys[index]))
+            return false;
+        }
+      
+        return true;
       }
 
       this.namespaceExists = function(object, address)
@@ -260,7 +273,7 @@ else
               
               //atRoot and atStore should be in "named contexts", rather than embedded here like this
               //  that requires graphBuilding. Which is doable.
-              for (key in traveller.atRoot)
+              for (var key in traveller.atRoot)
               { if ( ! key.startsWith("__"))
                 { var functionName    = Object.keys(traveller.atRoot[key])[0];
                   var functionParams  = traveller.atRoot[key][functionName];
@@ -279,7 +292,7 @@ else
               var dataAccessPromise       = Promise.resolve({});
               var dataAccessPromiseList   = [];
 
-              for (key in traveller.atStore)
+              for (var key in traveller.atStore)
               { if ( ! key.startsWith("__"))
                 { var functionName    = Object.keys(traveller.atStore[key])[0];
                   var functionParams  = traveller.atStore[key][functionName];
