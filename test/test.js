@@ -697,9 +697,13 @@ describe
                 (traveller) => 
                 { ls("\\n\\n\\n", "testResults");
                   ls("\\n  ", "traveller:\\n  ", traveller);
-                  ls("\\n  ", "context:  \\n  ", context  );
-                  var conditions = namespace(traveller, "traveller.mocha.assertConditions", null, true);
+
+                  //set final test success value
                   var success = true;
+
+                  //get the test asset conditions in the traveller
+                  var conditions = namespace(traveller, "traveller.mocha.assertConditions", null, true);
+                  //run through conditions, set success to false if any fail
                   ls("\\n  ","\\n  ","traveller.mocha: conditions:");
                   for (key in conditions)
                   { var pass      = true;
@@ -710,6 +714,15 @@ describe
                     if (pass) { pass = "passed"; } else { pass = "failed"; success = false; }
                     ls("  ", key, pass);
                   }
+
+                  //call the customCallback, which can set success too
+                  customCallback = namespace(traveller, "traveller.mocha.customCallback", null, true);
+                  if (customCallback)
+                  { customCallback(traveller, success);
+                  }
+                  namespace.rm(traveller, "traveller.mocha.customCallback");
+
+                  //complete mocha test
                   namespace.rm(traveller, "traveller.mocha.done")(assert(success));
                 };
             `
