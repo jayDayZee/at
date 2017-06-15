@@ -1030,6 +1030,59 @@ describe
         );
       }
     );
+
+    describe
+    ( "redirect node",
+      function()
+      { it
+        ( "should accept the traveller and route it based on the values in the traveller",
+          function(done)
+          { namespace(traveller, "traveller.redirect");
+
+            //nah, what about making this a synchronous thing, like namespace
+            //  so the lookup attempts a depth first search for the correct reponse. The response is either an id or a value.
+            //  not sure how we tell if the value is a value.. should really be in the function call "are we looking for a value or a destination".
+            //  should it make any difference? Given that we can do whatever we want with the value when we get it.
+            //  So the idea would be that we attempt to find the complete namespace in whatever is the target object.
+            //    if we cant find that then we backtrack, and try to find that. This is basically the same as the namespace code.
+            //    except in the instance where we cannot find the key we are looking for, we assume that the current value is the 
+            //    id of some other object in the store, and go there, and check for the key we are looking for there.
+            //    So that would be that if the object that is given as the object for namespace is a string, then we should get that object from the store.
+            //    that would mean we could make the suggested exit code something like:
+            //      suggestedExit = namespace(context.graph, "exit", null, true) || null;
+            //      and each node would have the id of the creating graph. We can also use this for the exit points, 
+            //      as this will mean the graph can be updated without having to update the individual nodes... in so far as we can
+            //      e.g. make additions to the graph, or swap out a node for another node definition... I think we can do that anyway
+            //      not really sure.
+            //  Shall we really put this code into "namespace"? I have no idea.
+            traveller.traveller.createGraph.nodeDefinitions =
+            [ { "name"                : "start",
+                "id"                  : "traveller.redirect",
+                "traveller.codeBlock" : "traveller.suggestedExit = context.traveller.redirect[traveller.traveller.redirect.address] || context.traveller.redirect['__default'] || traveller.traveller.redirect.default;",
+                "traveller.exit"      : "emptyNode"
+              },
+            ];
+
+            traveller.traveller.callback = 
+                (traveller) =>
+                { traveller.traveller.suggestedExit = traveller.traveller.createGraph.results.graph.start.id;
+
+                  namespace(traveller, "traveller.mocha");
+                  traveller.traveller.mocha.assertConditions = 
+                      { "ranOverOneToTenGraph": "pass = traveller.traveller.countToTen.counter == 9",
+                      };
+
+                  traveller.traveller.mocha.done = done;
+                  atRoot.traverse(traveller, addTestCallback);
+
+                };
+            
+            traveller.traveller.suggestedExit = "createGraph";
+            atRoot.traverse(traveller, {});
+          }
+        );
+      }
+    );
   }
 );
 
