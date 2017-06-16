@@ -37,7 +37,7 @@ else
             "created": Date(),
             "timestamp": Date.now(),
           }
-        idDict.idString = JSON.stringify(idDict).replace(/[^A-Za-z0-9-]/g, "_");
+        idDict.idString = "@."+JSON.stringify(idDict).replace(/[^A-Za-z0-9-]/g, "_");
 
         return idDict;
       }
