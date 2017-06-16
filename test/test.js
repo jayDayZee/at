@@ -912,14 +912,33 @@ describe
                       }
                     }
 
-                    traveller.traveller.suggestedExit = "commitChanges";
                     ls("\n\n\n", "createGraph.buildGraph: results:", graph);
                   };
             buildGraph.traveller.codeBlock = codeBlock.toString().slice(6);
 
+            var runInits = new atRoot.AtNode();
+            runInits.id  = "createGraph.runInits";
+            namespace(runInits, "traveller");
+                var codeBlock =
+                  () =>
+                  { var graph = traveller.traveller.createGraph.results.graph;
+
+                    for (var name in graph)
+                    { var node = context = graph[name];
+                      if (node.hasOwnProperty("init") )
+                      { eval(node.init);
+                      }
+                      traveller.atStore["createGraph.initNodes."+name] = {"update": [ {"id":node.id}, node ]};
+                    }
+
+                    traveller.traveller.suggestedExit = "commitChanges";
+                  };
+            runInits.traveller.codeBlock = codeBlock.toString().slice(6);
+
             //link the two nodes into a graph, using namedNodes
             createGraph.traveller.exit          = "createGraph.addNodesToSaveQueue";
             addNodesToSaveQueue.traveller.exit  = "createGraph.buildGraph";
+            buildGraph.traveller.exit           = "createGraph.runInits";
 
 
             //Once the nodes are saved, we can use the nodeDefinitions to build the graph, by attaching branches using the node id's
@@ -941,7 +960,7 @@ describe
             
             //at the same time as we install the callback, also save the two nodes we have just made above, into the atStore, so we can traverse to them
             //  using suggestedExit, as below :) #namedNodes #12
-            traveller.atStore.bootstrapGraphBuilder = { "insert": [ [ createGraph, addNodesToSaveQueue, buildGraph ] ]};
+            traveller.atStore.bootstrapGraphBuilder = { "insert": [ [ createGraph, addNodesToSaveQueue, buildGraph, runInits ] ]};
 
             //configre the mocha callback
             namespace(traveller, "traveller.mocha");
@@ -999,7 +1018,8 @@ describe
                 "traveller.exit"      : "condition",
               },
               { "name"                : "condition",
-                "traveller.codeBlock" : "if (traveller.traveller.countToTen.counter == 9) traveller.traveller.suggestedExit = context.graph.exit",
+                "init"                : "namespace(context, 'traveller.exitBranches', ['leafNode:'], {'__default': graph.adder.id, 'ifTrue': graph.exit.id} );",
+                "traveller.codeBlock" : "if (traveller.traveller.countToTen.counter == 9) traveller.traveller.suggestedExit = context.traveller.exitBranches.ifTrue;",
                 "traveller.exit"      : "adder",
               },
               { "name"                : "adder",
