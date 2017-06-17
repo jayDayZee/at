@@ -219,6 +219,21 @@ else
       
         return true;
       }
+      this.namespace.popFirstKey = function(object, address, rm)
+      { var toReturn;
+
+        var targetObject = namespace(object, address, null, true);
+        if (! targetObject || ! Object.keys(targetObject) )
+        { toReturn = null;
+        }
+        else
+        { var keysList = Object.keys(targetObject);
+          toReturn = { "name": keysList[0], "object": targetObject[keysList[0]] };
+          if (rm == true) delete targetObject[keysList[0]];
+        }
+        
+        return toReturn;
+      }
 
       this.namespaceExists = function(object, address)
       { var current = object;
