@@ -229,9 +229,8 @@ else
         else
         { var keysList = Object.keys(targetObject);
           toReturn = { "name": keysList[0], "object": targetObject[keysList[0]] };
-          if (rm == true) delete targetObject[keysList[0]];
+          if (rm == "rm") delete targetObject[keysList[0]];
         }
-        
         return toReturn;
       }
 
