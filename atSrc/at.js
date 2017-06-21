@@ -365,6 +365,11 @@ else
                   // SOME SHIT ABOUT ACCESSING CLOSURES OVER LOCALS ANALYSE AND DESTROY. MIGHT HAVE TO PUT "traverse" INTO A CONTEXT OBJECT in the atStore
                   eval(toEval);
 
+                  // check if the traveller is paused, and return a function which continues it
+                  if (traveller.traveller.pause)
+                  { return;
+                  }
+
                   //determine the next destination of the traveller.
                   //  other traveller code may override this completely, the node can make a suggestion, or the traveller can follow the node's default exit
                   //  if there is no destination, then the traveller may have completed its journey, and can call its callback
