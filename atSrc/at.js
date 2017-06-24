@@ -233,6 +233,22 @@ else
         }
         return toReturn;
       }
+      this.namespace.dict = {};
+      this.namespace.dict.whilePopper = function(object, address, result)
+      { var toReturn;
+
+        var targetObject = namespace(object, address, null, true);
+        if (! targetObject || ! Object.keys(targetObject) )
+        { toReturn = false;
+        }
+        else
+        { var keysList = Object.keys(targetObject);
+          result = { "name": keysList[0], "object": targetObject[keysList[0]] };
+          delete targetObject[keysList[0]];
+          toReturn = true;
+        }
+        return toReturn;
+      }
 
       this.namespaceExists = function(object, address)
       { var current = object;
@@ -275,7 +291,7 @@ else
       this.namespace.cp(this, this.public, ["newAtNode", "namespace", "createID"]);
 
       
-      this.traverse = function(traveller, context, atStore)
+      this.traverse = function(traveller, context, parameters)
       { //function which takes the traveller and the context. this avoids hard coding the name of the codeBlock / program field into the objects
         setImmediate(
             function()
