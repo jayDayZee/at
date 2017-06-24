@@ -1,5 +1,4 @@
 var assert = require("assert");
-
 var app =  require("../app.js");
 
 // var AtRoot = require("../atSrc/at.js");
@@ -843,6 +842,8 @@ describe
                       traveller.traveller.createGraph.results = {};
                     }
 
+                    //change this to a dictionary base, rather than a list iterator. namespaces duh.
+                    //  maybe add the name into the object anyway yeah ?
                     nodeDefinitions.forEach
                     ( (nodeDefinition) =>
                       { namespace(traveller, "atRoot");
@@ -1027,6 +1028,326 @@ describe
                 "traveller.exit"      : "printer",
               },
               { "name"                : "exit",
+              },
+            ];
+
+            traveller.traveller.callback = 
+                (traveller) =>
+                { traveller.traveller.suggestedExit = traveller.traveller.createGraph.results.graph.start.id;
+
+                  namespace(traveller, "traveller.mocha");
+                  traveller.traveller.mocha.assertConditions = 
+                      { "ranOverOneToTenGraph": "pass = traveller.traveller.countToTen.counter == 9",
+                      };
+
+                  traveller.traveller.mocha.done = done;
+                  atRoot.traverse(traveller, addTestCallback);
+
+                };
+            
+            traveller.traveller.suggestedExit = "createGraph";
+            atRoot.traverse(traveller, {});
+          }
+        );
+      }
+    );
+
+    var seriousUtils = {};
+    describe
+        ( "add some utility nodes. THIS IS THE POINT",
+          function()
+          { it
+            ( "should create some utility nodes. these should be saved in the git compatible store when its built",
+              function(done)
+              { //test
+                namespace(traveller, "traveller.createGraph");
+
+                traveller.traveller.createGraph.nodeDefinitions =
+                [ { "name"                : "FIFO",
+                    "id"                  : "FIFO",
+                    //     ( () =>
+                    //       { namespace(context, "traveller.instantiateType.instantiate");
+                    //         context.traveller.instantiateType.instantiate.id              = "fireEventTraveller";
+                    //         context.traveller.instantiateType.instantiate.targetNamespace = "traveller.eventListener.fireEventTraveller."+queueNamespaceAddress;
+
+                    //         traverse(context, "instantiateType.instantiate");
+                    //       } 
+                    //     ).toString().slice(6),
+                    "traveller.codeBlock" :
+                        ( () =>
+                          namespace(context, "traveller.FIFO.pipe", ['leafNode:'], []).push(traveller);
+                          namespace(context, "traveller.FIFO.eventListeners", ['leafNode:'], [])
+                              .forEach
+                              ( (item, index, array)
+                                { traverse(item.traveller, item.context);
+                                }
+                              );
+                          namespace(traveller, "traveller")["pause"] = true;
+
+                          // var queueNamespaceAddress = traveller.traveller.queueTraveller.targetNamespace;
+                          
+                          // var nodeDefinitions   = namespace(traveller,        "traveller.createGraph.nodeDefinitions");
+                          // var instantiateTypes  = namespace(nodeDefinitions,  "createTravellerQueueSink|2|eventListeners.instantiateTypes");
+                          // instantiateTypes[queueNamespaceAddress+".eventListeners"] = "eventListeners";
+
+                          // //Question here is where should we put the eventFireing traveller. I mean they are all the same right. It could literally
+                          // //  just be one piece of code. Why does it need an object? Just to represent the face that a traveller is needed there?
+                          // //  That makes some kind of sense. It basically sense "I am an eventFiring traveller, and it just needs to be somewhere where
+                          // //  the code in the context can fire it when a new item is added to the queue. So its an object that just.. points
+                          // //  to the id of the eventFiring traveller definition, and ... should clearly have the list of eventListeners in it?
+                          // //  or could just point to some other object that contains that list.. but what is that for? I guess thats "more flexible"
+                          // //    but why?
+                          
+                          // // so what do we actually want here? An object which can easily be fired by the event queue
+                          // //  like:
+                          // suggestedExit.push(context.graph["createTravellerQueueSink|processSubGraph"]);
+                          // traverse(traveller, "createGraph");
+                          
+
+
+
+                          // namespace(context, queueNamespaceAddress, ['leafNode:'], []).push(traveller);
+                          // traveller.traveller.pause = true;
+
+                          // //fire an event
+
+                          // namespace(context, "traveller.instantiateType.instantiate");
+                          // // If we add a namespace as an option third property of the traverse function,
+                          // //   we could massively reduce the number of actual nodes we need to create.
+                          // //   for example, the fireEventTraveller traveller only needs probably to be
+                          // //   instantiated once.. Anything that is stateless would be available
+                          // //   but that massively breaks the ability to save current context.
+                          // //     Seems to me that that will just turn out to be an ideology that it is well often
+                          // //     useful to break
+
+                          
+
+                          // var fireEventTraveller = namespace(context, "traveller.eventListener.fireEventTraveller", null, true);
+                          // if (!fireEventTraveller)
+                          // { fireEventTraveller = 
+                          //   namespace.extend
+                          //   ( true, 
+                          //     {}, 
+                          //     atStore.get("instantiateType"), 
+                          //     namespace
+                          //     ( {}, 
+                          //       "traveller.instantiateType.id",
+                          //       ['leafNode:'],
+                          //       "fireEventTraveller"
+                          //     )
+                          //   );
+                          //   namespace(fireEventTraveller, "traveller.eventListener.fireEventNamespace", ['leafNode:'], context.traveller.queueTraveller.targetNamespace);
+                          // }
+                          // traverse(fireEventTraveller, context);
+
+                        } ).toString().slice(6),
+                    "traveller.exit"      : "printer",
+                  },
+                  { "name"                : "pipes.FIFO.dict",
+                    "id"                  : "pipes.FIFO.dict",
+                    "traveller.codeBlock" :
+                        ( () =>
+                          { var popped;
+                            while (namespace.dict.whilePopper(traveller, namespace(context, localNamespace+"."+traveller.FIFO.targetDictNamespace), popped) )
+                            { item  = popped.object;
+                              index = popped.name;
+                              eval(namespace.local(context, localNamespace, "traveller.FIFO.targetDictNamespace") );
+                            }
+                          } 
+                        ).toString().slice(6),
+                  }
+                  { "name"                : "instantiateType",
+                    "traveller.codeBlock" : "eval(atStore.get(context.traveller.instantiateType.id).traveller.codeBlock);",
+                    "traveller.exit"      : "condition",
+                  },
+                  { "name"                : "instantiateType.instantiate",
+                    "traveller.codeBlock" : 
+                        ( () =>
+                          { var writeTarget = namespace(traveller, traveller.traveller.instantiateType.instantiate.targetNamespace+".traveller");
+                            writeTarget.codeBlock = 
+                              "eval(atStore.get("+traveller.traveller.instantiateType.instantiate.id+").traveller.codeBlock);";
+                            namespace.rm(traveller, "traveller.instantiateType");
+                          } 
+                        ).toString().slice(6),
+                    "traveller.exit"      : "condition",
+                  },
+                  
+                  { "name"                : "fireEventTraveller",
+                    "traveller.codeBlock" : 
+                        ( () =>
+                        { var eventNamespace = traveller.traveller.eventListener.fireEventNamespace;
+                          
+                          eventListenerList = namespace(context, "traveller.eventListener."+eventNamespace, false, true);
+                          if (namespace)
+                          { eventListenerList.forEach
+                            ( (listener, index, array) =>
+                              { traverse(listener, {});
+                              }
+                            );
+                          }                          
+
+                        } ).toString().slice(6),
+                    "traveller.exit"      : "adder",
+                  },
+                  { "name"                : "adder",
+                    "traveller.codeBlock" : "traveller.traveller.countToTen.counter ++;",
+                    "traveller.exit"      : "printer",
+                  },
+                  { "name"                : "exit",
+                  },
+                ];
+              }
+            );
+          }
+        );
+
+    var graphAtStore = {};
+    describe
+    ( "create a git compatable atStore #16",
+      function()
+      { it
+        ( "should create a graph that can be used as the atStore for an at application",
+          function(done)
+          { namespace(traveller, "traveller.createGraph");
+
+            traveller.traveller.createGraph.nodeDefinitions =
+            [ { "name"                : "atStoreGraph",
+                "id"                  : "atStoreGraph",
+                "instantiate"         : "FIFO",
+              },
+              { "name"                : "processor",
+                "init"                : 
+                    ( () =>
+                      { var fifoNode = namespace(traveller, "traveller.createGraph.results.graph.atStoreGraph");
+                        namespace(fifoNode, "traveller.FIFO.eventListeners", ['leafNode:'], []).push( { "traveller": traveller.traveller.createGraph.results.graph.atStoreGraph.id, "context": context.id} );
+                      } 
+                    ).toString().slice(6),
+                "traveller.codeBlock" : 
+                    ( () =>
+                    { if (namespace(context, "traveller.atStoreGraph.processing", ['leafNode:'], false) == true )
+                        return;
+                      context.traveller.atStoreGraph.processing = true;
+
+                      var atStoreGraph = traveller;
+
+                      while (atStoreGraph.traveller.FIFO.pipe.length > 0)
+                      { var clientTraveller      = atStoreGraph.traveller.FIFO.pipe.shift();
+                        var commandGroupByClient = namespace(clientTraveller, "atStore", null, true);
+                        while ( Object.keys(commandGroupByClient).length > 0 )
+                        { var toReturn = {};
+
+                          var command = namespace.popFirstKey(commandGroupByClient, "", "rm");
+                          command.traveller = clientTraveller;
+
+                          namespace(atStoreGraph, "traveller.atStoreGraph.drivers.memory");
+
+                          // var threadCount     = namespace(clientTraveller, "atStoreGraph.threadCount", ['leafNode:'], 0);
+                          // var maxThreadCount  = Math.min( namespace(atStoreGraph,    "atStoreGraph.maxThreadCount", ['leafNode:'], Number.POSITIVE_INFINITY ),
+                          //                                 namespace(clientTraveller, "atStoreGraph.maxThreadCount", null, false) || 5
+                          //                               );
+
+                          // if (threadCount < maxThreadCount)
+                          // { clientTraveller.atStoreGraph.threadCount ++;
+                          //   var threadTraveller = namespace(clientTraveller, "atStoreGraph.threadPool."+threadCount);
+                          //   threadTraveller.atStoreGraph.command = command;
+
+                          toReturn.exists = atStoreGraph.drivers.memory.hasOwnProperty(command.id);
+
+                          eval(context.traveller.atStoreGraph[command.operation]);
+
+                          namespace(clientTraveller, "results.atStore");
+                          clientTraveller.results.atStore[command.name] = toReturn;
+                          command.toReturn = toReturn;
+
+                          if (command.operation == "update" || command.operation == "insert")
+                          { if (! toReturn.error)
+                            { namespace(atStoreGraph, "traveller.atStoreGraph.asyncFIFO")[command.id] = command;
+                              namespace(clientTraveller, "traveller.atStoreGraph.asyncCounter", ['leafNode:'], 0) ++;
+                            }
+                          }
+                          // }
+                        }
+                      }
+                      traverse(atStoreGraph, context.graph.processAsync);
+                      
+                      // processing complete. reset flag so that the event firing does something again.
+                      context.traveller.atStoreGraph.processing = false;
+                      // dunno if this is possible. but it seems like its bullet proof now.
+                      if (traveller.traveller.FIFO.pipe.length > 0) traverse(traveller, context);
+
+                    } ).toString().slice(6),
+                "traveller.atStoreGraph.update" :
+                    ( () =>
+                    { //namespace(atStoreGraph, "updateQueue."+command.id, 'leafNode:', []).push(command);
+                      if ( ! toReturn.exists )
+                      { toReturn.error      = "atStoreGraph: update: no document with id: " + command.id;
+                      }
+                      else
+                      { toReturn.document   = namespace.extend(atStoreGraph.traveller.atStoreGraph.drivers.memory[command.id], command.document);
+                      }
+                    } ).toString().slice(6),
+                "traveller.atStoreGraph.read" :
+                    ( () =>
+                    { //namespace(atStoreGraph, "updateQueue."+command.id, 'leafNode:', []).push(command);
+                      if ( ! toReturn.exists )
+                      { toReturn.error      = "atStoreGraph: read: no document with id: " + command.id;
+                      }
+                      else
+                      { toReturn.document   = atStoreGraph.traveller.atStoreGraph.drivers.memory[command.id];
+                      }
+
+                    } ).toString().slice(6),
+                "traveller.atStoreGraph.insert" :
+                    ( () =>
+                    { //namespace(atStoreGraph, "updateQueue."+command.id, 'leafNode:', []).push(command);
+                      if ( toReturn.exists )
+                      { toReturn.error      = "atStoreGraph: insert: already document with id: " + command.id;
+                      }
+                      else
+                      { toReturn.document   = atStoreGraph.traveller.atStoreGraph.drivers.memory[command.id] = command.document;
+                      }
+                    } ).toString().slice(6),
+                "traveller.exit"      : "error",
+              },
+              { "name"                : "processAsync",
+                // "init"                : "namespace(context, 'traveller.exitBranches', ['leafNode:'], {'__default': graph.adder.id, 'ifTrue': graph.exit.id} );",
+                "instantiate": 
+                    { "traveller.atStoreGraph.asyncFIFO": "dictFIFO"
+                        { "id": ,
+                          "traveller.FIFO.targetDictNamespace": "traveller.atStoreGraph.asyncFIFO",
+                          "traveller.FIFO.forEach":
+                              ( () =>
+                                { var command = item;
+                                  eval(context.traveller.atStoreGraph.command[command.operation]);
+                                } 
+                              ).toString().slice(6),
+                        }
+                    }
+                "init":
+                    { 
+                    }
+                "traveller.codeBlock" : 
+                    ( () =>
+                    { var atStoreGraph = traveller;
+
+                      eval(context.traveller.atStoreGraph.dictFIFO.traveller.codeBlock);
+
+                    } ).toString().slice(6),
+                "traveller.atStoreGraph.command.update":
+                    ( () =>
+                      { //check if the document has changed.
+
+
+                        //write the new content to the new document.
+                      } 
+                    ).toString().slice(6),
+                "traveller.exit"      : "adder",
+              },
+              { "name"                : "adder",
+                "traveller.codeBlock" : "traveller.traveller.countToTen.counter ++;",
+                "traveller.exit"      : "printer",
+              },
+              { "name"                : "commandsProcessed",
               },
             ];
 
