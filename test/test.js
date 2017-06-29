@@ -20,12 +20,12 @@ var ls = atRoot.ls;
 ls(atRoot);
 
 describe
-( "test namespace functions",
+( "\n\n\n\ntest namespace functions",
   function()
   { var testObject = {};
 
     describe
-    ( "create.nested.namespace.here",
+    ( "\n\n\n\ncreate.nested.namespace.here",
       function()
       { it
         ( "should create a complex object structure using the namespace function",
@@ -43,7 +43,7 @@ describe
     );
 
     describe
-    ( "extend existing namespace",
+    ( "\n\n\n\nextend existing namespace",
       function()
       { it
         ( "extend that namespace with something else",
@@ -61,7 +61,7 @@ describe
     );
 
     describe
-    ( "test namespaceExists true",
+    ( "\n\n\n\ntest namespaceExists true",
       function()
       { it
         ( "",
@@ -74,7 +74,7 @@ describe
     );
 
     describe
-    ( "test namespaceExists false",
+    ( "\n\n\n\ntest namespaceExists false",
       function()
       { it
         ( "",
@@ -87,7 +87,7 @@ describe
     );
 
     describe
-    ( "test namespace exists using namespace checkExists parameter",
+    ( "\n\n\n\ntest namespace exists using namespace checkExists parameter",
       function()
       { it
         ( "",
@@ -100,7 +100,7 @@ describe
     );
 
     describe
-    ( "test default defaultList",
+    ( "\n\n\n\ntest default defaultList",
       function()
       { it
         ( "",
@@ -113,7 +113,7 @@ describe
       }
     );
     describe
-    ( "test nonLeafNodes",
+    ( "\n\n\n\ntest nonLeafNodes",
       function()
       { it
         ( "",
@@ -132,7 +132,7 @@ describe
       }
     );
     describe
-    ( "test leafNode",
+    ( "\n\n\n\ntest leafNode",
       function()
       { it
         ( "",
@@ -149,7 +149,7 @@ describe
       }
     );
     describe
-    ( "test namespace.rm",
+    ( "\n\n\n\ntest namespace.rm",
       function()
       { it
         ( "",
@@ -209,7 +209,7 @@ describe
 
     //TODO: add test for namespace.contains
     describe
-    ( "test namespace.contains",
+    ( "\n\n\n\ntest namespace.contains",
       function()
       { it
         ( "",
@@ -228,7 +228,7 @@ describe
 );
 
 describe
-( "create a simple node, and move onto persistance",
+( "\n\n\n\ncreate a simple node, and move onto persistance",
   function()
   { var context   = new atRoot.AtNode();
     var traveller = new atRoot.AtNode();
@@ -236,7 +236,7 @@ describe
     namespace = atRoot.namespace;
 
     describe
-    ( "create value 'x' = 0",
+    ( "\n\n\n\ncreate value 'x' = 0",
       function()
       { it
         ( "should result in the traveller having traveller.test.x = 0",
@@ -264,7 +264,7 @@ describe
     );
 
     describe
-    ( "persist the traveller and the node, check if they are there",
+    ( "\n\n\n\npersist the traveller and the node, check if they are there",
       function()
       { it
         ( "should put the thing in the database",
@@ -294,7 +294,7 @@ describe
     );
 
     describe
-    ( "delete the traveller and the context,  check they are not there",
+    ( "\n\n\n\nelete the traveller and the context,  check they are not there",
       function()
       { it
         ( "should delete the things from database",
@@ -325,7 +325,7 @@ describe
     );
 
     describe
-    ( "re add the context to the database",
+    ( "\n\n\n\nre add the context to the database",
       function()
       { it
         ( "should put the context in the database",
@@ -347,7 +347,7 @@ describe
     );
 
     describe
-    ( "check there is only on doc in the DB altogether, by looking for ALL documents. Must be the same as the document above. I.e. only the context we just added",
+    ( "\n\n\n\nheck there is only on doc in the DB altogether, by looking for ALL documents. Must be the same as the document above. I.e. only the context we just added",
       function()
       { it
         ( "should result in docs.length == 1",
@@ -368,7 +368,7 @@ describe
     );
     
     describe
-    ( "connect an unintialised atStore. Should fail",
+    ( "\n\n\n\nconnect an unintialised atStore. Should fail",
       function()
       { it
         ( "should result in some atStore sanity check error",
@@ -392,7 +392,7 @@ describe
     );
 
     describe
-    ( "initialise the non-empty DB. Should fail",
+    ( "\n\n\n\ninitialise the non-empty DB. Should fail",
       function()
       { it
         ( "should result in some atStore initialise sanity check error",
@@ -414,7 +414,7 @@ describe
     );
 
     describe
-    ( "delete the context document (to make DB empty for initialisation)",
+    ( "\n\n\n\ndelete the context document (to make DB empty for initialisation)",
       function()
       { it
         ( "should leave DB enpty",
@@ -440,7 +440,7 @@ describe
     );
 
     describe
-    ( "initialise the NOW empty DB. Should pass, and allow atRoot.connectAtStore",
+    ( "\n\n\n\ninitialise the NOW empty DB. Should pass, and allow atRoot.connectAtStore",
       function()
       { it
         ( "should result in having a storeID document",
@@ -472,7 +472,7 @@ describe
     //TODO: replace this with real security testing
     
     describe
-    ( "create a node in the database that wraps the monk functionality, and give it a special name. This should FAIL since the atStore is not accessible except through direct access managed by the traverse function",
+    ( "\n\n\n\ncreate a node in the database that wraps the monk functionality, and give it a special name. This should FAIL since the atStore is not accessible except through direct access managed by the traverse function",
       function()
       { it
         ( "should find all the documents in the database",
@@ -532,7 +532,7 @@ describe
     );
 
     describe
-    ( "test the built in db access, now in the traverse function. This also has the wonderfulness of allowing a db access call and an eval block in one single pass",
+    ( "\n\n\n\ntest the built in db access, now in the traverse function. This also has the wonderfulness of allowing a db access call and an eval block in one single pass",
       function()
       { it
         ( "find all, return one single @ root with storeID",
@@ -561,7 +561,7 @@ describe
     );
 
     describe
-    ( "check if there is only ONE at root id=@ in the db. (there were two when this test was created. This should be a prerequisite sanity check anyway",
+    ( "\n\n\n\ncheck if there is only ONE at root id=@ in the db. (there were two when this test was created. This should be a prerequisite sanity check anyway",
       function()
       { it
         ( "deliberately find just that one record, using the id",
@@ -591,7 +591,7 @@ describe
 );
 
 describe
-( "travelling around a graph",
+( "\n\n\n\ntravelling around a graph",
   function()
   { var context   = new atRoot.AtNode();
     var traveller = new atRoot.AtNode();
@@ -599,7 +599,7 @@ describe
     namespace = atRoot.namespace;
 
     describe
-    ( "create a single node for the traveller",
+    ( "\n\n\n\ncreate a single node for the traveller",
       function()
       { it
         ( "should result in the traveller having traveller.test.x = 0",
@@ -628,7 +628,7 @@ describe
 
     var adder     = new atRoot.AtNode();
     describe
-    ( "travel along one branch on a graph",
+    ( "\n\n\n\ntravel along one branch on a graph",
       function()
       { it
         ( "make traveller.test.x = 1",
@@ -669,7 +669,7 @@ describe
 
     var adder2     = new atRoot.AtNode();
     describe
-    ( "use the traveller atStore command to add the new adder2 object to the atStore",
+    ( "\n\n\n\nuse the traveller atStore command to add the new adder2 object to the atStore",
       function()
       { it
         ( "make traveller.test.x = 2",
@@ -703,7 +703,7 @@ describe
 
     var addTestCallback = new atRoot.AtNode();
     describe
-    ( "make traveller.traveller.callback do stuff and call done",
+    ( "\n\n\n\nmake traveller.traveller.callback do stuff and call done",
       function()
       { it
         ( "returns a traveller with its callback set to the passed done function",
@@ -776,7 +776,7 @@ describe
     );
 
     describe
-    ( "test the atRoot access",
+    ( "\n\n\n\ntest the atRoot access",
       function()
       { it
         ( "Just creates an empty node, and checks that it has an id property",
@@ -798,7 +798,7 @@ describe
       }
     );
     describe
-    ( "create a generic commitChanges for graphs to use to commit changed",
+    ( "\n\n\n\ncreate a generic commitChanges for graphs to use to commit changed",
       function()
       { it
         ( "Just creates an empty node, and checks that it has an id property",
@@ -823,12 +823,57 @@ describe
 
     var printerNodeID = null;
     describe
-    ( "make a graph, using a traveller config",
+    ( "\n\n\n\nmake a graph, using a traveller config",
       function()
       { it
         ( "should accept sensible config, and build graphs too. Graphs are dependency dependent like",
           function(done)
           { //going to have to persist some things in the database so we can use a graph to make a graph NICE
+
+            // does this:
+            // defines four nodes which make up the "createGraph" graph
+            // 1.
+            // var createGraph
+            // var addNodesToSaveQueue
+            // var buildGraph
+            // var runInits
+
+
+            // 2.
+            // these lines:
+            // createGraph.traveller.exit          = "createGraph.addNodesToSaveQueue";
+            // addNodesToSaveQueue.traveller.exit  = "createGraph.buildGraph";
+            // buildGraph.traveller.exit           = "createGraph.runInits";
+
+            // set up the branches between the nodes using the hardcoded (since createGraph doesnt exist yet when it is written to the store)
+
+
+            // 3.
+            // then uses the namespace defined by the createGraph graph to nodeDefinitions a graph with three nodes, called: start, printer and end (which dont need hard coded id's because createGraph graph knows what their global unique id's are and can tell them, so that they can use their localNamespace names to refer to each other)
+
+
+            // 4.
+            // this line:
+            // adds the createGraph nodes to the atStore namespace, so that the first time the traveller encounters a node, it writes those
+            //   objects into the atStore with the hardCoded id's
+
+            // 5. 
+            // configures the traveller.mocha namespace to add this test's async "done" function, and the required assertions
+
+            // 6.
+            // sets the traveller's suggestedExit to "createGraph" (the hardcoded start point of the not yet existing createGraph graph
+            // 7.
+            // sends the traveller into the addTestCallback node (which uses the mocha namespace to configure the callback function
+            //   whilst the createGraph graph data stored in the atStore namespace is written to the atStore before the addTestCallback
+            //   traveler.codeBlock is run, so that when the traveller completes the addTestCallback node, it travells to the
+            //   newly written "createGraph" node.
+            //    That createGraph node then uses the traveller.createGraph.nodeDefinitions namespace to create a graph
+            //    which has the three nodes, start, print, end in it.
+            //   then finally the assert conditions placed into the mocha namespace check the traveller.createGraph.results namespace
+            //   to see if the createGraph graph has indeed caused the creation of the three nodes.
+
+
+            // 1.
             var createGraph       = new atRoot.AtNode();
             createGraph.id        = "createGraph"; //awesome :)
             namespace(createGraph, "traveller");
@@ -935,6 +980,7 @@ describe
                   };
             runInits.traveller.codeBlock = codeBlock.toString().slice(6);
 
+            // 2.
             //link the two nodes into a graph, using namedNodes
             createGraph.traveller.exit          = "createGraph.addNodesToSaveQueue";
             addNodesToSaveQueue.traveller.exit  = "createGraph.buildGraph";
@@ -944,7 +990,8 @@ describe
             //Once the nodes are saved, we can use the nodeDefinitions to build the graph, by attaching branches using the node id's
             //  We hard code the ID's (i.e. namedNodes) of THESE nodes, because they are the ones we need to build graphs, which we can then namespace automaticeasily
 
-            //Make some Nodes with this stuff
+            // 3.
+            // Make some Nodes with this stuff
             namespace(traveller, "traveller.createGraph");
             traveller.traveller.createGraph.nodeDefinitions =
             [ { "name"                : "start",
@@ -958,10 +1005,12 @@ describe
               },
             ];
             
-            //at the same time as we install the callback, also save the two nodes we have just made above, into the atStore, so we can traverse to them
+            // 4.
+            // at the same time as we install the callback, also save the two nodes we have just made above, into the atStore, so we can traverse to them
             //  using suggestedExit, as below :) #namedNodes #12
             traveller.atStore.bootstrapGraphBuilder = { "insert": [ [ createGraph, addNodesToSaveQueue, buildGraph, runInits ] ]};
 
+            // 5.
             //configre the mocha callback
             namespace(traveller, "traveller.mocha");
             traveller.traveller.mocha.done = done;
@@ -972,8 +1021,10 @@ describe
                 `,
             }
             
+            //6.
             //exit onto "createGraph" our new node, when the callback is installed (this is gaffy, but will do for now)
             traveller.traveller.suggestedExit = "createGraph";
+            //7.
             atRoot.traverse(traveller, addTestCallback);
           }
         );
@@ -981,7 +1032,7 @@ describe
     );
 
     describe
-    ( "run traveller over createGraph's graph :) :)",
+    ( "\n\n\n\nrun traveller over createGraph's graph :) :)",
       function()
       { it
         ( "should print createGraph: printer: 2",
@@ -1001,7 +1052,7 @@ describe
     );
   
     describe
-    ( "create one to ten counter",
+    ( "\n\n\n\ncreate one to ten counter",
       function()
       { it
         ( "should log counting to 0 to 9 ten then complete",
@@ -1054,7 +1105,7 @@ describe
 );
 
 describe
-  ( "DESTROY THE AT COLLECTION DO NOT DO THIS",
+  ( "\n\n\n\nDESTROY THE AT COLLECTION DO NOT DO THIS",
     function()
     { it
       ( "DETROY",
@@ -1068,7 +1119,7 @@ describe
   );
 
 describe
-  ( "Check the DB is empty",
+  ( "\n\n\n\nCheck the DB is empty",
     function()
     { it
       ( "should find a length of 0 documents in the database",
@@ -1078,7 +1129,7 @@ describe
           namespace(monkTraveller, "traveller.callback");
           monkTraveller.traveller.callback = 
             function(completedTraveller)
-            { ls("testResults\n\n\n\n");
+            { ls("\n\n\n\ntestResults");
               ls("traveller:\n  ", completedTraveller);
               
               ls("completedTraveller.results.atStore.checkEmptyDB.length", completedTraveller.results.atStore.checkEmptyDB.length);
