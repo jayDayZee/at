@@ -267,7 +267,7 @@ else
       this.newAtNode = function(object)
       { if (object == null) object = {};
         
-        object.id = atRoot.createID().idString;
+        if (! object.hasOwnProperty("id") ) object.id = atRoot.createID().idString;
 
         return object
       }
