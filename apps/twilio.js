@@ -479,15 +479,18 @@ atStore
                 { namespace(traveller, "traveller.createGraph");
                   
                   traveller.traveller.createGraph.nodeDefinitions =
-                  [ { "name"                : "twilioPostToEmail",
-                      "id"                  : "twilioPostToEmail",
+                  [ { "name"                    : "twilioPostToEmail",
+                      "id"                      : "twilioPostToEmail",
+                      "traveller.twilio.apiKey" : "key-19da2c3c2d7396180e5c8967e0efc5ea",
+                      "traveller.twilio.domain" : 'christopherreay.com',
+                      "init"                    : "context.traveller.js2xmlparser = graph.js2xmlparser",
                       "traveller.codeBlock" : 
                           ( () =>
                           { debugger;
 
-                            var api_key = 'key-19da2c3c2d7396180e5c8967e0efc5ea';
-                            var domain = 'christopherreay.com';
-                            var mailgun = require('mailgun-js')({apiKey: api_key, domain: domain});
+                            var api_key = '';
+                            var d;
+                            var mailgun = require('mailgun-js')({apiKey: context.traveller.twilio.apiKey, domain: context.traveller.twilio.domain});
                              
                             var data = {
                               from: 'Excited User <me@samples.mailgun.org>',
@@ -497,10 +500,36 @@ atStore
                             };
                              
                             mailgun.messages().send(data, function (error, body) {
-                              console.log(body);
-                              traveller.traveller.express.req.res.setHeader('Content-Type', 'application/json');
-                              traveller.traveller.express.req.res.send(JSON.stringify({}, null, 3));
+                              ls("mailgun send response:", body);
+
+                              namespace(traveller, "traveller.js2xmlparser").toParseDict = { "mailgunResponse": ["Response", body] };
+                              eval(context.traveller.js2xmlparser.traveller.codeBlock);
+                              traveller.traveller.express.req.res.send( namespace.rm(traveller, "traveller.js2xmlparser.results.mailgunResponse") , null, 3));
                             });
+                          }
+                          ).toString().slice(6),
+                    },
+                    { "name"                    : "js2xmlparser",
+                      "id"                      : "js2xmlparser",
+                      "traveller.codeBlock" : 
+                          ( () =>
+                          { debugger;
+
+                            var js2xmlparser  = require("js2xmlparser");
+                            
+                            var toParseDict   = namespace(traveller, "traveller.js2xmlparser.toParseList", null, true) || {};
+
+                            for (var key in toParseDict)
+                            { namespace(traveller, "traveller.js2xmlparser.results")[key] = js2xmlparser.parse.apply(null, toParseDict[key]);
+                            }
+                            // traveller.traveller.express.req.res.setHeader('Content-Type', 'text/xml');
+                            // var responseXMLLineList = 
+                            //   [ "<?xml version='1.0' encoding='UTF-8'?>",
+                            //     "<Response>",
+                            //     ""+util.inspect(body, false, null),
+                            //     "</Response>",
+                            //   ];
+                            // traveller.traveller.express.req.res.send(JSON.stringify(responseXMLLineList.join("\n") , null, 3));
                           }
                           ).toString().slice(6),
                     },

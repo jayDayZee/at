@@ -426,6 +426,9 @@ else
           }
         );
       }
+      this.prettyPrint = function(object)
+      { return util.inspect(object, false, null);
+      }
 
     }
 
