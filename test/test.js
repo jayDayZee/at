@@ -590,11 +590,14 @@ describe
 
 );
 
+
+var context   = new atRoot.AtNode();
+var traveller = new atRoot.AtNode();
+
 describe
 ( "\n\n\n\ntravelling around a graph",
   function()
-  { var context   = new atRoot.AtNode();
-    var traveller = new atRoot.AtNode();
+  { 
 
     namespace = atRoot.namespace;
 
@@ -1088,6 +1091,84 @@ describe
                   namespace(traveller, "traveller.mocha");
                   traveller.traveller.mocha.assertConditions = 
                       { "ranOverOneToTenGraph": "pass = traveller.traveller.countToTen.counter == 9",
+                      };
+
+                  traveller.traveller.mocha.done = done;
+                  atRoot.traverse(traveller, addTestCallback);
+
+                };
+            
+            traveller.traveller.suggestedExit = "createGraph";
+            atRoot.traverse(traveller, {});
+          }
+        );
+      }
+    );
+  }
+);
+
+describe
+( "\n\n\ngit compatible datastore",
+  () =>
+  {
+    describe
+    ( "\n\n\n\n make suggestedExit a queue",
+      function()
+      { it
+        ( "should recursively add from one to ten",
+          function(done)
+          { namespace(traveller, "traveller.createGraph");
+
+            traveller.traveller.createGraph.nodeDefinitions =
+            [ { "name"                : "start",
+                "traveller.codeBlock" : 
+                    ( () =>
+                    { namespace(traveller, "test.suggestedExitRecursive").counter = 0;
+                    }).toString().slice(6),
+                "traveller.exit"      : "printer",
+              },
+              { "name"                : "printer",
+                "traveller.codeBlock" : "ls('suggestedExitRecursive: printer: ', traveller.test.suggestedExitRecursive.counter);",
+                "traveller.exit"      : "condition",
+              },
+              { "name"                : "condition",
+                "init"                : "namespace(context, 'traveller.exitBranches', ['leafNode:'], {'__default': graph.recursiveAdder.id, 'ifTrue': graph.exit.id} );",
+                "traveller.codeBlock" : "if (traveller.traveller.countToTen.counter == 9) traveller.traveller.suggestedExit = context.traveller.exitBranches.ifTrue;",
+                "traveller.exit"      : "adder",
+              },
+              { "name"                : "recursiveAdder",
+                "init"                : "namespace(context, 'traveller.exitBranches') = {'__default': graph.printer.id, 'printer': graph.printer.id};",
+                "traveller.codeBlock" : 
+                    ( () =>
+                    { if (traveller.test.suggestedExitRecursive.counter == 0) 
+                        for (var i=1; i<10; i++) 
+                          namespace(traveller, 'traveller.suggestedExitQueue', ['leafNode:'], []).unshift(traveller.exitBranches.printer),
+                      traveller.test.suggestedExitRecursive.counter ++;
+                    } ).toString().slice(6),
+                "traveller.exit"      : "",
+              },
+              { "name"                : "error",
+                "traveller.codeBlock" : "namespace(traveller, 'traveller.test.suggestedExitRecursive.error') = { 'message': 'should never reach this node, since condition should route us away before we get here' };",
+                "traveller.exit"      : "exit",
+              },
+              { "name"                : "exit",
+              },
+            ];
+
+            traveller.traveller.callback = 
+                (traveller) =>
+                { traveller.traveller.suggestedExit = traveller.traveller.createGraph.results.graph.start.id;
+
+                  namespace(traveller, "traveller.mocha");
+                  traveller.traveller.mocha.assertConditions = 
+                      { "recursiveAdderNoError": 
+                          ` message   = namespace(traveller, "test.suggestedExitRecursive.error.message", null, true) || "No Error";
+                            pass      = namespace.contains(traveller, "test.suggestedExitRecursive", ["error"] );
+                          `,
+                        "recursiveAdderCountsTo9": 
+                          ` message   = namespace(traveller, "test.suggestedExitRecursive.counter", null, true );
+                            pass      = namespace(traveller, "test.suggestedExitRecursive.counter", null, true ) == 9;
+                          `,
                       };
 
                   traveller.traveller.mocha.done = done;

@@ -380,6 +380,9 @@ else
                   if (travellerSuggestedExit)
                     delete traveller.traveller.suggestedExit;
                   ls("traverse.setExit: ", destination);
+                  if (!destination)
+                    if ( namespace(traveller, "traveller.suggestedExitQueue", null, true) )
+                      destination = traveller.suggestedExitQueue.shift();
 
                   if (!destination) 
                   { console.dir("End context:", traveller)
