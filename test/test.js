@@ -1123,28 +1123,46 @@ describe
             [ { "name"                : "start",
                 "traveller.codeBlock" : 
                     ( () =>
-                    { namespace(traveller, "test.suggestedExitRecursive").counter = 0;
-                    }).toString().slice(6),
+                      { namespace(traveller, "test.suggestedExitRecursive").counter = 0;
+                      }
+                    ).toString().slice(6),
                 "traveller.exit"      : "printer",
               },
               { "name"                : "printer",
-                "traveller.codeBlock" : "ls('suggestedExitRecursive: printer: ', traveller.test.suggestedExitRecursive.counter);",
+                "traveller.codeBlock" :
+                    ( () =>
+                      { ls('suggestedExitRecursive: printer: ', traveller.test.suggestedExitRecursive.counter);
+                      } 
+                    ).toString().slice(6),
                 "traveller.exit"      : "condition",
               },
               { "name"                : "condition",
-                "init"                : "namespace(context, 'traveller.exitBranches', ['leafNode:'], {'__default': graph.recursiveAdder.id, 'ifTrue': graph.exit.id} );",
-                "traveller.codeBlock" : "if (traveller.traveller.countToTen.counter == 9) traveller.traveller.suggestedExit = context.traveller.exitBranches.ifTrue;",
+                "init"                :
+                    ( () =>
+                      { namespace(context, 'traveller.exitBranches', ['leafNode:'], {'__default': graph.recursiveAdder.id, 'ifTrue': graph.exit.id} );
+                      } 
+                    ).toString().slice(6),
+                "traveller.codeBlock" :
+                    ( () =>
+                      { if (traveller.traveller.countToTen.counter == 9) traveller.traveller.suggestedExit = context.traveller.exitBranches.ifTrue;
+                      } 
+                    ).toString().slice(6),
                 "traveller.exit"      : "adder",
               },
               { "name"                : "recursiveAdder",
                 "init"                : "namespace(context, 'traveller.exitBranches') = {'__default': graph.printer.id, 'printer': graph.printer.id};",
+                    ( () =>
+                      { 
+                      } 
+                    ).toString().slice(6),
                 "traveller.codeBlock" : 
                     ( () =>
-                    { if (traveller.test.suggestedExitRecursive.counter == 0) 
-                        for (var i=1; i<10; i++) 
-                          namespace(traveller, 'traveller.suggestedExitQueue', ['leafNode:'], []).unshift(traveller.exitBranches.printer),
-                      traveller.test.suggestedExitRecursive.counter ++;
-                    } ).toString().slice(6),
+                      { if (traveller.test.suggestedExitRecursive.counter == 0) 
+                          for (var i=1; i<10; i++) 
+                            namespace(traveller, 'traveller.suggestedExitQueue', ['leafNode:'], []).unshift(traveller.exitBranches.printer),
+                        traveller.test.suggestedExitRecursive.counter ++;
+                      } 
+                    ).toString().slice(6),
                 "traveller.exit"      : "",
               },
               { "name"                : "error",

@@ -277,6 +277,9 @@ else
       
       this.traverse = function(traveller, context, atStore)
       { //function which takes the traveller and the context. this avoids hard coding the name of the codeBlock / program field into the objects
+        // TODO make it possible to run the code synchronously
+        // TODO 
+        
         setImmediate(
             function()
             { var ls        = atRoot.ls;
@@ -355,6 +358,10 @@ else
                   var atRoot  = null;
                   var atStore = null;
                   var docs    = null;
+
+                  // TODO:
+                  // Add tool to choose the namespace for the evaluation
+
 
                   //evaluate the code in the context against the traveller              
                   //  the node has the ability to set a suggested exit. A difference traverse function could ignore it (e.g. visualisation traveller)
