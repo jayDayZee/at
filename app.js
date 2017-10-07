@@ -13,10 +13,11 @@ assert = require("assert");
 process.on("unhandledRejection", function(error) {console.log(error); } );
 
 
-const db = require('monk')('localhost/@');
-const atStore = db.get('@');
+var monk    = require("monk");
+var db      = monk('localhost/@');
+var atStore = db.get('@');
 
-atStore.index("id");
+// atStore.index("id");
 
 
 var AtRoot = require("./atSrc/at.js");
@@ -33,7 +34,9 @@ var users = require('./routes/users');
 
 var app = express();
 
-app.atRoot = atRoot;
+app.monk    = monk;
+app.db      = db;
+app.atRoot  = atRoot;
 app.atStore = atStore;
 
 // view engine setup
@@ -51,6 +54,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(function(req,res,next){
     req.atRoot  = atRoot;
     req.atStore = atStore;
+    req.twilioAtStore=atRoot.twilioAtStore;
     next();
 });
 

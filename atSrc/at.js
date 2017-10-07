@@ -67,7 +67,9 @@ else
           );
       };
       this.initialiseAtStore = function(atStore)
-      { //make sure the store is empty
+      { atRoot.ls("initialiseAtStore");
+
+        //make sure the store is empty
         return atStore
           .find({})
           .then
@@ -206,7 +208,7 @@ else
         );
       }
       this.namespace.rm = function(object, address)
-      { return namespace(object, address, null, "delete");
+      { return atRoot.namespace(object, address, null, "delete");
       }
       this.namespace.contains = function(object, address, listOfKeys)
       { var checkThisObject = atRoot.namespace(object, address, null, true);
@@ -265,7 +267,7 @@ else
       this.newAtNode = function(object)
       { if (object == null) object = {};
         
-        object.id = atRoot.createID().idString;
+        if (! object.hasOwnProperty("id") ) object.id = atRoot.createID().idString;
 
         return object
       }
@@ -433,6 +435,9 @@ else
             }
           }
         );
+      }
+      this.prettyPrint = function(object)
+      { return util.inspect(object, false, null);
       }
 
     }
