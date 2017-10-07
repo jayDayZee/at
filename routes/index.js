@@ -1,20 +1,14 @@
 var express = require('express');
 var router = express.Router();
-
+var atRoot = require("../atSrc/at.js")
 /* GET home page. */
 router.get('/', function(req, res, next) {
   debugger;
 
-  console.log(req, res);
-
-  var nodeID = req.query.nodeID;
-  var node = req.atStore.findOne({"id":nodeID});
-
-  res.setHeader('Content-Type', 'application/json');
-  res.send(JSON.stringify(node, null, 3));
+  res.render('index', { title: 'Hey', message: 'Hello there!' })
 });
 
-router.post('/', function(req, res, next) {
+router.post('*', function(req, res, next) {
   debugger;
 
   // req.atRoot.connectedAtStore
@@ -28,6 +22,7 @@ router.post('/', function(req, res, next) {
 
   var traveller = {};
   req.atRoot.namespace(traveller, "traveller").twilio = req.body;
+  console.log("post req body", req.body);
   req.atRoot.namespace(traveller, "traveller.express").req = req;
   traveller.traveller.suggestedExit = "twilioPostToEmail";
   req.atRoot.traverse(traveller, {});
