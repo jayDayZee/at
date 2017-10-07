@@ -481,31 +481,27 @@ atStore
                   traveller.traveller.createGraph.nodeDefinitions =
                   [ { "name"                    : "twilioPostToEmail",
                       "id"                      : "twilioPostToEmail",
-                      "traveller.twilio.apiKey" : "key-19da2c3c2d7396180e5c8967e0efc5ea",
-                      "traveller.twilio.domain" : 'christopherreay.com',
+                      
                       "init"                    : "context.traveller.js2xmlparser = graph.js2xmlparser",
                       "traveller.codeBlock" : 
                           ( () =>
                           { debugger;
 
-                            var api_key = '';
-                            var d;
-                            var mailgun = require('mailgun-js')({apiKey: context.traveller.twilio.apiKey, domain: context.traveller.twilio.domain});
-                             
+                            
                             var data = {
                               from: 'Excited User <me@samples.mailgun.org>',
                               to: 'christopherreay@gmail.com',
                               subject: 'sms from '+traveller.traveller.twilio.From,
-                              text: traveller.traveller.twilio.Body
+                              text: traveller.traveller.twilio.Body,
+                              get: traveller.traveller.twilio.get,
                             };
-                            ls("data", data)
-                            mailgun.messages().send(data, function (error, body) {
-                              ls("mailgun send response:", body);
+                            
 
-                              namespace(traveller, "traveller.js2xmlparser").toParseDict = { "mailgunResponse": ["Response", body] };
-                              eval(context.traveller.js2xmlparser.traveller.codeBlock);
-                              traveller.traveller.express.req.res.send( namespace.rm(traveller, "traveller.js2xmlparser.results.mailgunResponse") , null, 3);
-                            });
+                            ls("data", data, "context", context)
+                            
+
+
+
                           }
                           ).toString().slice(6),
                     },
