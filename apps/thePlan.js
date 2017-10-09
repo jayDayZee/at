@@ -126,11 +126,7 @@ atStore.find({}).then( docs => { ls("documents:", docs); } );
 var traveller       = {};
 var addTestCallback = {};
 
-atStore
-  .drop()
-  .then
-  ( () => { return atRoot.initialiseAtStore(atStore) }
-  )
+atRoot.initialiseAtStore(atStore)
   .then
   ( () =>
     { return atStore
@@ -407,6 +403,7 @@ atStore
                           if (node.hasOwnProperty("init") )
                           { eval(node.init);
                           }
+
                           traveller.atStore["createGraph.initNodes."+name] = {"update": [ {"id":node.id}, node ]};
                         }
 
@@ -496,16 +493,19 @@ atStore
                               get: traveller.traveller.twilio.get,
                             };
                             
+                            namespace(context, "traveller.thePlan.xy");
+                            context.traveller.thePlan.xy["0:0:"+ Date.now()] = {"gitlabURL": "someurl", "color": "red"};
 
                             ls("data", data, "context", context)
-                            
 
+                            traveller.atStore = {};
+                            namespace(traveller, "atStore")["updateThePlanIssues"] = {"update": [{"id": "twilioPostToEmail"}, context ]};
 
-
+                            traveller.traveller.suggestedExit = "commitChanges";
                           }
                           ).toString().slice(6),
                     },
-                    { "name"                    : "js2xmlparser",
+                   {  "name"                    : "js2xmlparser",
                       "id"                      : "js2xmlparser",
                       "traveller.codeBlock" : 
                           ( () =>
@@ -513,7 +513,7 @@ atStore
 
                             var js2xmlparser  = require("js2xmlparser");
                             
-                            var toParseDict   = namespace(traveller, "traveller.js2xmlparser.toParseList", null, true) || {};
+                            var toParseDict   = namespace(traveller, "traveller.js2xmlparser.toParseList", nnull, true) || {};
 
                             for (var key in toParseDict)
                             { namespace(traveller, "traveller.js2xmlparser.results")[key] = js2xmlparser.parse.apply(null, toParseDict[key]);

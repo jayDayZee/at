@@ -1,9 +1,11 @@
-extends layout
-
-block headExtra
-  script(src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/core.js")
-  script(src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js")
-
-block content
-  h1= title
-  p Welcome to #{title}
+doctype html
+html
+  head
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title= title
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js")
+    script(src="/javascripts/at.js")
+  body
+    div(height="100vh")
+        img.thePlan(src="/graphics/thePlan.svg")
+        
