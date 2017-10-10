@@ -31,6 +31,8 @@ $(document).on
       thePlan.containerHeight = $(window).height();
       $(".thePlanContainer").css( {"height": thePlan.containerHeight - 20, "width": thePlan.containerHeight * thePlan.eschatonRatio } );
 
+      $(".thePlanContainer").on("click", ".dot", () => { alert("xy") } );
+
       // thePlan.resize();
 
 
@@ -104,15 +106,21 @@ thePlan.createDivs =
   { 
 
     var numberOfDivs_vertical   = 49;
-    var numberOfDivs_horizontal = Math.floor(thePlan.eschatonWidth / thePlan.seventhHeight);
+    var numberOfDivs_horizontal = Math.floor($(".thePlanContainer").width() / ($(".thePlanContainer").height() / 49) );
+    var sizeOfDots = $(".thePlanContainer").height() / 49;
 
     for (var striation=0; striation < 7; striation ++)
-    { $("<div class='striation "+thePlan.striationOrder[striation]+"' />").appendTo($(".interactiveContainer"));
+    { var currentStriation = $("<div class='striation "+thePlan.striationOrder[striation]+"' />");
+      
       for (var dots_allTheWayAcross=0; dots_allTheWayAcross < numberOfDivs_horizontal; dots_allTheWayAcross++)
       { for (var dots_7high=0; dots_7high<7; dots_7high++)
-        { 
+        { var currentDot = $("<div class='dot' />").appendTo(currentStriation);
+          currentDot.height(sizeOfDots);
+          currentDot.width(sizeOfDots);
+          currentDot.data("striation", 
         }
       }
+      currentStriation.appendTo($(".interactiveContainer"));
     }
   }
 );
