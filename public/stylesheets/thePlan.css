@@ -1,8 +1,12 @@
 html
 { height: calc(100% - 20px);
+  padding: 0px;
+  margin: 0px;
 }
 body
 { height: 100%;
+  padding: 0px;
+  margin: 0px;
 }
 
 .thePlanContainer
@@ -24,6 +28,7 @@ body
   width:      auto;
 */
   opacity:    0;
+  display: none;
 }
 
 .interactiveContainer
