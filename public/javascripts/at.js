@@ -1,28 +1,50 @@
 thePlan = 
 { "waiting": "idle",
+
+  "striationOrder": ["violet", "indigo", "blue", "green", "yellow", "orange", "red"],
+  "striations":
+  { "red":    {"name": "Core Holochain Integration",  "rgb": "(255, 0,   0  )"    },
+    "orange": {"name": "Events Attendance Outreach",  "rgb": "(255, 148, 0  )"    },
+    "yellow": {"name": "Organizational Outreach",     "rgb": "(255, 255, 0  )"    },
+    "green":  {"name": "Networking Outreach",         "rgb": "(0,   255, 0  )"    },
+    "blue":   {"name": "Social Forms Innovation",     "rgb": "(0,   0,   255)"    },
+    "indigo": {"name": "Design / Strategy Talk",      "rgb": "(255, 0,   255)"    },
+    "violet": {"name": "Meta / Politics",             "rgb": "(255, 146, 147)"    },
+  },
 };
 
 $(document).on
 ( "readystatechange",  
   () =>
   { if (document.readyState == "complete")
-    { thePlan.resize();
+    { thePlan.eschatonNaturalHeight = $(".eschaton").get(0).naturalHeight;
+      thePlan.eschatonNaturalWidth  = $(".eschaton").get(0).naturalWidth;
+
+      thePlan.eschatonRatio = thePlan.eschatonNaturalWidth / thePlan.eschatonNaturalHeight;
+
+      // $(window).resize
+      // ( () =>
+      //   { thePlan.waitOnResize(); 
+      //   } 
+      // ); 
+
+      thePlan.containerHeight = $(window).height();
+      $(".thePlanContainer").css( {"height": thePlan.containerHeight - 20, "width": thePlan.containerHeight * thePlan.eschatonRatio } );
+
+      // thePlan.resize();
+
 
       thePlan.createDivs();
     }
   }
 );
 
-$( () =>
-    { $(window).resize( function() { thePlan.waitOnResize(); } ); 
-    }
-  );
-
 thePlan.resize = 
   () =>
-  { thePlan.waiting = "idle";
+  { thePlan.waiting       = "idle";
+    
     thePlan.calculateSizes();
-    thePlan.setBackgroundImageHeight();
+    thePlan.setContainerWidth();
     thePlan.setSeventhDivStyle();
   };
 
@@ -53,30 +75,44 @@ thePlan.calculateSizes =
 ( () =>
   { var windowHeight = $(window).height() - 30;
 
-    thePlan.windowHeight = windowHeight;
-    thePlan.seventhHeight = windowHeight / 7.0;
+    thePlan.windowHeight  = windowHeight;
+    thePlan.seventhHeight = windowHeight / 7.0 / 7.0;
 
-    thePlan.groundWidth = window.getComputedStyle($(".thePlan").get(0))["width"];
+    thePlan.eschatonWidth = window.getComputedStyle($(".eschaton").get(0))["width"];
     console.log(thePlan);
   }
 )
 
-thePlan.setBackgroundImageHeight = 
+thePlan.setContainerWidth = 
 ( () =>
   { thePlan.calculateSizes();
-    $(".thePlan").css({"max-height": thePlan.windowHeight, "min-width": "100%"});
+    
+    thePlan.containerHeight = window.getComputedStyle($(".thePlanContainer").get(0))["height"];
+    $(".thePlanContainer").css( {"width": thePlan.containerHeight * thePlan.eschatonRatio } );
   }
 )
 
 thePlan.setSeventhDivStyle = 
 ( () =>
-  { $(".seventhDiv").css({"height": thePlan.seventhHeight, "width": thePlan.seventhHeight} );
+  { // TODO this should be %s and then doesnt need to be reset
+    $(".seventhDiv").css({"height": thePlan.seventhHeight, "width": thePlan.seventhHeight} );
   }
 )
 
 thePlan.createDivs = 
 ( () =>
-  { thePlanComputer = window.getComputedStyle($(".thePlan").get(0))
-    // console.log(window.getComputedStyle($(".thePlan").get(0) ));
+  { 
+
+    var numberOfDivs_vertical   = 49;
+    var numberOfDivs_horizontal = Math.floor(thePlan.eschatonWidth / thePlan.seventhHeight);
+
+    for (var striation=0; striation < 7; striation ++)
+    { $("<div class='striation "+thePlan.striationOrder[striation]+"' />").appendTo($(".interactiveContainer"));
+      for (var dots_allTheWayAcross=0; dots_allTheWayAcross < numberOfDivs_horizontal; dots_allTheWayAcross++)
+      { for (var dots_7high=0; dots_7high<7; dots_7high++)
+        { 
+        }
+      }
+    }
   }
 );

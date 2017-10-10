@@ -1,0 +1,75 @@
+html
+{ height: calc(100% - 20px);
+}
+body
+{ height: 100%;
+}
+
+.thePlanContainer
+{ position: relative;
+
+  height: 100%;
+
+  background-image:   url(/graphics/foundationtrilogy.jpg);
+  background-repeat:  no-repeat;
+  background-size:    cover;
+}
+
+.eschaton
+{ 
+  min-height: 100%;
+  max-height: 100%;
+
+  height:     auto;
+  width:      auto;
+
+  opacity:    0;
+}
+
+.interactiveContainer
+{ position: absolute;
+
+  top:    0px;
+  left:   0px;
+
+  height: 100%;
+  width:  100%;
+}
+
+.striation
+{ width:    100%;
+  height:   14.2857142857%;
+
+  border:   none;
+  margin:   none;
+  padding:  none;
+}
+
+.red
+{ background-color: rgba(255, 0,   0  , 0.3);
+}
+.orange: 
+{ background-color: rgba(255, 148, 0  , 0.3);
+}
+.yellow
+{ background-color: rgba(255, 255, 0  , 0.3);
+}
+.green
+{ background-color: rgba(0,   255, 0  , 0.3);
+}
+.blue"
+{ background-color: rgba(0,   0,   255, 0.3);
+}
+.indigo
+{ background-color: rgba(255, 0,   255, 0.3);
+}
+.violet
+{ background-color: rgba(255, 146, 147, 0.3);
+}
+
+
+.dot
+{ height: 14.2857142857%;
+
+  border: 1px rgba(0,0,0, 0.1)
+}
