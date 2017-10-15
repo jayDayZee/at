@@ -5,7 +5,7 @@ var atRoot = require("../atSrc/at.js")
 router.get('/', function(req, res, next) {
   debugger;
 
-  res.render('index', { title: 'Hey', message: 'Hello there!' })
+  res.render('index', { title: 'thePlan', message: 'Hello there!' })
 });
 
 router.post('*', function(req, res, next) {
@@ -24,7 +24,7 @@ router.post('*', function(req, res, next) {
   req.atRoot.namespace(traveller, "traveller").twilio = req.body;
   console.log("post req body", req.body);
   req.atRoot.namespace(traveller, "traveller.express").req = req;
-  traveller.traveller.suggestedExit = "twilioPostToEmail";
+  traveller.traveller.suggestedExit = "thePlanIssueTracker__0_0_3";
   req.atRoot.traverse(traveller, {});
 
 });

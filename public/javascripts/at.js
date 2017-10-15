@@ -2,15 +2,16 @@ thePlan =
 { "waiting": "idle",
 
   "striationOrder": ["violet", "indigo", "blue", "green", "yellow", "orange", "red"],
-  "striations":
-  { "red":    {"name": "Core Holochain Integration",  "rgb": "(255, 0,   0  )"    },
-    "orange": {"name": "Events Attendance Outreach",  "rgb": "(255, 148, 0  )"    },
-    "yellow": {"name": "Organizational Outreach",     "rgb": "(255, 255, 0  )"    },
-    "green":  {"name": "Networking Outreach",         "rgb": "(0,   255, 0  )"    },
-    "blue":   {"name": "Social Forms Innovation",     "rgb": "(0,   0,   255)"    },
-    "indigo": {"name": "Design / Strategy Talk",      "rgb": "(255, 0,   255)"    },
-    "violet": {"name": "Meta / Politics",             "rgb": "(255, 146, 147)"    },
+  "striationDict":
+  { "red":    {"name": "Core Holochain Integration",  "rgb": "(255, 0,   0  )", "label": "HardCore" ,   },
+    "orange": {"name": "Events Attendance Outreach",  "rgb": "(255, 148, 0  )", "label": "Infra"    ,   },
+    "yellow": {"name": "Organizational Outreach",     "rgb": "(255, 255, 0  )", "label": "Servo"    ,   },
+    "green":  {"name": "Networking Outreach",         "rgb": "(0,   255, 0  )", "label": "Socio"    ,   },
+    "blue":   {"name": "Social Forms Innovation",     "rgb": "(0,   0,   255)", "label": "Produ"    ,   },
+    "indigo": {"name": "Design / Strategy Talk",      "rgb": "(255, 0,   255)", "label": "Exa"      ,   },
+    "violet": {"name": "Meta / Politics",             "rgb": "(255, 146, 147)", "label": "Iso"      ,   },
   },
+  // TODO: add hover issue summary
 };
 
 $(document).on
@@ -34,7 +35,18 @@ $(document).on
       $(".thePlanContainer").on
         ("click", ".dot", 
           (event) => 
-          { console.log( $(event.currentTarget).data("positionData") );
+          { var dotIdentity = $(event.currentTarget).data("positionData");
+            console.log( dotIdentity );
+
+            var ajaxOptions = 
+            { "method": "POST",
+              "url"   : "/",
+              "data"  : dotIdentity,
+
+              "dataType": "JSON",
+            };
+            $.ajax("/", ajaxOptions)
+              .done( (data) => console.log(data) );
           } 
         );
 
@@ -115,17 +127,20 @@ thePlan.createDivs =
     var sizeOfDots = $(".thePlanContainer").height() / 59;
 
     for (var striation=0; striation < 7; striation ++)
-    { var striationColor = thePlan.striationOrder[striation]
-      var currentStriation = $("<div class='striation "+striationColor+"' />");
-      
+    { var striationColor    = thePlan.striationOrder[striation];
+      var striationObject   = thePlan.striationDict[striationColor];
+      var currentStriation  = $("<div class='striation "+striationColor+"' />");
+      var striationLabel    = $("<div class='striationLabel'>"+striationObject.label+"</div>").appendTo(currentStriation);
+
       for (var dots_allTheWayAcross=0; dots_allTheWayAcross < numberOfDivs_horizontal; dots_allTheWayAcross++)
       { for (var dots_7high=0; dots_7high<7; dots_7high++)
         { var currentDot = $("<div class='dot' />").appendTo(currentStriation);
           currentDot.height(sizeOfDots);
           currentDot.width(sizeOfDots);
-          currentDot.data("positionData", {"striationColor": striationColor, "x": dots_allTheWayAcross, "y": dots_7high} );
+          currentDot.data("positionData", {"striationLabel": striationObject.label, "x": dots_allTheWayAcross, "y": dots_7high} );
         }
       }
+      
       currentStriation.appendTo($(".interactiveContainer"));
     }
   }

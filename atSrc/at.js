@@ -74,7 +74,7 @@ else
           .find({})
           .then
           ( docs =>
-            { console.log("initialiseAtStore, find{}:", JSON.stringify(docs) );
+            { //console.log("initialiseAtStore, find{}:", JSON.stringify(docs) );
               if ( docs.length != 0 ) throw "atStore sanity check. store not empty. https://github.com/christopherreay/at/wiki/Errors#atstoreinitialise1";
             }
           )

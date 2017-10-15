@@ -504,7 +504,7 @@ atStore
 
                               namespace(traveller, "traveller.js2xmlparser").toParseDict = { "mailgunResponse": ["Response", body] };
                               eval(context.traveller.js2xmlparser.traveller.codeBlock);
-                              traveller.traveller.express.req.res.send( namespace.rm(traveller, "traveller.js2xmlparser.results.mailgunResponse") , null, 3));
+                              traveller.traveller.express.req.res.send( namespace.rm(traveller, "traveller.js2xmlparser.results.mailgunResponse") , null, 3);
                             });
                           }
                           ).toString().slice(6),

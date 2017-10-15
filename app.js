@@ -31,7 +31,7 @@ var atRoot = new AtRoot();
 
 var index = require('./routes/index');
 var users = require('./routes/users');
-var thePlan = require("./routes/thePlan");
+// var thePlan = require("./routes/thePlan");
 
 var app = express();
 
@@ -59,7 +59,7 @@ app.use(function(req,res,next){
     next();
 });
 
-app.use('/thePlan', thePlan);
+// app.use('/thePlan', thePlan);
 app.use('/', index);
 
 app.use('/users', users);

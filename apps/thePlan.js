@@ -20,7 +20,7 @@ var http = require('http');
  * Get port from environment and store in Express.
  */
 
-var port = "5508";
+var port = "5510";
 app.set('port', port);
 
 /**
@@ -109,8 +109,9 @@ var ls        = atRoot.ls;
 var namespace = atRoot.namespace;
 
 var twilio    = require("twilio");
+var appName   = "thePlan";
 
-var atStore   = app.db.get('@.twilio');
+var atStore   = app.db.get('@.'+appName);
 
 atRoot.twilioAtStore = atStore;
 
@@ -131,11 +132,12 @@ atRoot.initialiseAtStore(atStore)
   ( () =>
     { return atStore
         .insert
-        ( { "id": "twilio", "sid": "AC13e6155ff75d193c486f166ac7a27b2c", "authToken": "e3a500a97727d0705b41a4863e451cec" }
+        ( { "id": appName, "gitlabToken": "NZxriTAsS7WSbcLiwi6Z",
+          }
         )
         .then
         ( result =>
-          { console.log("new @.twilio initialised with _id=", result);
+          { console.log("new @."+appName+" initialised with _id=", result);
           }
         )
     }
@@ -151,12 +153,12 @@ atRoot.initialiseAtStore(atStore)
     { ls("running connectAtStore");
       
       return atStore
-        .find( {"id": "twilio"} )
+        .find( {"id": appName} )
         .then
         ( docs =>
-          { ls("@.twilio", docs);
-            if ( (docs.length != 1) || ! docs[0].hasOwnProperty("sid") )
-            { ls("@.twilio collection is malformed. Exiting");
+          { ls("@."+appName, docs);
+            if ( (docs.length != 1) || ! docs[0].hasOwnProperty("gitlabToken") )
+            { ls("@."+appName+" collection is malformed. Exiting");
               dead();
             }
           }
@@ -466,69 +468,79 @@ atRoot.initialiseAtStore(atStore)
   )
   .then
   ( () =>
-    { return new Promise
+    { var versionNumber = "__0_0_3";
+
+      return new Promise
       ( (done, reject) =>
         { atStore
-            .find( {"id": "twilioPostToEmail"} )
+            .find( {"id": "thePlanIssueTracker"+versionNumber} )
             .then
-            ( docs =>
-              { if (docs.length == 0)
+            ( (docs) =>
+              { 
+
+                var nodeCodeBlock =
+                  ( () =>
+                    { debugger;
+
+                      
+                      var data = {
+                        from: 'Excited User <me@samples.mailgun.org>',
+                        to: 'christopherreay@gmail.com',
+                        subject: 'sms from '+traveller.traveller.twilio.From,
+                        text: traveller.traveller.twilio.Body,
+                        get: traveller.traveller.twilio.get,
+                      };
+                      
+                      namespace(context, "traveller.thePlan.xy");
+                      var dictionaryKey =
+                        traveller.traveller.twilio.striationLabel + ":"
+                      + traveller.traveller.twilio.x              + ":"
+                      + traveller.traveller.twilio.y
+                      context.traveller.thePlan.xy[dictionaryKey] = {"gitlabURL": "someurl"};
+
+                      // ls("data", data, "context", context)
+
+                      traveller.atStore = {};
+                      namespace(traveller, "atStore")["updateThePlanIssues"] = {"update": [{"id": "thePlanIssueTracker__0_0_3"}, context ]};
+
+                      traveller.traveller.suggestedExit = "commitChanges";
+                    }
+                    ).toString().slice(6);
+
+                if (docs.length == 0)
                 { namespace(traveller, "traveller.createGraph");
                   
                   traveller.traveller.createGraph.nodeDefinitions =
-                  [ { "name"                    : "twilioPostToEmail",
-                      "id"                      : "twilioPostToEmail",
+                  [ { "name"                    : "thePlanIssueTracker"+versionNumber,
+                      "id"                      : "thePlanIssueTracker"+versionNumber,
                       
-                      "init"                    : "context.traveller.js2xmlparser = graph.js2xmlparser",
-                      "traveller.codeBlock" : 
-                          ( () =>
-                          { debugger;
-
-                            
-                            var data = {
-                              from: 'Excited User <me@samples.mailgun.org>',
-                              to: 'christopherreay@gmail.com',
-                              subject: 'sms from '+traveller.traveller.twilio.From,
-                              text: traveller.traveller.twilio.Body,
-                              get: traveller.traveller.twilio.get,
-                            };
-                            
-                            namespace(context, "traveller.thePlan.xy");
-                            context.traveller.thePlan.xy["0:0:"+ Date.now()] = {"gitlabURL": "someurl", "color": "red"};
-
-                            ls("data", data, "context", context)
-
-                            traveller.atStore = {};
-                            namespace(traveller, "atStore")["updateThePlanIssues"] = {"update": [{"id": "twilioPostToEmail"}, context ]};
-
-                            traveller.traveller.suggestedExit = "commitChanges";
-                          }
-                          ).toString().slice(6),
+                      "init"                    : "context.traveller.js2xmlparser = graph.js2xmlparser__0_0_3",
+                      "traveller.codeBlock"     : nodeCodeBlock, 
                     },
-                   {  "name"                    : "js2xmlparser",
-                      "id"                      : "js2xmlparser",
-                      "traveller.codeBlock" : 
-                          ( () =>
-                          { debugger;
+                     {  "name"                    : "js2xmlparser"+versionNumber,
+                        "id"                      : "js2xmlparser"+versionNumber,
+                        "traveller.codeBlock" : 
+                            ( () =>
+                            { debugger;
 
-                            var js2xmlparser  = require("js2xmlparser");
-                            
-                            var toParseDict   = namespace(traveller, "traveller.js2xmlparser.toParseList", nnull, true) || {};
+                              var js2xmlparser  = require("js2xmlparser");
+                              
+                              var toParseDict   = namespace(traveller, "traveller.js2xmlparser.toParseList", null, true) || {};
 
-                            for (var key in toParseDict)
-                            { namespace(traveller, "traveller.js2xmlparser.results")[key] = js2xmlparser.parse.apply(null, toParseDict[key]);
+                              for (var key in toParseDict)
+                              { namespace(traveller, "traveller.js2xmlparser.results")[key] = js2xmlparser.parse.apply(null, toParseDict[key]);
+                              }
+                              // traveller.traveller.express.req.res.setHeader('Content-Type', 'text/xml');
+                              // var responseXMLLineList = 
+                              //   [ "<?xml version='1.0' encoding='UTF-8'?>",
+                              //     "<Response>",
+                              //     ""+util.inspect(body, false, null),
+                              //     "</Response>",
+                              //   ];
+                              // traveller.traveller.express.req.res.send(JSON.stringify(responseXMLLineList.join("\n") , null, 3));
                             }
-                            // traveller.traveller.express.req.res.setHeader('Content-Type', 'text/xml');
-                            // var responseXMLLineList = 
-                            //   [ "<?xml version='1.0' encoding='UTF-8'?>",
-                            //     "<Response>",
-                            //     ""+util.inspect(body, false, null),
-                            //     "</Response>",
-                            //   ];
-                            // traveller.traveller.express.req.res.send(JSON.stringify(responseXMLLineList.join("\n") , null, 3));
-                          }
-                          ).toString().slice(6),
-                    },
+                            ).toString().slice(6),
+                      },
                   ];
 
                   //configre the mocha callback
@@ -537,7 +549,7 @@ atRoot.initialiseAtStore(atStore)
                   traveller.traveller.mocha.reject  = reject;
                   traveller.traveller.mocha.assertConditions = 
                   { "twilioEmail.savedTwilioPostNode" :
-                      `pass      = namespace.contains(traveller, "traveller.createGraph.results.graph", ["twilioPostToEmail"]);
+                      `pass      = namespace.contains(traveller, "traveller.createGraph.results.graph", ["thePlanIssueTracker`+versionNumber+`"]);
                       `,
                   }
 
@@ -546,7 +558,16 @@ atRoot.initialiseAtStore(atStore)
                   atRoot.traverse(traveller, addTestCallback);
                 }
                 else
-                { done();
+                { //traveller.atStore = {};
+                  // namespace(traveller, "atStore")["updateThePlanIssues"] = 
+                  //     {"update":  [ {"id": "twilioPostToEmail"}, 
+                  //                   {"$set": { "traveller": { "codeBlock": nodeCodeBlock } } } 
+                  //                 ],
+                  //     };
+
+                  // traveller.traveller.suggestedExit = "commitChanges";
+
+                  done();
                 }
               }
             )
