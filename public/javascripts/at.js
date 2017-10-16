@@ -77,8 +77,18 @@ $(document).on
 
       // thePlan.resize();
 
+      var link = document.createElement( "link" );
+      link.href = "//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css";
+      link.type = "text/css";
+      link.rel = "stylesheet";
+      link.media = "screen,print";
+
+      document.getElementsByTagName( "head" )[0].appendChild( link );
+
 
       thePlan.getAllIssues();
+
+
 
       // thePlan.createDivs();
 
@@ -202,7 +212,8 @@ thePlan.createDivs =
               + dots_7high
           currentDot.toggleClass(dictionaryKey, true);
           if (thePlan.issues.hasOwnProperty(dictionaryKey) )
-          { currentDot.attr("title", thePlan.issues[dictionaryKey].body);
+          { var issue = thePlan.issues[dictionaryKey]
+            currentDot.attr("title", "<strong>"+issue.title+"</strong><br><br>"+issue.body);
           }
           currentDot.height(sizeOfDots);
           currentDot.width(sizeOfDots);
@@ -211,6 +222,11 @@ thePlan.createDivs =
       }
       
       currentStriation.appendTo($(".interactiveContainer"));
+      $(document).tooltip({
+          content: function () {
+              return $(this).prop('title');
+          }
+      });
     }
   }
 );
