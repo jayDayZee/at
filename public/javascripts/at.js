@@ -214,6 +214,7 @@ thePlan.createDivs =
           if (thePlan.issues.hasOwnProperty(dictionaryKey) )
           { var issue = thePlan.issues[dictionaryKey]
             currentDot.attr("title", "<strong>"+issue.title+"</strong><br><br>"+issue.body);
+            currentDot.toggleClass("hasIssue", true);
           }
           currentDot.height(sizeOfDots);
           currentDot.width(sizeOfDots);
