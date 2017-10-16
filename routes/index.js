@@ -18,13 +18,15 @@ router.post('*', function(req, res, next) {
   //     { console.log(docs);
   //     }      
   //   )
+var namespace = atRoot.namespace;
+
 
 
   var traveller = {};
-  req.atRoot.namespace(traveller, "traveller").twilio = req.body;
+  req.atRoot.namespace(traveller, "traveller").twilio = JSON.parse(JSON.stringify(req.body));
   console.log("post req body", req.body);
   req.atRoot.namespace(traveller, "traveller.express").req = req;
-  traveller.traveller.suggestedExit = "thePlanIssueTracker__0_0_3";
+  traveller.traveller.suggestedExit = "thePlanIssueTracker__0_1_13";
   req.atRoot.traverse(traveller, {});
 
 });

@@ -17,6 +17,7 @@
     "mongodb": "^2.2.26",
     "monk": "^4.0.0",
     "morgan": "~1.8.1",
+    "octonode": "^0.9.0",
     "pug": "~2.0.0-beta11",
     "serve-favicon": "~2.4.2",
     "twilio": "^3.4.0",

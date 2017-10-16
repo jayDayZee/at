@@ -282,6 +282,7 @@ else
         setImmediate(
             function()
             { var ls        = atRoot.ls;
+              var traverse  = atRoot.traverse;
 
               var namespace = atRoot.namespace
               var atStore   = atStore || atRoot.connectedAtStore;

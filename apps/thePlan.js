@@ -468,7 +468,7 @@ atRoot.initialiseAtStore(atStore)
   )
   .then
   ( () =>
-    { var versionNumber = "__0_0_3";
+    { var versionNumber = "__0_1_13";
 
       return new Promise
       ( (done, reject) =>
@@ -483,27 +483,134 @@ atRoot.initialiseAtStore(atStore)
                     { debugger;
 
                       
-                      var data = {
-                        from: 'Excited User <me@samples.mailgun.org>',
-                        to: 'christopherreay@gmail.com',
-                        subject: 'sms from '+traveller.traveller.twilio.From,
-                        text: traveller.traveller.twilio.Body,
-                        get: traveller.traveller.twilio.get,
-                      };
+                      var request = require("request");
+
+                      var issueData =
+                          { 
+                          }
+
                       
-                      namespace(context, "traveller.thePlan.xy");
-                      var dictionaryKey =
-                        traveller.traveller.twilio.striationLabel + ":"
-                      + traveller.traveller.twilio.x              + ":"
-                      + traveller.traveller.twilio.y
-                      context.traveller.thePlan.xy[dictionaryKey] = {"gitlabURL": "someurl"};
+                      var operation =  namespace(traveller, "traveller.twilio.operation");
 
-                      // ls("data", data, "context", context)
+                      if (operation == "getAllIssues")
+                      { setImmediate
+                        ( () => 
+                          { var requestOptions = 
+                            { "method": "GET",
+                              // "url":    "https://gitlab.holochain.net/api/v4/projects/6/issues",
+                              // "url": "https://api.github.com",
+                              "url": "https://api.github.com/repos/christopherreay/exampleCloud9Circuit/issues",
+                              "headers":
+                                  { "PRIVATE-TOKEN": "NZxriTAsS7WSbcLiwi6Z",
+                                    "Accept": "application/vnd.github.v3+json",
+                                    "User-Agent": "Awesome-thePlan-App",
+                                    "Authorization": "token 46ecabdfc73465e733ae16875f9bc385ffead758",
+                                  },
+                              // "qs":
+                              //     { //"id":    6,
+                              //       "title": "@ created issue",
+                              //     }
+                              // "json":  
+                              //     { //"id":    6,
+                              //       "title": "@ created issue, thePlan: "+dictionaryKey,
+                              //       "description": "",
+                              //     },
+                            } 
+                            request
+                            ( requestOptions,
+                              (error, response, body) =>
+                              { //console.log("thePlan.js: gitlabRequstResponse", "error", error, "response", response, "\n\nbody", body);
 
-                      traveller.atStore = {};
-                      namespace(traveller, "atStore")["updateThePlanIssues"] = {"update": [{"id": "thePlanIssueTracker__0_0_3"}, context ]};
+                                console.log("body:", body);
+                                var issueList = JSON.parse(body);
+                                var issueListLength = issueList.length;
+                                // if (createdIssue.hasOwnProperty("id") )
+                                for (var i=0; i < issueListLength; i++)
+                                { var issue = issueList[i];
+                                  var dictionaryKey = namespace(context, "traveller.thePlan.byIssueID."+issue.id+".xy")
+                                  issue.xy = dictionaryKey;
+                                  namespace(context, "traveller.thePlan.byIssueID")[issue.id] = issue
 
-                      traveller.traveller.suggestedExit = "commitChanges";
+                                }
+
+                                traveller.atStore = {};
+                                namespace(traveller, "atStore")["updateThePlanIssues"] = {"update": [{"id": "thePlanIssueTracker__0_1_13"}, context ]};
+
+                                traveller.traveller.express.req.res.send(JSON.stringify(namespace(context, "traveller.thePlan.byIssueID") , null, 3))
+                                traveller.traveller.express.req.res.end();
+
+                                traveller.traveller.suggestedExit = "commitChanges";
+                                traverse(traveller, {});
+                              }
+                            );
+                          }
+                        );
+                      }
+                      else
+                      { 
+                        var dictionaryKey =
+                                  traveller.traveller.twilio.striationLabel + ":"
+                                + traveller.traveller.twilio.x              + ":"
+                                + traveller.traveller.twilio.y
+
+                        var requestOptions = 
+                            { "method": "POST",
+                              // "url":    "https://gitlab.holochain.net/api/v4/projects/6/issues",
+                              // "url": "https://api.github.com",
+                              "url": "https://api.github.com/repos/christopherreay/exampleCloud9Circuit/issues",
+                              "headers":
+                                  { "PRIVATE-TOKEN": "NZxriTAsS7WSbcLiwi6Z",
+                                    "Accept": "application/vnd.github.v3+json",
+                                    "User-Agent": "Awesome-thePlan-App",
+                                    "Authorization": "token 46ecabdfc73465e733ae16875f9bc385ffead758",
+                                  },
+                              // "qs":
+                              //     { //"id":    6,
+                              //       "title": "@ created issue",
+                              //     }
+                              "json":  
+                                  { //"id":    6,
+                                    "title": "@ created issue, thePlan: "+dictionaryKey,
+                                    "description": "",
+                                  },
+                            } 
+                        request
+                        ( requestOptions,
+                          (error, response, body) =>
+                          { //console.log("thePlan.js: gitlabRequstResponse", "error", error, "response", response, "\n\nbody", body);
+
+                            console.log("body:", body);
+                            var createdIssue = body;
+                            // if (createdIssue.hasOwnProperty("id") )
+                            { console.log("index.js: gitlabRequestResponse:", createdIssue);
+
+                              namespace(context, "traveller.thePlan.xy");
+                              var dictionaryKey =
+                                  traveller.traveller.twilio.striationLabel + ":"
+                                + traveller.traveller.twilio.x              + ":"
+                                + traveller.traveller.twilio.y
+
+                              // context.traveller.thePlan.xy[dictionaryKey] = {"gitlabIssue": createdIssue};
+                              createdIssue.xy = dictionaryKey;
+                              namespace(context, "traveller.thePlan.byIssueID")[createdIssue.id] = createdIssue
+
+                              traveller.atStore = {};
+                              namespace(traveller, "atStore")["updateThePlanIssues"] = {"update": [{"id": "thePlanIssueTracker__0_1_13"}, context ]};
+                              setImmediate
+                              ( () => 
+                                { traveller.traveller.express.req.res.send(JSON.stringify(createdIssue , null, 3));
+                                  traveller.traveller.express.req.res.end();
+                                }
+                              );
+
+                              traveller.traveller.suggestedExit = "commitChanges";
+                              traverse(traveller, {});
+                            }
+                          }
+                        );
+
+                        namespace(traveller, "traveller").pause = true;
+                      }
                     }
                     ).toString().slice(6);
 
@@ -514,7 +621,7 @@ atRoot.initialiseAtStore(atStore)
                   [ { "name"                    : "thePlanIssueTracker"+versionNumber,
                       "id"                      : "thePlanIssueTracker"+versionNumber,
                       
-                      "init"                    : "context.traveller.js2xmlparser = graph.js2xmlparser__0_0_3",
+                      "init"                    : "context.traveller.js2xmlparser = graph.js2xmlparser__0_1_13",
                       "traveller.codeBlock"     : nodeCodeBlock, 
                     },
                      {  "name"                    : "js2xmlparser"+versionNumber,

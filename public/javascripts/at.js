@@ -29,6 +29,18 @@ $(document).on
       //   } 
       // ); 
 
+      $(` <div class="wrapper">
+            <div class="popup">
+                <iframe class="issueIframe" src="">
+                    <p>Your browser does not support iframes.</p>
+                </iframe>
+                <a href="#" class="close">X</a>
+            </div>
+          </div>`)
+      .appendTo($("body"));
+
+
+
       thePlan.containerHeight = $(window).height();
       $(".thePlanContainer").css( {"height": thePlan.containerHeight - 20, "width": thePlan.containerHeight * thePlan.eschatonRatio } );
 
@@ -36,27 +48,76 @@ $(document).on
         ("click", ".dot", 
           (event) => 
           { var dotIdentity = $(event.currentTarget).data("positionData");
+            
             console.log( dotIdentity );
 
-            var ajaxOptions = 
-            { "method": "POST",
-              "url"   : "/",
-              "data"  : dotIdentity,
+            if (thePlan.issues.hasOwnProperty(dotIdentity.dictionaryKey))
+            { window.open(thePlan.issues[dotIdentity.dictionaryKey].html_url);
+            }
+            else
+            { var ajaxOptions = 
+              { "method": "POST",
+                "url"   : "/",
+                "data"  : dotIdentity,
 
-              "dataType": "JSON",
-            };
-            $.ajax("/", ajaxOptions)
-              .done( (data) => console.log(data) );
+                "dataType": "JSON",
+              };
+              $.ajax("/", ajaxOptions)
+                .done
+                ( (data) => 
+                  { console.log(data);
+                    // $(".issueIframe").attr("src", data.url);
+                    var browserUrl = data.html_url;
+                    window.open(browserUrl, "_blank");
+                  }
+                );
+            }
           } 
         );
 
       // thePlan.resize();
 
 
-      thePlan.createDivs();
+      thePlan.getAllIssues();
+
+      // thePlan.createDivs();
+
+
     }
   }
 );
+
+thePlan.getAllIssues =
+  () =>
+  { var ajaxOptions = 
+    { "method": "POST",
+      "url"   : "/",
+      "data"  : {"operation": "getAllIssues"},
+
+      "dataType": "JSON",
+    };
+    $.ajax("/", ajaxOptions)
+      .done
+      ( (data) => 
+        { console.log(data);
+          // $(".issueIframe").attr("src", data.url);
+          // var browserUrl = data.url.replace("api.github.com/repos/", "github.com/");
+          // window.open(browserUrl, "_blank");
+          thePlan.issues = {};
+          for (var key in data)
+          { var issue = data[key];
+            if (JSON.stringify(issue.xy) !== JSON.stringify({}) )
+            { thePlan.issues[issue.xy] = issue;
+            }
+          }
+
+          thePlan.createDivs();
+        }
+      );
+
+
+
+  }
 
 thePlan.resize = 
   () =>
@@ -135,9 +196,17 @@ thePlan.createDivs =
       for (var dots_allTheWayAcross=0; dots_allTheWayAcross < numberOfDivs_horizontal; dots_allTheWayAcross++)
       { for (var dots_7high=0; dots_7high<7; dots_7high++)
         { var currentDot = $("<div class='dot' />").appendTo(currentStriation);
+          var dictionaryKey =
+                striationObject.label     + ":"
+              + dots_allTheWayAcross      + ":"
+              + dots_7high
+          currentDot.toggleClass(dictionaryKey, true);
+          if (thePlan.issues.hasOwnProperty(dictionaryKey) )
+          { currentDot.attr("title", thePlan.issues[dictionaryKey].body);
+          }
           currentDot.height(sizeOfDots);
           currentDot.width(sizeOfDots);
-          currentDot.data("positionData", {"striationLabel": striationObject.label, "x": dots_allTheWayAcross, "y": dots_7high} );
+          currentDot.data("positionData", {"striationLabel": striationObject.label, "x": dots_allTheWayAcross, "y": dots_7high, "dictionaryKey": dictionaryKey} );
         }
       }
       
