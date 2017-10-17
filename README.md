@@ -4,17 +4,16 @@
 @ only exists in runtime  
 @ is a tip of the hat to the programming language "a" (granddaddy to "c"), but inside a visible circle.  
   
-the concept of source code is a tip of the hat to the material (paper, stone) languages that have formed the basis for cross generational language. Cross generational language is the first tool that distantly out paced genetic evolution as a tool for change. This is why it should be tipped a hat to.
+the concept of source code is a tip of the hat to the material (paper, stone) languages that have formed the basis for cross generational language. Core to the concept of Language is "predictability over time". Stone and Paper provide this by being a medium in physics that does not change configuration over tens to thousands of years. Cross generational language is the first tool that distantly out paced genetic evolution as a tool for change. This is why it should be tipped a hat to.  
   
-Source Code is not required to define formal systems (software)
-
-
-Source Code is the invention of Jon Von Neuman.
-Before von Neuman, computers were "programmed" by connecting switches with patch cables (guitar cables)
-Alexander Turing and Jon von Neuman are brothers in futures.
-Jon von Neuman designed the modern micro processor.
-Jon von Neuman invented the idea that if you implement a single Turing complete machine you never have to rewire the cables. This is the reason we have been able to microtize the microprocessor.rst
-Before Jon von Neuman there was one "data flow" into the computer. After von Neuman, there are two, the "data" flow and the "control" flow.
+Source Code is not required to define formal systems (software)  
+  
+Source Code is the invention of Jon Von Neuman.  
+Before von Neuman, computers were "programmed" by connecting switches with patch cables (guitar cables)  
+Alexander Turing and Jon von Neuman are brothers in futures.  
+Jon von Neuman designed the modern micro processor.  
+Jon von Neuman invented the idea that if you implement a single Turing complete machine you never have to rewire the cables. This is the reason we have been able to microtize the microprocessor  
+Before Jon von Neuman there was one "data flow" into the computer. After von Neuman, there are two, the "data" flow and the "control" flow.  
 
 # Step 1
 
