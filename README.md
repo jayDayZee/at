@@ -48,28 +48,26 @@ It is facile to express that:
 * Currently Work 3 is the most time consuming and error prone part of building software
 * Work 3 requires 90+% of the resources and contributes 95% of the bugs of all software development.
 
-
-## Documentation
-Documentation **must** provide a natural language expression of a formal language that enables the learner to build a Work 2 mental model of the desired toolkit. This is a tipping of that hat towards formal languages.
-
-
 # @
 * @ is a base of code formed around a single 70 line function called "traverse" that makes Decidable Space directly accessible to the programmer.  
 * @ can easily be implemented in any "programming language
 * @ is able to upgrade any existing "source code" base into @
 
+## Documentation
+Documentation **must** provide a natural language expression of a formal language that enables the learner to build a Work 2 mental model of the desired toolkit. This is a tipping of that hat towards paper. Both the **creation** of documentation and the **grokking** of documentation require effort.
+
 ## Interface
 * The most facile interface between the programmer and the machine is the edges of the sense / motor nerves of the brain, and the screen (speakers) / keyboard of the computer
 * the most valuable definition of "interface" between the programmer and the machine is the edges of Work 2.
-* It **must** be possible for the machine to hold all Work 2 output.
-* Therefore it must be possible to write code by requesting whichever Work 2 output is currently needed in the modelling of the system.
+* It **must** be possible for the machine to hold runtime objects that directly represent any output of Work 2.
+* Therefore it must be possible to write code by requesting whichever Work 2 Object is currently needed in the modelling of the system (for example by pressing a sequence of the 108 buttons on the keyboard, or clicking on some visual artifact with a pointer device, or looking at it with an eye tracker).
 * As we write software, we progress through an iterative process
 * This iterative process **must** begin at Work 1 and resolve at Work 3
-* Between Work 2 and Work 3, all decisions **must** be holdable in Decidable Space
+* Between Work 2 and Work 3, all decisions **must** be holdable in Decidable Space, and therefore **must** be holdable as runtime objects within the @ programming language.
 * Currently the tools that exist for programming are defined to make it easier to produce Work 3 targetted at the **One Single** Turing Complete machine implemented on the metal.
 * A **good** programming language should be defined to represent the output of Work 2 and the iterative decision making that is the active behaviour during design.
 * Good programmers can work in Work 2 space.
-* @ **must** be able to have a 1 2 1 correlation with this requirement.
+* @ **must** be able to have a **complete** 1 2 1 correlation with this requirement.
 
 ## community
 Git hub uses "source code" and "documentation" to manifest an informal communication channel to communicate formal systems. 
@@ -81,19 +79,30 @@ It must be possible to communicate those systems directly in @ primitives, since
   * now please feel free to enter the code body
 * Would you like to rename this variable? Thats fine, it is an object that is expressed on the screen however you would like. Do I understand the scope model of the Work 2 environment I am designed to guide you interactions with? Yes of course I do. Please just update the representation of that variable object to whatever you would like. Find Replace is a paper based paradigm
 
+# The Future
 The future of @ will create a significant runtime space running acrross many cloud and local machines which is shared. The open source community will co-create representations of core human concepts. The core concepts will contain many hundreds of hours of developer experience, and will be able to ask questions that guide the expressions of systems.  
 It will be easier to program in @ than to draw circles and lines on a piece of paper.  
 
-## **What** do I implement in @
+# The Work of Research
+**What** do I implement in @  
+  
 Words such as:
 * Place
 * Welcome
 * Introduction
 * List
 
-A crowdfunding website is a Place (website type (physical type, event type, etc) )
-When people arrive at a place they must be welcomed to your energy style to it (youTube video).
-Introduction - here is a List of Projects, here is a donationButton, here is a List of Founders, here is List of Principles.
+* A crowdfunding website is a Place (websiteType (physicalType, eventType, etc) )  
+* When people arrive the first time at a place they must be welcomed to your energy style to it (youTube video), graphics style.  
+* Introduction - here is a List of Projects, here is a donationButton, here is a List of Founders, here is List of Principles of the Place. 
+  * without Introduction, Places must follow generic guidelines, which makes them generic. Imagine being dropped into the middle of a shopping centre with no map or idea where the food court is. Shopping centres have maps near the doors.
+* What is a Project?
+  * a Project is a Place.
+  * Welcome (youTube video communicating the energy style of the Project)
+  * Introduction - here is the Description, here is the List of Rewards.
+    * What is a reward? Welcome, introduction, etc.
+ 
+ What we are able
 
 
 
