@@ -1,12 +1,11 @@
 #@ (at)
 
-@ is a programming language
-@ only exists in runtime
-@ is a tip of the hat to the programming language "a" (granddaddy to "c"), but inside a visible circle.
-
+@ is a programming language  
+@ only exists in runtime  
+@ is a tip of the hat to the programming language "a" (granddaddy to "c"), but inside a visible circle.  
+  
 the concept of source code is a tip of the hat to the material (paper, stone) languages that have formed the basis for cross generational language. Cross generational language is the first tool that distantly out paced genetic evolution as a tool for change. This is why it should be tipped a hat to.
-
-
+  
 Source Code is not required to define formal systems (software)
 
 
