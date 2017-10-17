@@ -86,21 +86,22 @@ It will be easier to program in @ than to draw circles and lines on a piece of p
 # The Work of Research
 **What** do I implement in @  
   
-Words such as:
+Words such as:  
 * Place
 * Welcome
 * Introduction
 * List
 
-* A crowdfunding website is a Place (websiteType (physicalType, eventType, etc) )  
-* When people arrive the first time at a place they must be welcomed to your energy style to it (youTube video), graphics style.  
-* Introduction - here is a List of Projects, here is a donationButton, here is a List of Founders, here is List of Principles of the Place. 
-  * without Introduction, Places must follow generic guidelines, which makes them generic. Imagine being dropped into the middle of a shopping centre with no map or idea where the food court is. Shopping centres have maps near the doors.
-* What is a Project?
-  * a Project is a Place.
-  * Welcome (youTube video communicating the energy style of the Project)
-  * Introduction - here is the Description, here is the List of Rewards.
-    * What is a reward? Welcome, introduction, etc.
+* example
+  * A crowdfunding website is a Place (websiteType (physicalType, eventType, etc) )  
+  * When people arrive the first time at a place they must be welcomed to your energy style to it (youTube video), graphics style.  
+  * Introduction - here is a List of Projects, here is a donationButton, here is a List of Founders, here is List of Principles of the Place. 
+    * without Introduction, Places must follow generic guidelines, which makes them generic. Imagine being dropped into the middle of a shopping centre with no map or idea where the food court is. Shopping centres have maps near the doors.
+  * What is a Project?
+    * a Project is a Place.
+    * Welcome (youTube video communicating the energy style of the Project)
+    * Introduction - here is the Description, here is the List of Rewards.
+      * What is a reward? Welcome, introduction, etc.
  
  What we are able
 
