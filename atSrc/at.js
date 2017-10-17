@@ -74,7 +74,7 @@ else
           .find({})
           .then
           ( docs =>
-            { console.log("initialiseAtStore, find{}:", JSON.stringify(docs) );
+            { //console.log("initialiseAtStore, find{}:", JSON.stringify(docs) );
               if ( docs.length != 0 ) throw "atStore sanity check. store not empty. https://github.com/christopherreay/at/wiki/Errors#atstoreinitialise1";
             }
           )
@@ -285,6 +285,7 @@ else
         setImmediate(
             function()
             { var ls        = atRoot.ls;
+              var traverse  = atRoot.traverse;
 
               var namespace = atRoot.namespace
               var atStore   = atStore || atRoot.connectedAtStore;

@@ -1,8 +1,20 @@
-extends layout
+doctype html
+html
+  head
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title= title
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/setImmediate/1.0.5/setImmediate.js")
+    script(src="/javascripts/at.js")
 
-block headExtra
-  script(src="/javascripts/at.js")
+    script(src="https://code.jquery.com/jquery-1.12.4.js")
+    script(src="https://code.jquery.com/ui/1.12.1/jquery-ui.js")
+  
+    style
+      include ../public/stylesheets/thePlan.css
 
-block content
-  h1= title
-  p Welcome to #{title}
+  body
+    div.thePlanContainer
+        img.eschaton(src="/graphics/thePlan.jpg")
+        div.interactiveContainer
+        
