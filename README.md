@@ -105,8 +105,5 @@ Words such as:
  
 This is both a description of the user experience and the developers experience.  
 @ is an infinite meta language.
-
-
-
-
-
+  
+we should ask the Dalai Lama what words to implement.
