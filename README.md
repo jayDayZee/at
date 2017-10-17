@@ -33,6 +33,7 @@ Where we refuse to be drawn into an argument as the the "real" meaning of Work 1
 
 ### Decidable space is coined in this paper to be:
 * The N dimensional space where each point represents one of the infinite Turing Complete machines.
+* In a well implemented programming language, all points in Decidable Space should be accessible in exactly one step from each other.
 
 A Micro Processor is a bare metal physics implementation of One Single Turing Complete Machine
 All extant programming languages are designed to ease the interface between the human mind (Work 1) and the final output (Work 3).
