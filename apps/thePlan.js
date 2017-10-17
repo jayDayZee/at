@@ -468,7 +468,7 @@ atRoot.initialiseAtStore(atStore)
   )
   .then
   ( () =>
-    { var versionNumber = "__0_1_13";
+    { var versionNumber = "__0_1_15";
 
       return new Promise
       ( (done, reject) =>
@@ -489,6 +489,8 @@ atRoot.initialiseAtStore(atStore)
                           { 
                           }
 
+                      var fs          = require("fs");
+                      var githubToken = fs.readFileSync("../githubToken");
                       
                       var operation =  namespace(traveller, "traveller.twilio.operation");
 
@@ -499,12 +501,12 @@ atRoot.initialiseAtStore(atStore)
                             { "method": "GET",
                               // "url":    "https://gitlab.holochain.net/api/v4/projects/6/issues",
                               // "url": "https://api.github.com",
-                              "url": "https://api.github.com/repos/christopherreay/exampleCloud9Circuit/issues",
+                              "url": "https://api.github.com/repos/christopherreay/thePlan/issues",
                               "headers":
                                   { "PRIVATE-TOKEN": "NZxriTAsS7WSbcLiwi6Z",
                                     "Accept": "application/vnd.github.v3+json",
                                     "User-Agent": "Awesome-thePlan-App",
-                                    "Authorization": "token 46ecabdfc73465e733ae16875f9bc385ffead758",
+                                    "Authorization": "token b3de62730927afd41506cbc31692060d2fbdded7",
                                   },
                               // "qs":
                               //     { //"id":    6,
@@ -534,7 +536,7 @@ atRoot.initialiseAtStore(atStore)
                                 }
 
                                 traveller.atStore = {};
-                                namespace(traveller, "atStore")["updateThePlanIssues"] = {"update": [{"id": "thePlanIssueTracker__0_1_13"}, context ]};
+                                namespace(traveller, "atStore")["updateThePlanIssues"] = {"update": [{"id": "thePlanIssueTracker__0_1_15"}, context ]};
 
                                 traveller.traveller.express.req.res.send(JSON.stringify(namespace(context, "traveller.thePlan.byIssueID") , null, 3))
                                 traveller.traveller.express.req.res.end();
@@ -557,7 +559,7 @@ atRoot.initialiseAtStore(atStore)
                             { "method": "POST",
                               // "url":    "https://gitlab.holochain.net/api/v4/projects/6/issues",
                               // "url": "https://api.github.com",
-                              "url": "https://api.github.com/repos/christopherreay/exampleCloud9Circuit/issues",
+                              "url": "https://api.github.com/repos/christopherreay/thePlan/issues",
                               "headers":
                                   { "PRIVATE-TOKEN": "NZxriTAsS7WSbcLiwi6Z",
                                     "Accept": "application/vnd.github.v3+json",
@@ -595,7 +597,7 @@ atRoot.initialiseAtStore(atStore)
                               namespace(context, "traveller.thePlan.byIssueID")[createdIssue.id] = createdIssue
 
                               traveller.atStore = {};
-                              namespace(traveller, "atStore")["updateThePlanIssues"] = {"update": [{"id": "thePlanIssueTracker__0_1_13"}, context ]};
+                              namespace(traveller, "atStore")["updateThePlanIssues"] = {"update": [{"id": "thePlanIssueTracker__0_1_15"}, context ]};
                               setImmediate
                               ( () => 
                                 { traveller.traveller.express.req.res.send(JSON.stringify(createdIssue , null, 3));
@@ -621,7 +623,7 @@ atRoot.initialiseAtStore(atStore)
                   [ { "name"                    : "thePlanIssueTracker"+versionNumber,
                       "id"                      : "thePlanIssueTracker"+versionNumber,
                       
-                      "init"                    : "context.traveller.js2xmlparser = graph.js2xmlparser__0_1_13",
+                      "init"                    : "context.traveller.js2xmlparser = graph.js2xmlparser__0_1_15",
                       "traveller.codeBlock"     : nodeCodeBlock, 
                     },
                      {  "name"                    : "js2xmlparser"+versionNumber,
