@@ -103,7 +103,8 @@ Words such as:
     * Introduction - here is the Description, here is the List of Rewards.
       * What is a reward? Welcome, introduction, etc.
  
- What we are able
+This is both a description of the user experience and the developers experience.  
+@ is an infinite meta language.
 
 
 
