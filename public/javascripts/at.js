@@ -18,80 +18,86 @@ $(document).on
 ( "readystatechange",  
   () =>
   { if (document.readyState == "complete")
-    { thePlan.eschatonNaturalHeight = $(".eschaton").get(0).naturalHeight;
-      thePlan.eschatonNaturalWidth  = $(".eschaton").get(0).naturalWidth;
+    { setTimeout
+      ( () =>
+        { thePlan.eschatonNaturalHeight = $(".eschaton").get(0).naturalHeight;
+          thePlan.eschatonNaturalWidth  = $(".eschaton").get(0).naturalWidth;
 
-      thePlan.eschatonRatio = thePlan.eschatonNaturalWidth / thePlan.eschatonNaturalHeight;
-
-      // $(window).resize
-      // ( () =>
-      //   { thePlan.waitOnResize(); 
-      //   } 
-      // ); 
-
-      $(` <div class="wrapper">
-            <div class="popup">
-                <iframe class="issueIframe" src="">
-                    <p>Your browser does not support iframes.</p>
-                </iframe>
-                <a href="#" class="close">X</a>
-            </div>
-          </div>`)
-      .appendTo($("body"));
+          thePlan.eschatonRatio = thePlan.eschatonNaturalWidth / thePlan.eschatonNaturalHeight;
 
 
 
-      thePlan.containerHeight = $(window).height();
-      $(".thePlanContainer").css( {"height": thePlan.containerHeight - 20, "width": thePlan.containerHeight * thePlan.eschatonRatio } );
+          // $(window).resize
+          // ( () =>
+          //   { thePlan.waitOnResize(); 
+          //   } 
+          // ); 
 
-      $(".thePlanContainer").on
-        ("click", ".dot", 
-          (event) => 
-          { var dotIdentity = $(event.currentTarget).data("positionData");
-            
-            console.log( dotIdentity );
-
-            if (thePlan.issues.hasOwnProperty(dotIdentity.dictionaryKey))
-            { window.open(thePlan.issues[dotIdentity.dictionaryKey].html_url);
-            }
-            else
-            { var ajaxOptions = 
-              { "method": "POST",
-                "url"   : "/",
-                "data"  : dotIdentity,
-
-                "dataType": "JSON",
-              };
-              $.ajax("/", ajaxOptions)
-                .done
-                ( (data) => 
-                  { console.log(data);
-                    // $(".issueIframe").attr("src", data.url);
-                    var browserUrl = data.html_url;
-                    window.open(browserUrl, "_blank");
-                  }
-                );
-            }
-          } 
-        );
-
-      // thePlan.resize();
-
-      var link = document.createElement( "link" );
-      link.href = "//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css";
-      link.type = "text/css";
-      link.rel = "stylesheet";
-      link.media = "screen,print";
-
-      document.getElementsByTagName( "head" )[0].appendChild( link );
-
-
-      thePlan.getAllIssues();
+          // $(` <div class="wrapper">
+          //       <div class="popup">
+          //           <iframe class="issueIframe" src="">
+          //               <p>Your browser does not support iframes.</p>
+          //           </iframe>
+          //           <a href="#" class="close">X</a>
+          //       </div>
+          //     </div>`)
+          // .appendTo($("body"));
 
 
 
-      // thePlan.createDivs();
+          thePlan.containerHeight = $(window).height();
+          $(".thePlanContainer").css( {"height": thePlan.containerHeight-38, "width": thePlan.containerHeight * thePlan.eschatonRatio } );
 
+          $(".thePlanContainer").on
+            ("click", ".dot", 
+              (event) => 
+              { var dotIdentity = $(event.currentTarget).data("positionData");
+                
+                console.log( dotIdentity );
+
+                if (thePlan.issues.hasOwnProperty(dotIdentity.dictionaryKey))
+                { window.open(thePlan.issues[dotIdentity.dictionaryKey].html_url);
+                }
+                else
+                { var ajaxOptions = 
+                  { "method": "POST",
+                    "url"   : "/",
+                    "data"  : dotIdentity,
+
+                    "dataType": "JSON",
+                  };
+                  $.ajax("/", ajaxOptions)
+                    .done
+                    ( (data) => 
+                      { console.log(data);
+                        // $(".issueIframe").attr("src", data.url);
+                        var browserUrl = data.html_url;
+                        window.open(browserUrl, "_blank");
+                      }
+                    );
+                }
+              } 
+            );
+
+          // thePlan.resize();
+
+          var link = document.createElement( "link" );
+          link.href = "//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css";
+          link.type = "text/css";
+          link.rel = "stylesheet";
+          link.media = "screen,print";
+
+          document.getElementsByTagName( "head" )[0].appendChild( link );
+
+
+          thePlan.getAllIssues();
+
+
+
+          // thePlan.createDivs();
+        },
+        100
+      );
 
     }
   }
@@ -116,9 +122,10 @@ thePlan.getAllIssues =
           thePlan.issues = {};
           for (var key in data)
           { var issue = data[key];
-            if (JSON.stringify(issue.xy) !== JSON.stringify({}) )
+            if ( issue.state == "open" && JSON.stringify(issue.xy) !== JSON.stringify({}) )
             { thePlan.issues[issue.xy] = issue;
             }
+            console.log(issue.state);
           }
 
           thePlan.createDivs();
@@ -211,14 +218,18 @@ thePlan.createDivs =
               + dots_allTheWayAcross      + ":"
               + dots_7high
           currentDot.toggleClass(dictionaryKey, true);
-          if (thePlan.issues.hasOwnProperty(dictionaryKey) )
+          if (! thePlan.issues.hasOwnProperty(dictionaryKey) )
+          { currentDot.attr("title", "<input />");
+            // currentDot.toggleClass("hasIssue", true);
+          }
+          else
           { var issue = thePlan.issues[dictionaryKey]
             currentDot.attr("title", "<strong>"+issue.title+"</strong><br><br>"+issue.body);
             currentDot.toggleClass("hasIssue", true);
           }
           currentDot.height(sizeOfDots);
           currentDot.width(sizeOfDots);
-          currentDot.data("positionData", {"striationLabel": striationObject.label, "x": dots_allTheWayAcross, "y": dots_7high, "dictionaryKey": dictionaryKey} );
+          currentDot.data("positionData", {"striationLabel": striationObject.label, "x": dots_allTheWayAcross, "y": dots_7high, "dictionaryKey": dictionaryKey, "issue": issue} );
         }
       }
       

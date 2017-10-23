@@ -14,9 +14,9 @@ body
 
   height: 100%;
 
-  background-image:   url(/graphics/thePlan.jpg);
+/*  background-image:   url(/graphics/backgrounds/thePlan_2.0.svg);
   background-repeat:  no-repeat;
-  background-size:    cover;
+  background-size:    cover;*/
 }
 
 .eschaton
@@ -27,8 +27,10 @@ body
   height:     auto;
   width:      auto;
 */
-  opacity:    0;
-  display: none;
+  /*opacity:    0;
+  display: none;*/
+
+  margin-left: 120px;
 }
 
 .interactiveContainer
@@ -55,7 +57,7 @@ body
 }
 .striationLabel
 { height: 100%;
-  width:  70px;
+  width:  120px;
   font-size: 2em;
   font-family: Impact;
   vertical-align: middle;

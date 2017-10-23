@@ -513,45 +513,66 @@ atRoot.initialiseAtStore(atStore)
                         ( () => 
                           { requestOptions = defaultRequestOptions;
                             requestOptions.method = "GET"; 
-                            request
-                            ( requestOptions,
-                              (error, response, body) =>
-                              { //console.log("thePlan.js: gitlabRequstResponse", "error", error, "response", response, "\n\nbody", body);
 
-                                // console.log("body:", body);
-                                var issueList = JSON.parse(body);
-                                var issueListLength = issueList.length;
-                                // if (createdIssue.hasOwnProperty("id") )
-                                
-                                debugger;
+                            var requestFunction = 
+                            ( (currentPage) =>
+                              { requestOptions.qs =  
+                                { //"id":    6,
+                                  "state":    "all",
+                                  "page":     currentPage,
+                                  "per_page": 100,
+                                };
+                                request
+                                ( requestOptions,
+                                  (error, response, body) =>
+                                  { //console.log("thePlan.js: gitlabRequstResponse", "error", error, "response", response, "\n\nbody", body);
 
-                                var getXYFromTitle = /.* (.*)$/;
+                                    // console.log("body:", body);
+                                    var issueList = JSON.parse(body);
+                                    var issueListLength = issueList.length;
+                                    // if (createdIssue.hasOwnProperty("id") )
+                                    
+                                    debugger;
 
-                                for (var i=0; i < issueListLength; i++)
-                                { var issue = issueList[i];
-                                  var dictionaryKey = namespace(context, "traveller.thePlan.byIssueID."+issue.id+".xy", null, true)
-                                  ls("readEntryFromContext:", dictionaryKey);
+                                    var getXYFromTitle = /.* (.*)$/;
 
-                                  if (JSON.stringify(dictionaryKey) == JSON.stringify({})) dictionaryKey = false;
-                                  if (dictionaryKey == false)
-                                  { dictionaryKey = getXYFromTitle.exec(issue.title)[1];
-                                    ls("readEntryFromTitle", dictionaryKey);
+                                    for (var i=0; i < issueListLength; i++)
+                                    { var issue = issueList[i];
+                                      var dictionaryKey = namespace(context, "traveller.thePlan.byIssueID."+issue.id+".xy", null, true)
+                                      ls("readEntryFromContext:", dictionaryKey);
+
+                                      dictionaryKey = getXYFromTitle.exec(issue.title)[1];
+                                      // if (JSON.stringify(dictionaryKey) == JSON.stringify({})) dictionaryKey = false;
+                                      // if (dictionaryKey == false)
+                                      // { 
+                                      //   ls("readEntryFromTitle", dictionaryKey);
+                                      // }
+                                      issue.xy = dictionaryKey;
+                                      ls(issue.state);
+                                      ls(issue.number);
+                                      namespace(context, "traveller.thePlan.byIssueID")[issue.id] = issue;
+                                    }
+
+                                    if (issueListLength >= 99)
+                                    { setImmediate ( () => { requestFunction(currentPage++); } );
+                                    }
+                                    else 
+                                    { traveller.atStore = {};
+                                      namespace(traveller, "atStore")["updateThePlanIssues"] = {"update": [{"id": "thePlanIssueTracker__0_1_20"}, context ]};
+
+                                      traveller.traveller.express.req.res.send(JSON.stringify(namespace(context, "traveller.thePlan.byIssueID") , null, 3))
+                                      traveller.traveller.express.req.res.end();
+
+                                      traveller.traveller.suggestedExit = "commitChanges";
+                                      traverse(traveller, {});
+                                    } 
+                                    
                                   }
-                                  issue.xy = dictionaryKey;
-                                  namespace(context, "traveller.thePlan.byIssueID")[issue.id] = issue;
-
-                                }
-
-                                traveller.atStore = {};
-                                namespace(traveller, "atStore")["updateThePlanIssues"] = {"update": [{"id": "thePlanIssueTracker__0_1_20"}, context ]};
-
-                                traveller.traveller.express.req.res.send(JSON.stringify(namespace(context, "traveller.thePlan.byIssueID") , null, 3))
-                                traveller.traveller.express.req.res.end();
-
-                                traveller.traveller.suggestedExit = "commitChanges";
-                                traverse(traveller, {});
+                                );
                               }
                             );
+
+                            requestFunction(1);
                           }
                         );
                       }
