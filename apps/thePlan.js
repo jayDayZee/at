@@ -468,7 +468,7 @@ atRoot.initialiseAtStore(atStore)
   )
   .then
   ( () =>
-    { var versionNumber = "__0_1_15";
+    { var versionNumber = "__0_1_20";
 
       return new Promise
       ( (done, reject) =>
@@ -490,34 +490,28 @@ atRoot.initialiseAtStore(atStore)
                           }
 
                       var fs          = require("fs");
-                      var githubToken = fs.readFileSync("../githubToken");
+                      var githubToken = fs.readFileSync("githubToken", "utf8").replace("\n", "");
+                      var defaultRequestOptions = 
+                          {   
+                            // "url":    "https://gitlab.holochain.net/api/v4/projects/6/issues",
+                            // "url": "https://api.github.com",
+                            "url": "https://api.github.com/repos/christopherreay/thePlan/issues",
+                            "headers":
+                                { //"PRIVATE-TOKEN": "NZxriTAsS7WSbcLiwi6Z",
+                                  "Accept": "application/vnd.github.v3+json",
+                                  "User-Agent": "Awesome-thePlan-App",
+                                  "Authorization": githubToken,
+                                },
+                          };
+                          
                       
                       var operation =  namespace(traveller, "traveller.twilio.operation");
 
                       if (operation == "getAllIssues")
                       { setImmediate
                         ( () => 
-                          { var requestOptions = 
-                            { "method": "GET",
-                              // "url":    "https://gitlab.holochain.net/api/v4/projects/6/issues",
-                              // "url": "https://api.github.com",
-                              "url": "https://api.github.com/repos/christopherreay/thePlan/issues",
-                              "headers":
-                                  { "PRIVATE-TOKEN": "NZxriTAsS7WSbcLiwi6Z",
-                                    "Accept": "application/vnd.github.v3+json",
-                                    "User-Agent": "Awesome-thePlan-App",
-                                    "Authorization": "token b3de62730927afd41506cbc31692060d2fbdded7",
-                                  },
-                              // "qs":
-                              //     { //"id":    6,
-                              //       "title": "@ created issue",
-                              //     }
-                              // "json":  
-                              //     { //"id":    6,
-                              //       "title": "@ created issue, thePlan: "+dictionaryKey,
-                              //       "description": "",
-                              //     },
-                            } 
+                          { requestOptions = defaultRequestOptions;
+                            requestOptions.method = "GET"; 
                             request
                             ( requestOptions,
                               (error, response, body) =>
@@ -536,7 +530,7 @@ atRoot.initialiseAtStore(atStore)
                                 }
 
                                 traveller.atStore = {};
-                                namespace(traveller, "atStore")["updateThePlanIssues"] = {"update": [{"id": "thePlanIssueTracker__0_1_15"}, context ]};
+                                namespace(traveller, "atStore")["updateThePlanIssues"] = {"update": [{"id": "thePlanIssueTracker__0_1_20"}, context ]};
 
                                 traveller.traveller.express.req.res.send(JSON.stringify(namespace(context, "traveller.thePlan.byIssueID") , null, 3))
                                 traveller.traveller.express.req.res.end();
@@ -555,27 +549,14 @@ atRoot.initialiseAtStore(atStore)
                                 + traveller.traveller.twilio.x              + ":"
                                 + traveller.traveller.twilio.y
 
-                        var requestOptions = 
-                            { "method": "POST",
-                              // "url":    "https://gitlab.holochain.net/api/v4/projects/6/issues",
-                              // "url": "https://api.github.com",
-                              "url": "https://api.github.com/repos/christopherreay/thePlan/issues",
-                              "headers":
-                                  { "PRIVATE-TOKEN": "NZxriTAsS7WSbcLiwi6Z",
-                                    "Accept": "application/vnd.github.v3+json",
-                                    "User-Agent": "Awesome-thePlan-App",
-                                    "Authorization": "token 46ecabdfc73465e733ae16875f9bc385ffead758",
-                                  },
-                              // "qs":
-                              //     { //"id":    6,
-                              //       "title": "@ created issue",
-                              //     }
-                              "json":  
-                                  { //"id":    6,
-                                    "title": "@ created issue, thePlan: "+dictionaryKey,
-                                    "description": "",
-                                  },
-                            } 
+                        var requestOptions = defaultRequestOptions;
+                        requestOptions.method = "POST";
+                        requestOptions.json =  
+                            { //"id":    6,
+                              "title": "@ created issue, thePlan: "+dictionaryKey,
+                              "description": "",
+                            };
+                           
                         request
                         ( requestOptions,
                           (error, response, body) =>
@@ -597,7 +578,7 @@ atRoot.initialiseAtStore(atStore)
                               namespace(context, "traveller.thePlan.byIssueID")[createdIssue.id] = createdIssue
 
                               traveller.atStore = {};
-                              namespace(traveller, "atStore")["updateThePlanIssues"] = {"update": [{"id": "thePlanIssueTracker__0_1_15"}, context ]};
+                              namespace(traveller, "atStore")["updateThePlanIssues"] = {"update": [{"id": "thePlanIssueTracker__0_1_20"}, context ]};
                               setImmediate
                               ( () => 
                                 { traveller.traveller.express.req.res.send(JSON.stringify(createdIssue , null, 3));
@@ -623,7 +604,7 @@ atRoot.initialiseAtStore(atStore)
                   [ { "name"                    : "thePlanIssueTracker"+versionNumber,
                       "id"                      : "thePlanIssueTracker"+versionNumber,
                       
-                      "init"                    : "context.traveller.js2xmlparser = graph.js2xmlparser__0_1_15",
+                      "init"                    : "context.traveller.js2xmlparser = graph.js2xmlparser__0_1_20",
                       "traveller.codeBlock"     : nodeCodeBlock, 
                     },
                      {  "name"                    : "js2xmlparser"+versionNumber,

@@ -56,6 +56,10 @@ body
 .striationLabel
 { height: 100%;
   width:  70px;
+  font-size: 2em;
+  font-family: Impact;
+  vertical-align: middle;
+
 }
 .red
 { background-color: rgba(255, 0,   0  , 0.3);

@@ -26,7 +26,7 @@ var namespace = atRoot.namespace;
   req.atRoot.namespace(traveller, "traveller").twilio = JSON.parse(JSON.stringify(req.body));
   console.log("post req body", req.body);
   req.atRoot.namespace(traveller, "traveller.express").req = req;
-  traveller.traveller.suggestedExit = "thePlanIssueTracker__0_1_15";
+  traveller.traveller.suggestedExit = "thePlanIssueTracker__0_1_20";
   req.atRoot.traverse(traveller, {});
 
 });
