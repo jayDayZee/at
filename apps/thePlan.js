@@ -509,18 +509,20 @@ atRoot.initialiseAtStore(atStore)
                       var operation =  namespace(traveller, "traveller.twilio.operation");
 
                       if (operation == "getAllIssues")
-                      { setImmediate
+                      { namespace(traveller, "traveller.thePlan.githubIssueOptions");
+                        setImmediate
                         ( () => 
                           { requestOptions = defaultRequestOptions;
                             requestOptions.method = "GET"; 
 
                             var requestFunction = 
                             ( (currentPage) =>
-                              { requestOptions.qs =  
+                              { var pageSize = 100;
+                                requestOptions.qs =  
                                 { //"id":    6,
                                   "state":    "all",
                                   "page":     currentPage,
-                                  "per_page": 100,
+                                  "per_page": pageSize,
                                 };
                                 request
                                 ( requestOptions,
@@ -553,8 +555,8 @@ atRoot.initialiseAtStore(atStore)
                                       namespace(context, "traveller.thePlan.byIssueID")[issue.id] = issue;
                                     }
 
-                                    if (issueListLength >= 99)
-                                    { setImmediate ( () => { requestFunction(currentPage++); } );
+                                    if (issueListLength >= pageSize)
+                                    { setImmediate ( () => { requestFunction(currentPage+1); } );
                                     }
                                     else 
                                     { traveller.atStore = {};
