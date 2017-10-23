@@ -656,6 +656,11 @@ atRoot.initialiseAtStore(atStore)
                   //     };
 
                   // traveller.traveller.suggestedExit = "commitChanges";
+                  debugger;
+                  
+                  traveller.atStore = {};
+                  traveller.atStore.updateNode = {"update": [ { "$set": { "traveller.codeBlock": nodeCodeBlock }, }, ], };
+                  traveller.traveller.suggestedExit = "commitChanges";
 
                   done();
                 }
