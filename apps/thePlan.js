@@ -504,7 +504,8 @@ atRoot.initialiseAtStore(atStore)
                                 },
                           };
                           
-                      
+                      debugger;
+
                       var operation =  namespace(traveller, "traveller.twilio.operation");
 
                       if (operation == "getAllIssues")
@@ -517,15 +518,27 @@ atRoot.initialiseAtStore(atStore)
                               (error, response, body) =>
                               { //console.log("thePlan.js: gitlabRequstResponse", "error", error, "response", response, "\n\nbody", body);
 
-                                console.log("body:", body);
+                                // console.log("body:", body);
                                 var issueList = JSON.parse(body);
                                 var issueListLength = issueList.length;
                                 // if (createdIssue.hasOwnProperty("id") )
+                                
+                                debugger;
+
+                                var getXYFromTitle = /.* (.*)$/;
+
                                 for (var i=0; i < issueListLength; i++)
                                 { var issue = issueList[i];
-                                  var dictionaryKey = namespace(context, "traveller.thePlan.byIssueID."+issue.id+".xy")
+                                  var dictionaryKey = namespace(context, "traveller.thePlan.byIssueID."+issue.id+".xy", null, true)
+                                  ls("readEntryFromContext:", dictionaryKey);
+
+                                  if (JSON.stringify(dictionaryKey) == JSON.stringify({})) dictionaryKey = false;
+                                  if (dictionaryKey == false)
+                                  { dictionaryKey = getXYFromTitle.exec(issue.title)[1];
+                                    ls("readEntryFromTitle", dictionaryKey);
+                                  }
                                   issue.xy = dictionaryKey;
-                                  namespace(context, "traveller.thePlan.byIssueID")[issue.id] = issue
+                                  namespace(context, "traveller.thePlan.byIssueID")[issue.id] = issue;
 
                                 }
 
@@ -562,7 +575,7 @@ atRoot.initialiseAtStore(atStore)
                           (error, response, body) =>
                           { //console.log("thePlan.js: gitlabRequstResponse", "error", error, "response", response, "\n\nbody", body);
 
-                            console.log("body:", body);
+                            // console.log("body:", body);
                             var createdIssue = body;
                             // if (createdIssue.hasOwnProperty("id") )
                             { console.log("index.js: gitlabRequestResponse:", createdIssue);
@@ -571,7 +584,7 @@ atRoot.initialiseAtStore(atStore)
                               var dictionaryKey =
                                   traveller.traveller.twilio.striationLabel + ":"
                                 + traveller.traveller.twilio.x              + ":"
-                                + traveller.traveller.twilio.y
+                                + traveller.traveller.twilio.y;
 
                               // context.traveller.thePlan.xy[dictionaryKey] = {"gitlabIssue": createdIssue};
                               createdIssue.xy = dictionaryKey;
@@ -606,6 +619,7 @@ atRoot.initialiseAtStore(atStore)
                       
                       "init"                    : "context.traveller.js2xmlparser = graph.js2xmlparser__0_1_20",
                       "traveller.codeBlock"     : nodeCodeBlock, 
+                      "traveller.issueTracker.github.regex.getXYFromTitle": /.* (.*)$/,
                     },
                      {  "name"                    : "js2xmlparser"+versionNumber,
                         "id"                      : "js2xmlparser"+versionNumber,
@@ -657,12 +671,28 @@ atRoot.initialiseAtStore(atStore)
 
                   // traveller.traveller.suggestedExit = "commitChanges";
                   debugger;
-                  
-                  traveller.atStore = {};
-                  traveller.atStore.updateNode = {"update": [ { "$set": { "traveller.codeBlock": nodeCodeBlock }, }, ], };
+
+                  namespace(traveller, "traveller.mocha");
+                  traveller.traveller.mocha.done    = done;
+                  traveller.traveller.mocha.reject  = reject;
+                  traveller.traveller.mocha.assertConditions = 
+                  { 
+                  }
+
+                  var thePlanIssueTracker_currentVersion = 
+
+                  traveller.atStore                 = {};
+                  traveller.atStore.updateNode      = 
+                      {"update": 
+                          [ { "id"  : "thePlanIssueTracker"+versionNumber
+                            }, 
+                            { "$set": { "traveller.codeBlock": nodeCodeBlock }, 
+                            }, 
+                          ], 
+                      };
                   traveller.traveller.suggestedExit = "commitChanges";
 
-                  done();
+                  atRoot.traverse(traveller, {});
                 }
               }
             )

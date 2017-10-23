@@ -297,7 +297,7 @@ else
               { if ( ! key.startsWith("__"))
                 { var functionName    = Object.keys(traveller.atRoot[key])[0];
                   var functionParams  = traveller.atRoot[key][functionName];
-                  ls("traverse: traveller.atRoot:", functionName, functionParams );
+                  // ls("traverse: traveller.atRoot:", functionName, functionParams );
                   //should this be atRoot.results? or atRoot.__results? I like this because it leaves the namespaces clean, and noone ever has to remember anything anyway.
                   //  people should be using some kind of sub namespace for all their stuff. this is root root stuff, which is why I have made everything traveller.traveller.xyzetc
                   namespace(traveller, "results.atRoot");
@@ -317,7 +317,7 @@ else
                 { var functionName    = Object.keys(traveller.atStore[key])[0];
                   var functionParams  = traveller.atStore[key][functionName];
 
-                  ls("traverse: traveller.atStore:", functionName, functionParams );
+                  // ls("traverse: traveller.atStore:", functionName, functionParams );
                   //should this be atRoot.results? or atRoot.__results? I like this because it leaves the namespaces clean, and noone ever has to remember anything anyway.
                   //  people should be using some kind of sub namespace for all their stuff. this is root root stuff, which is why I have made everything traveller.traveller.xyzetc
                   //  theres also this thing of being able to control read/write permissions of areas of the namespace. /results is kind of open.
@@ -395,7 +395,7 @@ else
                       destination = traveller.suggestedExitQueue.shift();
 
                   if (!destination) 
-                  { console.dir("End context:", traveller)
+                  { //console.dir("End context:", traveller)
                     if (traveller.traveller.callback) 
                     { setImmediate(function(){var callback = traveller.traveller.callback; delete traveller.traveller.callback; callback(traveller);});
                     }
