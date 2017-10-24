@@ -128,6 +128,9 @@ thePlan.openSideBar =
       //window.open(thePlan.issues[dotIdentity.dictionaryKey].html_url);
       thePlan.newIssueContainer.appendTo(thePlan.doubleBuffer);
 
+      thePlan.fullSizeModalSpinner.toggleClass("open", true).appendTo(thePlan.sideBar);
+      thePlan.fullSizeModalSpinner.toggleClass(thePlan.selectedColor.color+"3", true)
+
       var ajaxOptions = 
       { "method": "POST",
         "url"   : "/",
@@ -144,6 +147,8 @@ thePlan.openSideBar =
         .done
         ( (data) => 
           { console.log(data);
+            thePlan.fullSizeModalSpinner.toggleClass("open", false);
+            thePlan.fullSizeModalSpinner.toggleClass(thePlan.selectedColor.color+"3", false)
             // $(".issueIframe").attr("src", data.url);
             // var browserUrl = data.html_url;
             
@@ -165,6 +170,8 @@ thePlan.openSideBar =
 
             var browserUrl = data.html_url;
 
+
+
             $("<div class='openGithubIssue'><div class='externalLinkSymbol' /> </div>")
               .appendTo(thePlan.commentSideBarItemContainer)
               .on
@@ -185,6 +192,7 @@ thePlan.openSideBar =
         return;
       }
       thePlan.sideBarComponent.toggleClass("open", true);
+
 
       if (thePlan.hasOwnProperty("commentSideBarItemContainer"))
       { thePlan.commentSideBarItemContainer.appendTo(thePlan.doubleBuffer);
@@ -239,6 +247,9 @@ thePlan.getAllIssues =
             if ( issue.state == "open" && JSON.stringify(issue.xy) !== JSON.stringify({}) )
             { thePlan.issues[issue.xy] = issue;
             }
+            // if ( issue.state == "closed" && issue.body != null)
+            //  { thePlan.issues[issue.xy] = issue;
+            // } 
             console.log(issue.state);
           }
 
