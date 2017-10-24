@@ -86,6 +86,7 @@ thePlan.checkModalState =
     { thePlan.closeModal();
       thePlan.modalState = false;
       toReturn = true;
+      $(".newIssueColorResponsive").toggleClass(thePlan.selectedColor.data("thePlan.issueTypeColorData").color+"3", false);
     }
     
     return toReturn;
@@ -415,6 +416,7 @@ thePlan.createDivs =
                     thePlan.fullSizeModalSpinner.toggleClass(thePlan.selectedColor.data("thePlan.issueTypeColorData")+"7", false)
                     thePlan.newIssueTitleField.val("");
                     $(".issueTypeColor").toggleClass("selected", false);
+                    $(".newIssueColorResponsive").toggleClass(thePlan.selectedColor.data("thePlan.issueTypeColorData").color+"3", false);
                     thePlan.newIssueContainer.appendTo(thePlan.doubleBuffer);
                   },
                   1000
