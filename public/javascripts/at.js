@@ -511,11 +511,15 @@ thePlan.createDivs =
                     if (colorIndex == -1)
                     { currentDot.toggleClass("hasIssue", true);
                     }
+                    var splitLocation = issue.xy.split(":");
+                    currentDot.data("positionData", {"striationLabel": issue.dotStriationLabel, "x": splitLocation[1], "y": splitLocation[2], "dictionaryKey": issue.xy, "issue": issue} );
                     currentDot.tooltip({
                         content: function () {
                             return $(this).prop('title');
                         }
                     });
+
+                    thePlan.issues[issue.xy] = issue;
 
                     // thePlan.fullSizeModalSpinner.hide();
                     thePlan.checkModalState();
