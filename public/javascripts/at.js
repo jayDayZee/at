@@ -55,7 +55,11 @@ $(document).on
             ( "click", ".dot", 
               (event) => 
               { var clickedDot = $(event.currentTarget).data("positionData");
-                if (thePlan.currentDot == clickedDot) return;
+                if (thePlan.currentDot == clickedDot)
+                { if (thePlan.checkModalState())
+                  { return;
+                  }
+                }
                 // if (thePlan.checkModalState()) return;
                 thePlan.currentDot = clickedDot;
                 
