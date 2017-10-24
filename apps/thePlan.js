@@ -508,7 +508,60 @@ atRoot.initialiseAtStore(atStore)
 
                       var operation =  namespace(traveller, "traveller.twilio.operation");
 
-                      if (operation == "getAllIssues")
+                      if (operation == "getIssueComments")
+                      { namespace(traveller, "traveller.thePlan.githubIssueOptions");
+                        setImmediate
+                        ( () => 
+                          { debugger;
+
+                            requestOptions = defaultRequestOptions;
+                            requestOptions.method = "GET";
+                            requestOptions.url = 
+                                "https://api.github.com/repos/christopherreay/thePlan/issues" +
+                                "/" + traveller.traveller.twilio["issue[number]"]             +
+                                "/comments"                                                   +
+                                "";
+                            var completeCommentList = [];
+
+                            var requestFunction = 
+                            ( (currentPage) =>
+                              { var pageSize = 100;
+                                requestOptions.qs =  
+                                { //"id":    6,
+                                  "state":    "all",
+                                  "page":     currentPage,
+                                  "per_page": pageSize,
+                                };
+                                request
+                                ( requestOptions,
+                                  (error, response, body) =>
+                                  { //console.log("thePlan.js: gitlabRequstResponse", "error", error, "response", response, "\n\nbody", body);
+
+                                    // console.log("body:", body);
+                                    var commentList = JSON.parse(body);
+                                    
+                                    completeCommentList = completeCommentList.concat(commentList);
+
+                                    if (commentList.length >= pageSize)
+                                    { setImmediate ( () => { requestFunction(currentPage+1); } );
+                                    }
+                                    else 
+                                    { traveller.traveller.express.req.res.json(completeCommentList);
+                                      traveller.traveller.express.req.res.end();
+
+                                      traverse(traveller, {});
+                                    } 
+                                    
+                                  }
+                                );
+                              }
+                            );
+
+                            requestFunction(1);
+                          }
+                        );
+                      }
+                      else if (operation == "getAllIssues")
                       { namespace(traveller, "traveller.thePlan.githubIssueOptions");
                         setImmediate
                         ( () => 

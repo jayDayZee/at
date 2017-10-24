@@ -219,6 +219,24 @@ body
   cursor:         pointer;
 }
 
+.commentsContainer
+{ max-height: 80%;
+
+  overflow-y: scroll;
+}
+.comment
+{ width:    85%;
+  margin:   2.5%;
+  
+  padding:  0px 2.5%;
+  overflow: auto;
+
+  background-color: rgba(0,0,0,0.3);
+  
+  border-radius: 10px;
+
+  /*text-align: justify;*/
+}
 /* ########## TOOOLS
 */
 

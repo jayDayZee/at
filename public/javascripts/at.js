@@ -11,7 +11,7 @@ thePlan =
     "indigo": {"name": "Design / Strategy Talk",      "rgb": "(255, 0,   255)", "label": "Exa"      ,   },
     "violet": {"name": "Meta / Politics",             "rgb": "(255, 146, 147)", "label": "Iso"      ,   },
   },
-  tabindex: 0,
+  "tabindex": 0,
 
   // TODO: add hover issue summary
 };
@@ -22,7 +22,9 @@ $(document).on
   { if (document.readyState == "complete")
     { setTimeout
       ( () =>
-        { thePlan.eschatonNaturalHeight = $(".eschaton").get(0).naturalHeight;
+        { thePlan.markDownConverter = new showdown.Converter();
+
+          thePlan.eschatonNaturalHeight = $(".eschaton").get(0).naturalHeight;
           thePlan.eschatonNaturalWidth  = $(".eschaton").get(0).naturalWidth;
 
           thePlan.eschatonRatio = thePlan.eschatonNaturalWidth / thePlan.eschatonNaturalHeight;
@@ -86,7 +88,9 @@ thePlan.checkModalState =
     { thePlan.closeModal();
       thePlan.modalState = false;
       toReturn = true;
-      $(".newIssueColorResponsive").toggleClass(thePlan.selectedColor.data("thePlan.issueTypeColorData").color+"3", false);
+      if (thePlan.hasOwnProperty("selectedColor") )
+      { $(".newIssueColorResponsive").toggleClass(thePlan.selectedColor.data("thePlan.issueTypeColorData").color+"3", false);
+      }
     }
     
     return toReturn;
@@ -104,6 +108,38 @@ thePlan.openSideBar =
 
     if (thePlan.issues.hasOwnProperty(dotIdentity.dictionaryKey))
     { //window.open(thePlan.issues[dotIdentity.dictionaryKey].html_url);
+
+      var ajaxOptions = 
+      { "method": "POST",
+        "url"   : "/",
+        "data"  : 
+          $.extend
+          ( {}, 
+            thePlan.currentDot, 
+            { "operation": "getIssueComments",
+            } 
+          ),
+        "dataType": "JSON",
+      };
+      $.ajax("/", ajaxOptions)
+        .done
+        ( (data) => 
+          { console.log(data);
+            // $(".issueIframe").attr("src", data.url);
+            // var browserUrl = data.html_url;
+            // window.open(browserUrl, "_blank");
+            thePlan.commentsContainer = $("<div class='commentsContainer' />");
+            for (var i=0; i<data.length; i++)
+            { $("<div class='comment'>"+thePlan.markDownConverter.makeHtml(data[i].body)+"</div>").appendTo(thePlan.commentsContainer);
+            }
+            thePlan.sideBar.innerHTML = "";
+
+            thePlan.sideBar.append(thePlan.commentsContainer);
+
+            thePlan.sideBar.toggleClass("show", true);
+          }
+        );
+
     }
     else
     { thePlan.sideBar.innerHTML = "";
@@ -256,7 +292,7 @@ thePlan.createDivs =
           }
           else
           { var issue = thePlan.issues[dictionaryKey]
-            currentDot.attr("title", "<strong>"+issue.title+"</strong><br><br>"+issue.body);
+            currentDot.attr("title", "<strong>"+issue.title+"</strong><br><br>"+thePlan.markDownConverter.makeHtml(issue.body));
             currentDot.toggleClass("hasIssue", true);
           }
           currentDot.height(sizeOfDots);
