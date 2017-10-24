@@ -143,7 +143,7 @@ thePlan.openSideBar =
           { console.log(data);
             // $(".issueIframe").attr("src", data.url);
             // var browserUrl = data.html_url;
-            // window.open(browserUrl, "_blank");
+            
             thePlan.sideBar.empty();
             thePlan.commentSideBarItemContainer = $("<div class='commentSideBarItemContainer' />");
             $("<div class='issueTitle commentSideBarItem'>" +thePlan.currentDot.issue.title+ "</div>").appendTo(thePlan.commentSideBarItemContainer);
@@ -156,6 +156,17 @@ thePlan.openSideBar =
 
             thePlan.commentSideBarItemContainer.append(thePlan.commentsContainer);
             thePlan.sideBar.append(thePlan.commentSideBarItemContainer);
+
+            var browserUrl = data.html_url;
+
+            $("<div class='openGithubIssue'><div class='externalLinkSymbol' /> </div>")
+              .appendTo(thePlan.commentSideBarItemContainer)
+              .on
+              ( "click",
+                () =>
+                { window.open(dotIdentity.issue.html_url, "_blank");
+                }
+              );
 
             thePlan.sideBar.toggleClass("show", true);
           }

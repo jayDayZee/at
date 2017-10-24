@@ -278,6 +278,35 @@ body
 
   /*text-align: justify;*/
 }
+.openGithubIssue
+{     position: absolute;
+
+    display: flex;
+    justify-content: center;
+
+    bottom: 80px;
+    width: 90%;
+    height: 40px;
+    margin: auto;
+    padding: 5%;
+
+    border-radius: 10px;
+
+}
+.openGithubIssue > .externalLinkSymbol
+{   width:  60px;
+    height: 60px;
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    background-size: 60%;
+    
+}
+.openGithubIssue > .externalLinkSymbol:hover
+{    background-color: rgba(0,0,0, 0.3);
+    
+}
 /* ########## TOOOLS
 */
 
@@ -313,5 +342,11 @@ body
   left:     -2000px;
   top:      -2000px;
 }
+.externalLinkSymbol
+{     background-image: url(/graphics/externalLinkSymbol.svg);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 
+}
 
