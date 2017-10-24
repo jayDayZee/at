@@ -284,7 +284,7 @@ body
   background-size:      40%;
 }
 
-.fullSizeModalSpinner.open
+.fullSizeModal.spinner.open
 { display: block;
 }
 .fullSizeModalGrey.open

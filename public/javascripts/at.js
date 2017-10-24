@@ -364,7 +364,7 @@ thePlan.createDivs =
     thePlan.newIssueContainer     = $("<div class='newIssueContainer' />");
     thePlan.newIssueContainer.append(thePlan.issueTypeColorsContainer).append(thePlan.newIssueTitleField).append(thePlan.newIssueCreateButton);
 
-    thePlan.fullSizeModalSpinner  = $("<div class='fullSizeModalSpinner modal' />");
+    thePlan.fullSizeModalSpinner  = $("<div class='fullSizeModal spinner modal' />");
 
     thePlan.doubleBuffer          = $("<div class='doubleBuffer' />");
     
