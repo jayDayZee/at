@@ -99,6 +99,7 @@ thePlan.checkModalState =
       if (thePlan.hasOwnProperty("selectedColor") )
       { $(".newIssueColorResponsive").toggleClass(thePlan.selectedColor.color+"3", false);
       }
+      thePlan.sideBar.toggleClass("commentList", false);
     }
     
     return toReturn;
@@ -121,7 +122,9 @@ thePlan.openSideBar =
     var dotIdentity = thePlan.currentDot;
 
     if (thePlan.issues.hasOwnProperty(dotIdentity.dictionaryKey))
-    { thePlan.sideBarComponent.toggleClass("open", true);
+    { thePlan.sideBar.toggleClass("commentList", true);
+      thePlan.sideBarComponent.toggleClass("open", true);
+
       //window.open(thePlan.issues[dotIdentity.dictionaryKey].html_url);
       thePlan.newIssueContainer.appendTo(thePlan.doubleBuffer);
 
@@ -170,7 +173,6 @@ thePlan.openSideBar =
                 { window.open(dotIdentity.issue.html_url, "_blank");
                 }
               );
-
             thePlan.sideBar.toggleClass("show", true);
           }
         );

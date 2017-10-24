@@ -172,6 +172,12 @@ body
 .sideBar.open
 { right: 0px; 
 }
+.sideBar.open .sideBarCloseButton
+{ display: block;
+}
+.sideBar.commentList
+{ justify-content: flex-start;
+}
 .sideBarCloseButton
 { position: absolute;
 
@@ -186,8 +192,12 @@ body
   background-color: white;
   outline: 6px solid rgba(255, 255, 255, 0.5);
   margin: 6px;
+      margin-left: -31px;
+    margin-top: 0px;
 
   cursor: pointer;
+
+  display: none;
 }
 
 .issueTypeColorsContainer
@@ -238,7 +248,7 @@ body
 
 
 .commentSideBarItemContainer
-{ 
+{     background-color: rgba(255,255,255, 0.6);
 }
 .commentSideBarItem
 { width:    90%;
@@ -301,7 +311,7 @@ body
     cursor: pointer;
 
     background-size: 60%;
-    
+
 }
 .openGithubIssue > .externalLinkSymbol:hover
 {    background-color: rgba(0,0,0, 0.3);
