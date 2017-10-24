@@ -311,7 +311,7 @@ thePlan.createDivs =
                 striationObject.label     + ":"
               + dots_allTheWayAcross      + ":"
               + dots_7high
-          currentDot.toggleClass(dictionaryKey, true);
+          currentDot.toggleClass(dictionaryKey.replace(/:/g, "_"), true);
           if (! thePlan.issues.hasOwnProperty(dictionaryKey) )
           { //currentDot.attr("title", "<input />");
             // currentDot.toggleClass("hasIssue", true);
@@ -489,6 +489,34 @@ thePlan.createDivs =
                     // $(".issueIframe").attr("src", data.url);
                     var browserUrl = data.html_url;
                     window.open(browserUrl, "_blank");
+
+                    var issue = data;
+
+                    var dotCSSClass = issue.xy.replace(/:/g, "_");
+                    var currentDot  = $("."+dotCSSClass);
+
+                    currentDot.attr("title", "<strong>"+issue.title+"</strong><br><br>"+thePlan.markDownConverter.makeHtml(issue.body));
+                    var colorIndex = -1;
+                    if (issue.labels.length > 0)
+                    { for (var i=0; i<issue.labels.length; i++)
+                      { var labelIndex = thePlan.striationLabels.indexOf(issue.labels[i].name);
+                        if ( labelIndex > -1 )
+                        { colorIndex = 6 - labelIndex;
+                          issue.dotColor = thePlan.striationOrder[colorIndex];
+                          issue.dotStriationLabel = thePlan.striationLabels[labelIndex];
+                          currentDot.toggleClass(issue.dotColor+"3", true);
+                        }
+                      }
+                    }
+                    if (colorIndex == -1)
+                    { currentDot.toggleClass("hasIssue", true);
+                    }
+                    currentDot.tooltip({
+                        content: function () {
+                            return $(this).prop('title');
+                        }
+                    });
+
                     // thePlan.fullSizeModalSpinner.hide();
                     thePlan.checkModalState();
                   },
