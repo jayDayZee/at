@@ -192,7 +192,7 @@ body
 { border-radius:  50%;
 }
 .newIssueTitleField
-{ width:          95%;
+{ width:          90%;
   border-radius:  20px;
   margin:         2.5%;
   height:         30px;
@@ -222,7 +222,7 @@ body
 /* ########## TOOOLS
 */
 
-.fullSizeModalSpinner
+.fullSizeModal
 { display: none;
 
   position: absolute;
@@ -233,14 +233,26 @@ body
   width:  100%;
   height: 100%;
 
-  background-image:     url(/graphics/psychadelicHeart.trans.gif);
+  background-color: rgba(0,0,0,0.4);
+}
+.fullSizeModal.spinner
+{ background-image:     url(/graphics/psychadelicHeart.trans.gif);
   background-repeat:    no-repeat;
   background-position:  center;
   background-size:      40%;
 }
+
 .fullSizeModalSpinner.open
 { display: block;
 }
+.fullSizeModalGrey.open
+{ display: block;
+}
 
+.doubleBuffer
+{ position: absolute;
+  left:     -2000px;
+  top:      -2000px;
+}
 
 

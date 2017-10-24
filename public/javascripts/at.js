@@ -52,11 +52,9 @@ $(document).on
               (event) => 
               { if (thePlan.checkModalState()) return;
 
-                var dotIdentity = $(event.currentTarget).data("positionData");
-                
-                console.log( dotIdentity );
-
-                thePlan.openSideBar(dotIdentity);
+                thePlan.currentDot = $(event.currentTarget).data("positionData");
+                console.log( thePlan.currentDot );
+                thePlan.openSideBar();
               } 
             );
 
@@ -98,153 +96,24 @@ thePlan.closeModal =
   }
 
 thePlan.openSideBar =
-  (dotIdentity) =>
+  () =>
   { thePlan.modalState = true;
     thePlan.sideBarComponent.toggleClass("open", true);
-    
+    var dotIdentity = thePlan.currentDot;
+
     if (thePlan.issues.hasOwnProperty(dotIdentity.dictionaryKey))
     { //window.open(thePlan.issues[dotIdentity.dictionaryKey].html_url);
     }
     else
     { thePlan.sideBar.innerHTML = "";
 
+      thePlan.sideBar.append(thePlan.newIssueContainer);
+      thePlan.issueTypeColorsContainer.find(":first-child").click().focus();
+
       // thePlan.sideBar.append(thePlan.issueTypeColorsContainer);
       // thePlan.sideBar.append(thePlan.newIssueTitleField);
       // thePlan.sideBar.append(thePlan.newIssueCreateButton);
-      thePlan.sideBar.append(thePlan.newIssueContainer);
-
-      //issueTypeColorManager
-      thePlan.issueTypeColorsContainer.on
-          ( "click", ".issueTypeColor", 
-            (event) => 
-            { thePlan.selectedColor = $(event.currentTarget);
-
-              $(".issueTypeColor").toggleClass("selected", false);
-              thePlan.selectedColor.toggleClass("selected", true);
-            } 
-          );
-      thePlan.issueTypeColorsContainer.on
-      ( "focus", ".issueTypeColor",
-        (event) =>
-        { $(".newIssueColorResponsive").toggleClass(thePlan.selectedColor.data("thePlan.issueTypeColorData").color+"3", false);
-          $(".newIssueColorResponsive").toggleClass($(event.currentTarget).data("thePlan.issueTypeColorData").color+"3", true);
-          thePlan.selectedColor = $(event.currentTarget);
-      });
-      thePlan.issueTypeColorsContainer.on
-      ( "keyup", ".issueTypeColor",
-        (event) =>
-        { if (event.keyCode == 32 || event.keyCode == 13) 
-          { // space and enter
-            event.currentTarget.click();
-            thePlan.newIssueTitleField.focus();
-          }
-      });
-      thePlan.issueTypeColorsContainer.on
-      ( "keydown", ".issueTypeColor",
-        (event) =>
-        { console.log(event);
-          // var cycleDict = 
-          // { "9":  { false: [":last-child", ":first-child"] }.
-          //         { true:  [":first-child", ":last-child"] ),
-          // }
-          
-          if (event.keyCode == 9 && event.shiftKey == false) 
-          { // space and enter
-            if ($(event.currentTarget).is(":last-child"))
-            { thePlan.issueTypeColorsContainer.find(":first-child").focus();
-              // thePlan.issueTypeColorsContainer.trigger("focus");
-              return false
-            }
-          }
-          if (event.keyCode == 9 && event.shiftKey == true) 
-          { // space and enter
-            if ($(event.currentTarget).is(":first-child"))
-            { thePlan.issueTypeColorsContainer.find(":last-child").focus();
-              // thePlan.issueTypeColorsContainer.trigger("focus");
-              return false;
-            }
-          }
-      });
-      thePlan.issueTypeColorsContainer.find(":first-child").click().focus();
-
-      // Enter Issue Title
-      thePlan.newIssueTitleField.on
-      ( "keyup",
-        (event) =>
-        { if (event.keyCode == 13) 
-          { // space and enter
-            thePlan.newIssueCreateButton.focus();
-          }
-      });
-
-      // Create new Issue  
-      thePlan.newIssueCreateButton.on
-      ( "keydown",
-        (event) =>
-        { console.log(event);
-          if (event.keyCode == 9) 
-          { // tab
-            thePlan.issueTypeColorsContainer.find(":first-child").focus();
-            return false;
-          }
-      });
-      thePlan.newIssueCreateButton.on
-      ( "keyup",
-        (event) =>
-        { if (event.keyCode == 32 || event.keyCode == 13) 
-          { // space and enter
-            thePlan.newIssueCreateButton.click();
-          }
-      });
-      thePlan.newIssueCreateButton.on
-      ( "click",
-        (event) =>
-        { thePlan.fullSizeModalSpinner.toggleClass("open", true).appendTo(thePlan.sideBar);
-          thePlan.fullSizeModalSpinner.toggleClass(thePlan.selectedColor.data("thePlan.issueTypeColorData")+"3", true)
-
-          var newIssueTitle = thePlan.newIssueTitleField.val();
-          if (newIssueTitle.length < 5)
-          { alert("Issue title must be at lest 5 characters");
-            thePlan.newIssueTitleField.focus();
-            return;
-          }
-
-          var ajaxOptions = 
-          { "method": "POST",
-            "url"   : "/",
-            "data"  : 
-                $.extend
-                ( {}, 
-                  dotIdentity, 
-                  { "title": newIssueTitle ,
-                  } 
-                ),
-
-            "dataType": "JSON",
-          };
-          console.log(ajaxOptions);
-          $.ajax("/", ajaxOptions)
-            .done
-            ( (data) => 
-              { setTimeout
-                ( () =>
-                  { console.log(data);
-                    // $(".issueIframe").attr("src", data.url);
-                    var browserUrl = data.html_url;
-                    window.open(browserUrl, "_blank");
-                    // thePlan.fullSizeModalSpinner.hide();
-                    thePlan.checkModalState();
-                    thePlan.fullSizeModalSpinner.toggleClass(thePlan.selectedColor.data("thePlan.issueTypeColorData")+"7", false)
-                    thePlan.newIssueTitleField.val("");
-                    $(".issueTypeColor").toggleClass("selected", false);
-                    $(".sideBar > *").remove();
-                  },
-                  200
-                );
-              }
-            );
-        }
-      );
+      
 
       //var ajaxOptions = 
       // { "method": "POST",
@@ -415,6 +284,145 @@ thePlan.createDivs =
     thePlan.newIssueContainer.append(thePlan.issueTypeColorsContainer).append(thePlan.newIssueTitleField).append(thePlan.newIssueCreateButton);
 
     thePlan.fullSizeModalSpinner  = $("<div class='fullSizeModalSpinner modal' />");
+
+    thePlan.doubleBuffer          = $("<div class='doubleBuffer' />");
+    
+    $("body").append(thePlan.doubleBuffer);
+      thePlan.doubleBuffer.append(thePlan.newIssueContainer);
+
+
+      //issueTypeColorManager
+      thePlan.issueTypeColorsContainer.on
+          ( "click", ".issueTypeColor", 
+            (event) => 
+            { thePlan.selectedColor = $(event.currentTarget);
+
+              $(".issueTypeColor").toggleClass("selected", false);
+              thePlan.selectedColor.toggleClass("selected", true);
+            } 
+          );
+      thePlan.issueTypeColorsContainer.on
+      ( "focus", ".issueTypeColor",
+        (event) =>
+        { $(".newIssueColorResponsive").toggleClass(thePlan.selectedColor.data("thePlan.issueTypeColorData").color+"3", false);
+          $(".newIssueColorResponsive").toggleClass($(event.currentTarget).data("thePlan.issueTypeColorData").color+"3", true);
+          thePlan.selectedColor = $(event.currentTarget);
+      });
+      thePlan.issueTypeColorsContainer.on
+      ( "keyup", ".issueTypeColor",
+        (event) =>
+        { if (event.keyCode == 32 || event.keyCode == 13) 
+          { // space and enter
+            event.currentTarget.click();
+            thePlan.newIssueTitleField.focus();
+          }
+      });
+      thePlan.issueTypeColorsContainer.on
+      ( "keydown", ".issueTypeColor",
+        (event) =>
+        { console.log(event);
+          // var cycleDict = 
+          // { "9":  { false: [":last-child", ":first-child"] }.
+          //         { true:  [":first-child", ":last-child"] ),
+          // }
+          
+          if (event.keyCode == 9 && event.shiftKey == false) 
+          { // space and enter
+            if ($(event.currentTarget).is(":last-child"))
+            { thePlan.issueTypeColorsContainer.find(":first-child").focus();
+              // thePlan.issueTypeColorsContainer.trigger("focus");
+              return false
+            }
+          }
+          if (event.keyCode == 9 && event.shiftKey == true) 
+          { // space and enter
+            if ($(event.currentTarget).is(":first-child"))
+            { thePlan.issueTypeColorsContainer.find(":last-child").focus();
+              // thePlan.issueTypeColorsContainer.trigger("focus");
+              return false;
+            }
+          }
+      });
+      
+
+      // Enter Issue Title
+      thePlan.newIssueTitleField.on
+      ( "keyup",
+        (event) =>
+        { if (event.keyCode == 13) 
+          { // space and enter
+            thePlan.newIssueCreateButton.focus();
+          }
+      });
+
+      // Create new Issue  
+      thePlan.newIssueCreateButton.on
+      ( "keydown",
+        (event) =>
+        { console.log(event);
+          if (event.keyCode == 9) 
+          { // tab
+            thePlan.issueTypeColorsContainer.find(":first-child").focus();
+            return false;
+          }
+      });
+      thePlan.newIssueCreateButton.on
+      ( "keyup",
+        (event) =>
+        { if (event.keyCode == 32 || event.keyCode == 13) 
+          { // space and enter
+            thePlan.newIssueCreateButton.click();
+          }
+      });
+      thePlan.newIssueCreateButton.on
+      ( "click",
+        (event) =>
+        { var newIssueTitle = thePlan.newIssueTitleField.val();
+          if (newIssueTitle.length < 5)
+          { alert("Issue title must be at lest 5 characters");
+            thePlan.newIssueTitleField.focus();
+            return;
+          }
+
+          thePlan.fullSizeModalSpinner.toggleClass("open", true).appendTo(thePlan.sideBar);
+          thePlan.fullSizeModalSpinner.toggleClass(thePlan.selectedColor.data("thePlan.issueTypeColorData").color+"3", true)
+
+          var ajaxOptions = 
+          { "method": "POST",
+            "url"   : "/",
+            "data"  : 
+                $.extend
+                ( {}, 
+                  thePlan.currentDot, 
+                  { "title": newIssueTitle ,
+                  } 
+                ),
+
+            "dataType": "JSON",
+          };
+          console.log(ajaxOptions);
+          $.ajax("/", ajaxOptions)
+            .done
+            ( (data) => 
+              { setTimeout
+                ( () =>
+                  { console.log(data);
+                    // $(".issueIframe").attr("src", data.url);
+                    var browserUrl = data.html_url;
+                    window.open(browserUrl, "_blank");
+                    // thePlan.fullSizeModalSpinner.hide();
+                    thePlan.checkModalState();
+                    thePlan.fullSizeModalSpinner.toggleClass(thePlan.selectedColor.data("thePlan.issueTypeColorData")+"7", false)
+                    thePlan.newIssueTitleField.val("");
+                    $(".issueTypeColor").toggleClass("selected", false);
+                    thePlan.newIssueContainer.appendTo(thePlan.doubleBuffer);
+                  },
+                  1000
+                );
+              }
+            );
+        }
+      );
 
 
     $(document).tooltip({
