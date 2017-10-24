@@ -12,6 +12,7 @@ thePlan =
     "violet": {"name": "Meta / Politics",             "rgb": "(255, 146, 147)", "label": "Iso"      ,   },
   },
   "tabindex": 0,
+  "selectedColor": "red",
 
   // TODO: add hover issue summary
 };
@@ -52,9 +53,11 @@ $(document).on
           $(".thePlanContainer").on
             ( "click", ".dot", 
               (event) => 
-              { if (thePlan.checkModalState()) return;
-
-                thePlan.currentDot = $(event.currentTarget).data("positionData");
+              { var clickedDot = $(event.currentTarget).data("positionData");
+                if (thePlan.currentDot == clickedDot) return;
+                // if (thePlan.checkModalState()) return;
+                thePlan.currentDot = clickedDot;
+                
                 console.log( thePlan.currentDot );
                 thePlan.openSideBar();
               } 
@@ -89,7 +92,7 @@ thePlan.checkModalState =
       thePlan.modalState = false;
       toReturn = true;
       if (thePlan.hasOwnProperty("selectedColor") )
-      { $(".newIssueColorResponsive").toggleClass(thePlan.selectedColor.data("thePlan.issueTypeColorData").color+"3", false);
+      { $(".newIssueColorResponsive").toggleClass(thePlan.selectedColor.color+"3", false);
       }
     }
     
@@ -98,6 +101,12 @@ thePlan.checkModalState =
 thePlan.closeModal = 
   () =>
   { $(".modal").toggleClass("open", false);
+
+  thePlan.fullSizeModalSpinner.toggleClass(thePlan.selectedColor+"7", false)
+  thePlan.newIssueTitleField.val("");
+  $(".issueTypeColor").toggleClass("selected", false);
+  $(".newIssueColorResponsive").toggleClass(thePlan.selectedColor.color+"3", false);
+  thePlan.newIssueContainer.appendTo(thePlan.doubleBuffer);
   }
 
 thePlan.openSideBar =
@@ -108,6 +117,7 @@ thePlan.openSideBar =
 
     if (thePlan.issues.hasOwnProperty(dotIdentity.dictionaryKey))
     { //window.open(thePlan.issues[dotIdentity.dictionaryKey].html_url);
+      thePlan.newIssueContainer.appendTo(thePlan.doubleBuffer);
 
       var ajaxOptions = 
       { "method": "POST",
@@ -128,13 +138,18 @@ thePlan.openSideBar =
             // $(".issueIframe").attr("src", data.url);
             // var browserUrl = data.html_url;
             // window.open(browserUrl, "_blank");
+            thePlan.sideBar.empty();
+            thePlan.commentSideBarItemContainer = $("<div class='commentSideBarItemContainer' />");
+            $("<div class='issueTitle commentSideBarItem'>" +thePlan.currentDot.issue.title+ "</div>").appendTo(thePlan.commentSideBarItemContainer);
+            $("<div class='issueDescription commentSideBarItem'>"+ thePlan.markDownConverter.makeHtml(thePlan.currentDot.issue.body)+"</div>").appendTo(thePlan.commentSideBarItemContainer);
+
             thePlan.commentsContainer = $("<div class='commentsContainer' />");
             for (var i=0; i<data.length; i++)
-            { $("<div class='comment'>"+thePlan.markDownConverter.makeHtml(data[i].body)+"</div>").appendTo(thePlan.commentsContainer);
+            { $("<div class='comment commentSideBarItem'>"+thePlan.markDownConverter.makeHtml(data[i].body)+"</div>").appendTo(thePlan.commentsContainer);
             }
-            thePlan.sideBar.innerHTML = "";
 
-            thePlan.sideBar.append(thePlan.commentsContainer);
+            thePlan.commentSideBarItemContainer.append(thePlan.commentsContainer);
+            thePlan.sideBar.append(thePlan.commentSideBarItemContainer);
 
             thePlan.sideBar.toggleClass("show", true);
           }
@@ -142,7 +157,7 @@ thePlan.openSideBar =
 
     }
     else
-    { thePlan.sideBar.innerHTML = "";
+    { thePlan.commentSideBarItemContainer.appendTo(thePlan.doubleBuffer);
 
       thePlan.sideBar.append(thePlan.newIssueContainer);
       thePlan.issueTypeColorsContainer.find(":first-child").click().focus();
@@ -332,18 +347,18 @@ thePlan.createDivs =
       thePlan.issueTypeColorsContainer.on
           ( "click", ".issueTypeColor", 
             (event) => 
-            { thePlan.selectedColor = $(event.currentTarget);
+            { thePlan.selectedColor = $(event.currentTarget).data("thePlan.issueTypeColorData");
 
               $(".issueTypeColor").toggleClass("selected", false);
-              thePlan.selectedColor.toggleClass("selected", true);
+              $(event.currentTarget).toggleClass("selected", true);
             } 
           );
       thePlan.issueTypeColorsContainer.on
       ( "focus", ".issueTypeColor",
         (event) =>
-        { $(".newIssueColorResponsive").toggleClass(thePlan.selectedColor.data("thePlan.issueTypeColorData").color+"3", false);
-          $(".newIssueColorResponsive").toggleClass($(event.currentTarget).data("thePlan.issueTypeColorData").color+"3", true);
-          thePlan.selectedColor = $(event.currentTarget);
+        { $(".newIssueColorResponsive").toggleClass(thePlan.selectedColor.color+"3", false);
+          thePlan.selectedColor = $(event.currentTarget).data("thePlan.issueTypeColorData");
+          $(".newIssueColorResponsive").toggleClass(thePlan.selectedColor.color+"3", true);
       });
       thePlan.issueTypeColorsContainer.on
       ( "keyup", ".issueTypeColor",
@@ -422,7 +437,7 @@ thePlan.createDivs =
           }
 
           thePlan.fullSizeModalSpinner.toggleClass("open", true).appendTo(thePlan.sideBar);
-          thePlan.fullSizeModalSpinner.toggleClass(thePlan.selectedColor.data("thePlan.issueTypeColorData").color+"3", true)
+          thePlan.fullSizeModalSpinner.toggleClass(thePlan.selectedColor.color+"3", true)
 
           var ajaxOptions = 
           { "method": "POST",
@@ -449,11 +464,6 @@ thePlan.createDivs =
                     window.open(browserUrl, "_blank");
                     // thePlan.fullSizeModalSpinner.hide();
                     thePlan.checkModalState();
-                    thePlan.fullSizeModalSpinner.toggleClass(thePlan.selectedColor.data("thePlan.issueTypeColorData")+"7", false)
-                    thePlan.newIssueTitleField.val("");
-                    $(".issueTypeColor").toggleClass("selected", false);
-                    $(".newIssueColorResponsive").toggleClass(thePlan.selectedColor.data("thePlan.issueTypeColorData").color+"3", false);
-                    thePlan.newIssueContainer.appendTo(thePlan.doubleBuffer);
                   },
                   1000
                 );

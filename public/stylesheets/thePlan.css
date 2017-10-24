@@ -219,21 +219,45 @@ body
   cursor:         pointer;
 }
 
-.commentsContainer
-{ max-height: 80%;
 
-  overflow-y: scroll;
+.commentSideBarItemContainer
+{ 
 }
-.comment
-{ width:    85%;
+.commentSideBarItem
+{ width:    90%;
   margin:   2.5%;
-  
+
   padding:  0px 2.5%;
   overflow: auto;
 
   background-color: rgba(0,0,0,0.3);
-  
+
   border-radius: 10px;
+}
+
+.issueTitle
+{ font-size: 1.3em;
+  font-weight: bold;
+  background-color: transparent;
+  text-align: center;
+  border-bottom: 1px grey solid;
+  border-radius: 0px;
+}
+.issueDescription
+{ background-color: transparent;
+  font-size: 1.2em;
+  margin-bottom: 30px;
+}
+
+.commentsContainer
+{ margin-right: -20px;
+
+  max-height: 80%;
+
+  overflow-y: scroll;
+}
+.comment
+{
 
   /*text-align: justify;*/
 }
