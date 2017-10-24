@@ -1,3 +1,7 @@
+*
+{ transition: 0.2s;
+}
+
 html
 { height: calc(100% - 20px);
   padding: 0px;
@@ -41,6 +45,8 @@ body
 
   height: 100%;
   width:  100%;
+
+  overflow: hidden;
 }
 
 .striation
@@ -63,28 +69,49 @@ body
   vertical-align: middle;
 
 }
-.red
+.red3
 { background-color: rgba(255, 0,   0  , 0.3);
 }
-.orange
+.orange3
 { background-color: rgba(255, 148, 0  , 0.3);
 }
-.yellow
+.yellow3
 { background-color: rgba(255, 255, 0  , 0.3);
 }
-.green
+.green3
 { background-color: rgba(0,   255, 0  , 0.3);
 }
-.blue
+.blue3
 { background-color: rgba(0,   0,   255, 0.3);
 }
-.indigo
+.indigo3
 { background-color: rgba(50,  0,   255, 0.3);
 }
-.violet
-{ background-color: rgba(102, 002, 255, 0.3);
+.violet3
+{ background-color: rgba(122, 002, 255, 0.3);
 }
 
+.red7
+{ background-color: rgba(255, 0,   0  , 0.7);
+}
+.orange7
+{ background-color: rgba(255, 148, 0  , 0.7);
+}
+.yellow7
+{ background-color: rgba(255, 255, 0  , 0.7);
+}
+.green7
+{ background-color: rgba(0,   255, 0  , 0.7);
+}
+.blue7
+{ background-color: rgba(0,   0,   255, 0.7);
+}
+.indigo7
+{ background-color: rgba(50,  0,   255, 0.7);
+}
+.violet7
+{ background-color: rgba(122, 002, 255, 0.7);
+}
 
 .dot
 { height: 14.2857142857%;
@@ -99,4 +126,93 @@ body
 }
 .dot:hover
 { background-color: rgba(255, 255, 255, 0.6);
+}
+
+
+
+.sideBarModal
+{ position: absolute;
+
+  top:      0px;
+  left:     0px;
+
+  height:   100%;
+  width:    100%;
+  display:  none;
+
+  background-color: rgba(0,0,0,0.0);
+}
+.sideBarModal.open
+{ display: block;
+}
+
+.sideBar
+{ position: fixed;
+
+  height: 100%;
+  top: 0px;
+  right: -40%;
+
+  min-width: 300px;
+  max-width: 400px;
+  width: 20%;
+
+  background-color: rgba(255, 255, 255, 0.7);
+
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+@media screen and (max-width: 1000px) {
+  .sideBar {
+    right: -300px;
+  }
+}
+.sideBar.open
+{ right: 0px; 
+}
+
+.issueTypeColorsContainer
+{ width : 100%;
+
+  display:          flex;
+  justify-content:  space-evenly; 
+}
+.issueTypeColorsContainer > *
+{ margin-top:     10px;
+  margin-bottom:  10px;
+}
+.issueTypeColor
+{ width:          10.5%;
+  height:         0px;
+  padding-bottom: 10.5%;
+}
+.issueTypeColor.selected
+{ border-radius:  50%;
+}
+.newIssueTitleField
+{ width:          95%;
+  border-radius:  20px;
+  margin:         2.5%;
+  height:         30px;
+
+  padding-left: 5%;
+
+  font-size: 1.2em;
+}
+.newIssueCreateButton
+{ width:          40%;
+  height:         30px;
+
+  margin:         auto;
+  margin-top:     30px;
+
+  border-radius:  10px;
+
+  text-align:     center;
+  vertical-align: middle;
+  line-height:    30px; 
+
+  font-size:      1.2em;
 }

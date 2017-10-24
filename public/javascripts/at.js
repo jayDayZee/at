@@ -11,6 +11,8 @@ thePlan =
     "indigo": {"name": "Design / Strategy Talk",      "rgb": "(255, 0,   255)", "label": "Exa"      ,   },
     "violet": {"name": "Meta / Politics",             "rgb": "(255, 146, 147)", "label": "Iso"      ,   },
   },
+  tabindex: 0,
+
   // TODO: add hover issue summary
 };
 
@@ -24,8 +26,6 @@ $(document).on
           thePlan.eschatonNaturalWidth  = $(".eschaton").get(0).naturalWidth;
 
           thePlan.eschatonRatio = thePlan.eschatonNaturalWidth / thePlan.eschatonNaturalHeight;
-
-
 
           // $(window).resize
           // ( () =>
@@ -44,38 +44,19 @@ $(document).on
           // .appendTo($("body"));
 
 
-
           thePlan.containerHeight = $(window).height();
           $(".thePlanContainer").css( {"height": thePlan.containerHeight-38, "width": thePlan.containerHeight * thePlan.eschatonRatio } );
 
           $(".thePlanContainer").on
-            ("click", ".dot", 
+            ( "click", ".dot", 
               (event) => 
-              { var dotIdentity = $(event.currentTarget).data("positionData");
+              { if (thePlan.checkModalState()) return;
+
+                var dotIdentity = $(event.currentTarget).data("positionData");
                 
                 console.log( dotIdentity );
 
-                if (thePlan.issues.hasOwnProperty(dotIdentity.dictionaryKey))
-                { window.open(thePlan.issues[dotIdentity.dictionaryKey].html_url);
-                }
-                else
-                { var ajaxOptions = 
-                  { "method": "POST",
-                    "url"   : "/",
-                    "data"  : dotIdentity,
-
-                    "dataType": "JSON",
-                  };
-                  $.ajax("/", ajaxOptions)
-                    .done
-                    ( (data) => 
-                      { console.log(data);
-                        // $(".issueIframe").attr("src", data.url);
-                        var browserUrl = data.html_url;
-                        window.open(browserUrl, "_blank");
-                      }
-                    );
-                }
+                thePlan.openSideBar(dotIdentity);
               } 
             );
 
@@ -91,10 +72,6 @@ $(document).on
 
 
           thePlan.getAllIssues();
-
-
-
-          // thePlan.createDivs();
         },
         100
       );
@@ -102,6 +79,147 @@ $(document).on
     }
   }
 );
+
+thePlan.checkModalState = 
+  () =>
+  { toReturn = false;
+
+    if (thePlan.modalState)
+    { thePlan.closeModal();
+      thePlan.modalState = false;
+      toReturn = true;
+    }
+    
+    return toReturn;
+  };
+thePlan.closeModal = 
+  () =>
+  { thePlan.modal.toggleClass("open", false);
+  }
+
+thePlan.openSideBar =
+  (dotIdentity) =>
+  { thePlan.modalState = true;
+    thePlan.sideBarComponent.toggleClass("open", true);
+    
+    if (thePlan.issues.hasOwnProperty(dotIdentity.dictionaryKey))
+    { //window.open(thePlan.issues[dotIdentity.dictionaryKey].html_url);
+    }
+    else
+    { thePlan.sideBar.innerHTML = "";
+
+      // thePlan.sideBar.append(thePlan.issueTypeColorsContainer);
+      // thePlan.sideBar.append(thePlan.newIssueTitleField);
+      // thePlan.sideBar.append(thePlan.newIssueCreateButton);
+      thePlan.sideBar.append(thePlan.newIssueContainer);
+
+      //issueTypeColorManager
+      thePlan.issueTypeColorsContainer.on
+          ( "click", ".issueTypeColor", 
+            (event) => 
+            { thePlan.selectedColor = $(event.currentTarget);
+
+              $(".issueTypeColor").toggleClass("selected", false);
+              thePlan.selectedColor.toggleClass("selected", true);
+            } 
+          );
+      thePlan.issueTypeColorsContainer.on
+      ( "focus", ".issueTypeColor",
+        (event) =>
+        { $(".newIssueColorResponsive").toggleClass(thePlan.selectedColor.data("thePlan.issueTypeColorData").color+"3", false);
+          $(".newIssueColorResponsive").toggleClass($(event.currentTarget).data("thePlan.issueTypeColorData").color+"3", true);
+          thePlan.selectedColor = $(event.currentTarget);
+      });
+      thePlan.issueTypeColorsContainer.on
+      ( "keyup", ".issueTypeColor",
+        (event) =>
+        { if (event.keyCode == 32 || event.keyCode == 13) 
+          { // space and enter
+            event.currentTarget.click();
+            thePlan.newIssueTitleField.focus();
+          }
+      });
+      thePlan.issueTypeColorsContainer.on
+      ( "keydown", ".issueTypeColor",
+        (event) =>
+        { console.log(event);
+          if (event.keyCode == 9) 
+          { // space and enter
+            if ($(event.currentTarget).is(":last-child"))
+            { thePlan.issueTypeColorsContainer.find(":first-child").focus();
+              // thePlan.issueTypeColorsContainer.trigger("focus");
+              return false
+            }
+          }
+          if (event.keyCode == 9 && event.shiftKey == true) 
+          { // space and enter
+            if ($(event.currentTarget).is(":first-child"))
+            { thePlan.issueTypeColorsContainer.find(":last-child").focus();
+              // thePlan.issueTypeColorsContainer.trigger("focus");
+              return false;
+            }
+          }
+      });
+      thePlan.issueTypeColorsContainer.find(":first-child").click().focus();
+
+      // Create new Issue  
+      thePlan.newIssueCreateButton.on
+      ( "keydown",
+        (event) =>
+        { console.log(event);
+          if (event.keyCode == 9) 
+          { // tab
+            thePlan.issueTypeColorsContainer.find(":first-child").focus();
+            return false;
+          }
+      });   
+      thePlan.newIssueCreateButton.on
+      ( "click",
+        (event) =>
+        { var newIssueTitle = thePlan.newIssueTitleField.val();
+          if (newIssueTitle.length < 5)
+          { alert("Issue title must be at lest 5 characters");
+            thePlan.newIssueTitleField.focus();
+            return;
+          }
+
+          var ajaxOptions = 
+          { "method": "POST",
+            "url"   : "/",
+            "data"  : { "identity": dotIdentity, "title": thePlan.newIssueTitleField.val() },
+
+            "dataType": "JSON",
+          };
+          $.ajax("/", ajaxOptions)
+            .done
+            ( (data) => 
+              { console.log(data);
+                // $(".issueIframe").attr("src", data.url);
+                var browserUrl = data.html_url;
+                window.open(browserUrl, "_blank");
+              }
+            );
+        }
+      );
+
+      //var ajaxOptions = 
+      // { "method": "POST",
+      //   "url"   : "/",
+      //   "data"  : dotIdentity,
+
+      //   "dataType": "JSON",
+      // };
+      // $.ajax("/", ajaxOptions)
+      //   .done
+      //   ( (data) => 
+      //     { console.log(data);
+      //       // $(".issueIframe").attr("src", data.url);
+      //       var browserUrl = data.html_url;
+      //       window.open(browserUrl, "_blank");
+      //     }
+      //   );
+    }
+  };
 
 thePlan.getAllIssues =
   () =>
@@ -207,8 +325,8 @@ thePlan.createDivs =
     for (var striation=0; striation < 7; striation ++)
     { var striationColor    = thePlan.striationOrder[striation];
       var striationObject   = thePlan.striationDict[striationColor];
-      var currentStriation  = $("<div class='striation "+striationColor+"' />");
-      var striationLabel    = $("<div class='striationLabel'>"+striationObject.label+"</div>").appendTo(currentStriation);
+      var currentStriation  = $("<div class='striation"+" "+striationColor+"3' />");
+      var striationLabel    = $("<div class='striationLabel modalCloser'>"+striationObject.label+"</div>").appendTo(currentStriation);
 
       for (var dots_allTheWayAcross=0; dots_allTheWayAcross < numberOfDivs_horizontal; dots_allTheWayAcross++)
       { for (var dots_7high=0; dots_7high<7; dots_7high++)
@@ -219,7 +337,7 @@ thePlan.createDivs =
               + dots_7high
           currentDot.toggleClass(dictionaryKey, true);
           if (! thePlan.issues.hasOwnProperty(dictionaryKey) )
-          { currentDot.attr("title", "<input />");
+          { //currentDot.attr("title", "<input />");
             // currentDot.toggleClass("hasIssue", true);
           }
           else
@@ -234,11 +352,50 @@ thePlan.createDivs =
       }
       
       currentStriation.appendTo($(".interactiveContainer"));
-      $(document).tooltip({
-          content: function () {
-              return $(this).prop('title');
-          }
-      });
     }
+
+
+    thePlan.issueTypeColorsContainer = $('<div class="issueTypeColorsContainer" />');
+    for (var striation=6; striation > -1; striation --)
+    { var striationColor    = thePlan.striationOrder[striation];
+      $('<div class="issueTypeColor' + " "+striationColor+'7" />')
+          .data("thePlan.issueTypeColorData", { "color": striationColor } )
+          .attr("tabindex", thePlan.tabindex)
+          .appendTo(thePlan.issueTypeColorsContainer);
+    }
+    thePlan.newIssueTitleField    = $("<input class='newIssueTitleField newIssueColorResponsive' placeholder='issue title' />");
+    thePlan.newIssueCreateButton  = $("<div class='newIssueCreateButton newIssueColorResponsive'>Create</div>");
+    thePlan.newIssueCreateButton.attr("tabindex", 0);
+
+    thePlan.newIssueContainer     = $("<div class='newIssueContainer' />");
+    thePlan.newIssueContainer.append(thePlan.issueTypeColorsContainer).append(thePlan.newIssueTitleField).append(thePlan.newIssueCreateButton);
+
+
+    $(document).tooltip({
+        content: function () {
+            return $(this).prop('title');
+        }
+    });
+
+    // memoise stuff for modal
+    thePlan.modal             = $(".modal");
+    thePlan.modalCloser       = $(".modalCloser");
+
+    thePlan.sideBarComponent  = $(".sideBarComponent");
+    // thePlan.sideBarModal      = $(".sideBarModal");
+    thePlan.sideBar           = $(".sideBar");
+
+    // modal stuff
+    $(document).keyup(function(e) {
+        if (e.keyCode == 27) { // escape key maps to keycode `27`
+            thePlan.checkModalState();
+        }
+    });
+    thePlan.modalCloser.on
+      ( "click",
+        (event) => 
+        { thePlan.checkModalState();
+        } 
+      );
   }
 );
