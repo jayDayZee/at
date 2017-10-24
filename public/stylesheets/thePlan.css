@@ -172,6 +172,23 @@ body
 .sideBar.open
 { right: 0px; 
 }
+.sideBarCloseButton
+{ position: absolute;
+
+  left: 0;
+  top: 0;
+
+  padding: 6px;
+
+  font-size: 1.6em;
+  color: grey;
+
+  background-color: white;
+  outline: 6px solid rgba(255, 255, 255, 0.5);
+  margin: 6px;
+
+  cursor: pointer;
+}
 
 .issueTypeColorsContainer
 { width : 100%;

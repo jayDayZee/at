@@ -549,6 +549,16 @@ thePlan.createDivs =
     thePlan.sideBarComponent  = $(".sideBarComponent");
     // thePlan.sideBarModal      = $(".sideBarModal");
     thePlan.sideBar           = $(".sideBar");
+    thePlan.sideBarCloseButton = 
+      $('<div class="sideBarCloseButton">X</div>')
+        .on
+        ("click",
+          (event)=>
+          { thePlan.checkModalState();
+          }
+        )
+        .appendTo(thePlan.sideBar);
+
 
     // modal stuff
     $(document).keyup(function(e) {
