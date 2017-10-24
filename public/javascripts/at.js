@@ -144,7 +144,10 @@ thePlan.openSideBar =
             // $(".issueIframe").attr("src", data.url);
             // var browserUrl = data.html_url;
             
-            thePlan.sideBar.empty();
+            // thePlan.sideBar.empty();
+            if (thePlan.hasOwnProperty("commentSideBarItemContainer"))
+            { thePlan.commentSideBarItemContainer.remove();
+            }
             thePlan.commentSideBarItemContainer = $("<div class='commentSideBarItemContainer' />");
             $("<div class='issueTitle commentSideBarItem'>" +thePlan.currentDot.issue.title+ "</div>").appendTo(thePlan.commentSideBarItemContainer);
             $("<div class='issueDescription commentSideBarItem'>"+ thePlan.markDownConverter.makeHtml(thePlan.currentDot.issue.body)+"</div>").appendTo(thePlan.commentSideBarItemContainer);
