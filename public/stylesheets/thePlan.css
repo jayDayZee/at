@@ -122,7 +122,7 @@ body
   transition: background-color 0.2s;
 }
 .dot.hasIssue
-{ background-color: rgba(0,0,255,0.7);
+{ background-color: rgba(0,0,0,0.3);
 }
 .dot:hover
 { background-color: rgba(255, 255, 255, 0.6);

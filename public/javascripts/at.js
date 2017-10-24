@@ -2,6 +2,7 @@ thePlan =
 { "waiting": "idle",
 
   "striationOrder": ["violet", "indigo", "blue", "green", "yellow", "orange", "red"],
+  "striationLabels": ["HardCore", "Infra", "Servo", "Socio", "Produ", "Exa", "Iso"],
   "striationDict":
   { "red":    {"name": "Core Holochain Integration",  "rgb": "(255, 0,   0  )", "label": "HardCore" ,   },
     "orange": {"name": "Events Attendance Outreach",  "rgb": "(255, 148, 0  )", "label": "Infra"    ,   },
@@ -112,11 +113,12 @@ thePlan.closeModal =
 thePlan.openSideBar =
   () =>
   { thePlan.modalState = true;
-    thePlan.sideBarComponent.toggleClass("open", true);
+    
     var dotIdentity = thePlan.currentDot;
 
     if (thePlan.issues.hasOwnProperty(dotIdentity.dictionaryKey))
-    { //window.open(thePlan.issues[dotIdentity.dictionaryKey].html_url);
+    { thePlan.sideBarComponent.toggleClass("open", true);
+      //window.open(thePlan.issues[dotIdentity.dictionaryKey].html_url);
       thePlan.newIssueContainer.appendTo(thePlan.doubleBuffer);
 
       var ajaxOptions = 
@@ -157,7 +159,16 @@ thePlan.openSideBar =
 
     }
     else
-    { thePlan.commentSideBarItemContainer.appendTo(thePlan.doubleBuffer);
+    { 
+      if (thePlan.sideBar.hasClass("open"))
+      { thePlan.checkModalState();
+        return;
+      }
+      thePlan.sideBarComponent.toggleClass("open", true);
+
+      if (thePlan.hasOwnProperty("commentSideBarItemContainer"))
+      { thePlan.commentSideBarItemContainer.appendTo(thePlan.doubleBuffer);
+      }
 
       thePlan.sideBar.append(thePlan.newIssueContainer);
       thePlan.issueTypeColorsContainer.find(":first-child").click().focus();
@@ -308,7 +319,21 @@ thePlan.createDivs =
           else
           { var issue = thePlan.issues[dictionaryKey]
             currentDot.attr("title", "<strong>"+issue.title+"</strong><br><br>"+thePlan.markDownConverter.makeHtml(issue.body));
-            currentDot.toggleClass("hasIssue", true);
+            var colorIndex = -1;
+            if (issue.labels.length > 0)
+            { for (var i=0; i<issue.labels.length; i++)
+              { var labelIndex = thePlan.striationLabels.indexOf(issue.labels[i].name);
+                if ( labelIndex > -1 )
+                { colorIndex = 6 - labelIndex;
+                  issue.dotColor = thePlan.striationOrder[colorIndex];
+                  issue.dotStriationLabel = thePlan.striationLabels[labelIndex];
+                  currentDot.toggleClass(issue.dotColor+"3", true);
+                }
+              }
+            }
+            if (colorIndex == -1)
+            { currentDot.toggleClass("hasIssue", true);
+            }
           }
           currentDot.height(sizeOfDots);
           currentDot.width(sizeOfDots);
@@ -446,7 +471,9 @@ thePlan.createDivs =
                 $.extend
                 ( {}, 
                   thePlan.currentDot, 
-                  { "title": newIssueTitle ,
+                  { "title":        newIssueTitle,
+                    "dotColor":     thePlan.selectedColor.color,
+                    "githubLabel":  thePlan.striationDict[thePlan.selectedColor.color].label,
                   } 
                 ),
 

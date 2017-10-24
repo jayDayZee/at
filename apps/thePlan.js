@@ -482,7 +482,6 @@ atRoot.initialiseAtStore(atStore)
                   ( () =>
                     { debugger;
 
-                      
                       var request = require("request");
 
                       var issueData =
@@ -605,6 +604,7 @@ atRoot.initialiseAtStore(atStore)
                                       issue.xy = dictionaryKey;
                                       ls(issue.state);
                                       ls(issue.number);
+
                                       namespace(context, "traveller.thePlan.byIssueID")[issue.id] = issue;
                                     }
 
@@ -645,6 +645,7 @@ atRoot.initialiseAtStore(atStore)
                             { //"id":    6,
                               "title": issueTitle,
                               "description": "",
+                              "labels": [traveller.traveller.twilio.githubLabel],
                             };
                            
                         request
@@ -664,7 +665,9 @@ atRoot.initialiseAtStore(atStore)
                                 + traveller.traveller.twilio.y;
 
                               // context.traveller.thePlan.xy[dictionaryKey] = {"gitlabIssue": createdIssue};
-                              createdIssue.xy = dictionaryKey;
+                              createdIssue.xy       = dictionaryKey;
+                              createdIssue.dotColor = traveller.traveller.twilio.dotColor;
+
                               namespace(context, "traveller.thePlan.byIssueID")[createdIssue.id] = createdIssue
 
                               traveller.atStore = {};
@@ -763,7 +766,18 @@ atRoot.initialiseAtStore(atStore)
                       {"update": 
                           [ { "id"  : "thePlanIssueTracker"+versionNumber
                             }, 
-                            { "$set": { "traveller.codeBlock": nodeCodeBlock }, 
+                            { "$set": 
+                                { "traveller.codeBlock": nodeCodeBlock,
+                                  "traveller.thePlan.striationDict":
+                                  { "red":    {"name": "Core Holochain Integration",  "rgb": "(255, 0,   0  )", "label": "HardCore" ,   },
+                                    "orange": {"name": "Events Attendance Outreach",  "rgb": "(255, 148, 0  )", "label": "Infra"    ,   },
+                                    "yellow": {"name": "Organizational Outreach",     "rgb": "(255, 255, 0  )", "label": "Servo"    ,   },
+                                    "green":  {"name": "Networking Outreach",         "rgb": "(0,   255, 0  )", "label": "Socio"    ,   },
+                                    "blue":   {"name": "Social Forms Innovation",     "rgb": "(0,   0,   255)", "label": "Produ"    ,   },
+                                    "indigo": {"name": "Design / Strategy Talk",      "rgb": "(255, 0,   255)", "label": "Exa"      ,   },
+                                    "violet": {"name": "Meta / Politics",             "rgb": "(255, 146, 147)", "label": "Iso"      ,   },
+                                  },
+                                }, 
                             }, 
                           ], 
                       };
