@@ -584,12 +584,13 @@ atRoot.initialiseAtStore(atStore)
                                   traveller.traveller.twilio.striationLabel + ":"
                                 + traveller.traveller.twilio.x              + ":"
                                 + traveller.traveller.twilio.y
+                        var issueTitle = traveller.traveller.twilio.title + "  @@ " + dictionaryKey;
 
                         var requestOptions = defaultRequestOptions;
                         requestOptions.method = "POST";
                         requestOptions.json =  
                             { //"id":    6,
-                              "title": "@ created issue, thePlan: "+dictionaryKey,
+                              "title": issueTitle,
                               "description": "",
                             };
                            

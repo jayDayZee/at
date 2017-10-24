@@ -94,7 +94,7 @@ thePlan.checkModalState =
   };
 thePlan.closeModal = 
   () =>
-  { thePlan.modal.toggleClass("open", false);
+  { $(".modal").toggleClass("open", false);
   }
 
 thePlan.openSideBar =
@@ -143,7 +143,12 @@ thePlan.openSideBar =
       ( "keydown", ".issueTypeColor",
         (event) =>
         { console.log(event);
-          if (event.keyCode == 9) 
+          // var cycleDict = 
+          // { "9":  { false: [":last-child", ":first-child"] }.
+          //         { true:  [":first-child", ":last-child"] ),
+          // }
+          
+          if (event.keyCode == 9 && event.shiftKey == false) 
           { // space and enter
             if ($(event.currentTarget).is(":last-child"))
             { thePlan.issueTypeColorsContainer.find(":first-child").focus();
@@ -162,6 +167,16 @@ thePlan.openSideBar =
       });
       thePlan.issueTypeColorsContainer.find(":first-child").click().focus();
 
+      // Enter Issue Title
+      thePlan.newIssueTitleField.on
+      ( "keyup",
+        (event) =>
+        { if (event.keyCode == 13) 
+          { // space and enter
+            thePlan.newIssueCreateButton.focus();
+          }
+      });
+
       // Create new Issue  
       thePlan.newIssueCreateButton.on
       ( "keydown",
@@ -172,11 +187,22 @@ thePlan.openSideBar =
             thePlan.issueTypeColorsContainer.find(":first-child").focus();
             return false;
           }
-      });   
+      });
+      thePlan.newIssueCreateButton.on
+      ( "keyup",
+        (event) =>
+        { if (event.keyCode == 32 || event.keyCode == 13) 
+          { // space and enter
+            thePlan.newIssueCreateButton.click();
+          }
+      });
       thePlan.newIssueCreateButton.on
       ( "click",
         (event) =>
-        { var newIssueTitle = thePlan.newIssueTitleField.val();
+        { thePlan.fullSizeModalSpinner.toggleClass("open", true).appendTo(thePlan.sideBar);
+          thePlan.fullSizeModalSpinner.toggleClass(thePlan.selectedColor.data("thePlan.issueTypeColorData")+"3", true)
+
+          var newIssueTitle = thePlan.newIssueTitleField.val();
           if (newIssueTitle.length < 5)
           { alert("Issue title must be at lest 5 characters");
             thePlan.newIssueTitleField.focus();
@@ -186,17 +212,35 @@ thePlan.openSideBar =
           var ajaxOptions = 
           { "method": "POST",
             "url"   : "/",
-            "data"  : { "identity": dotIdentity, "title": thePlan.newIssueTitleField.val() },
+            "data"  : 
+                $.extend
+                ( {}, 
+                  dotIdentity, 
+                  { "title": newIssueTitle ,
+                  } 
+                ),
 
             "dataType": "JSON",
           };
+          console.log(ajaxOptions);
           $.ajax("/", ajaxOptions)
             .done
             ( (data) => 
-              { console.log(data);
-                // $(".issueIframe").attr("src", data.url);
-                var browserUrl = data.html_url;
-                window.open(browserUrl, "_blank");
+              { setTimeout
+                ( () =>
+                  { console.log(data);
+                    // $(".issueIframe").attr("src", data.url);
+                    var browserUrl = data.html_url;
+                    window.open(browserUrl, "_blank");
+                    // thePlan.fullSizeModalSpinner.hide();
+                    thePlan.checkModalState();
+                    thePlan.fullSizeModalSpinner.toggleClass(thePlan.selectedColor.data("thePlan.issueTypeColorData")+"7", false)
+                    thePlan.newIssueTitleField.val("");
+                    $(".issueTypeColor").toggleClass("selected", false);
+                    $(".sideBar > *").remove();
+                  },
+                  200
+                );
               }
             );
         }
@@ -369,6 +413,8 @@ thePlan.createDivs =
 
     thePlan.newIssueContainer     = $("<div class='newIssueContainer' />");
     thePlan.newIssueContainer.append(thePlan.issueTypeColorsContainer).append(thePlan.newIssueTitleField).append(thePlan.newIssueCreateButton);
+
+    thePlan.fullSizeModalSpinner  = $("<div class='fullSizeModalSpinner modal' />");
 
 
     $(document).tooltip({
