@@ -67,7 +67,8 @@ else
           );
       };
       this.initialiseAtStore = function(atStore)
-      { atRoot.ls("initialiseAtStore");
+      { debugger;
+        atRoot.ls("atSrc/at.js: AtRoot.initialiseAtStore");
 
         //make sure the store is empty
         return atStore
@@ -80,7 +81,8 @@ else
           )
           .then
           ( () =>
-            { return atStore
+            { debugger;
+              return atStore
                 .insert
                 ( { "id": "@", "storeID": new atRoot.createID().idString } 
                 )

@@ -1,50 +1,58 @@
 #!/usr/bin/env node
-
+var path = require('path');
 var assert = require("assert");
-
-var app =  require("../app.js");
-
-// var AtRoot = require("../atSrc/at.js");
-
-
-
 
 /**
  * Module dependencies.
  */
+var debug     = require('debug')('at:server');
+var http      = require('http');
 
-var debug = require('debug')('at:server');
-var http = require('http');
+
+var fs          	       = require("fs");
+// const readlinePackage    = require('readline');
+
+// DEV CHAT: required config fields must have either a default xor an exit value
+var requiredConfigFields = 
+    { "appName"     : { "exitValue" : 101  },
+      "port"        : { "default"   : 5510 },
+      "repoURL"     : { "default"   : "https://api.github.com/repos/christopherreay/thePlan"},
+    }
+var thePlanConfig = require("../config.json", "utf8");
+for (var configFieldName in requiredConfigFields)
+{ if (! thePlanConfig.hasOwnProperty(configFieldName) )
+  { //const readLine = readlinePackage.createInterface
+    // ( { input: process.stdin,
+    //     output: process.stdout,
+    //   }
+    // );
+    var requiredConfigField = requiredConfigFields[configFieldName];
+    if (requiredConfigField.hasOwnProperty("default") )
+    { console.log("WARNING: node: thePlan.js: the JSON file '/config.json' must contain a value for the '"+configFieldName+"' parameter");
+      console.log("  setting the value to the system default:\n    " + requiredConfigField.default);
+      thePlanConfig[configFieldName] = requiredConfigField.default;
+    }
+    else
+    { console.log("ERROR  : node: thePlan.js: the JSON file '/config.json' must contain a value for the '"+configFieldName+"' parameter");
+      console.log("  exiting with exit value: \n  " + requiredConfigField.exitValue); 
+      process.exit(requiredConfigField.exitValue);
+    }
+  }
+}
+
+var monk      = require("monk");
+var db        = monk("localhost/"+thePlanConfig.appName+"_at_thePlan");
+var atStore   = db.get('atStore_'+thePlanConfig.appName);
+var app       = require("../app.js")(monk, db, atStore);
+
+// var AtRoot = require("../atSrc/at.js");
 
 /**
  * Get port from environment and store in Express.
  */
-
-var port = "5510";
-if (process.env.hasOwnProperty("ThePlan_PORT"))
-{ port = process.env.ThePlan_PORT
-}
-
-app.set('port', port);
-
-/**
- * Create HTTP server.
- */
-
-var server = http.createServer(app);
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
-
-/**
+ /**
  * Normalize a port into a number, string, or false.
  */
-
 function normalizePort(val) {
   var port = parseInt(val, 10);
 
@@ -89,12 +97,36 @@ function onError(error) {
   }
 }
 
+var port;
+if (process.env.hasOwnProperty("ThePlan_PORT"))
+{ port = process.env.ThePlan_PORT
+}
+else if (thePlanConfig.hasOwnProperty("port") )
+{ port = thePlanConfig.port;
+}
+port = normalizePort(port);
+console.log("thePlan.js: setting port to: "+port);
+app.set('port', port);
+
+/**
+ * Create HTTP server.
+ */
+var server = http.createServer(app);
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
+
 /**
  * Event listener for HTTP server "listening" event.
  */
 
-function onListening() {
-  var addr = server.address();
+function onListening() 
+{ var addr = server.address();
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
@@ -102,29 +134,13 @@ function onListening() {
 }
 
 
-
-
-
-
-
-
 var atRoot    = app.atRoot;
 var ls        = atRoot.ls;
 var namespace = atRoot.namespace;
 
 var twilio    = require("twilio");
-var appName   = "thePlan";
-
-var atStore   = app.db.get('@.'+appName);
-
-atRoot.twilioAtStore = atStore;
 
 atStore.index("id");
-
-var dead = 
-  () =>
-  { process.exit(1);
-  }
 
 atStore.find({}).then( docs => { ls("documents:", docs); } );
 
@@ -136,12 +152,12 @@ atRoot.initialiseAtStore(atStore)
   ( () =>
     { return atStore
         .insert
-        ( { "id": appName, "gitlabToken": "NZxriTAsS7WSbcLiwi6Z",
+        ( { "id": thePlanConfig.appName,
           }
         )
         .then
         ( result =>
-          { console.log("new @."+appName+" initialised with _id=", result);
+          { console.log("new @."+thePlanConfig.appName+" initialised with _id=", result);
           }
         )
     }
@@ -157,13 +173,13 @@ atRoot.initialiseAtStore(atStore)
     { ls("running connectAtStore");
       
       return atStore
-        .find( {"id": appName} )
+        .find( {"id": thePlanConfig.appName} )
         .then
         ( docs =>
-          { ls("@."+appName, docs);
-            if ( (docs.length != 1) || ! docs[0].hasOwnProperty("gitlabToken") )
-            { ls("@."+appName+" collection is malformed. Exiting");
-              dead();
+          { ls("@."+thePlanConfig.appName, docs);
+            if ( (docs.length != 1) || ! docs[0].hasOwnProperty("id") || docs[0].id != thePlanConfig.appName )
+            { ls("@."+thePlanConfig.appName+" collection is malformed. Exiting");
+              process.exit(1);
             }
           }
         )
@@ -174,7 +190,7 @@ atRoot.initialiseAtStore(atStore)
         )
         .then
         ( () =>
-          { return atStore.insert( { "id": "commitChanges"} );
+          { return atStore.insert( { "id": "commitChanges"}, {"$set": { "traveller.codeBlock": "" }}, {"upsert": true} );
           }
         )
         .then
@@ -305,7 +321,8 @@ atRoot.initialiseAtStore(atStore)
 
 
                 // 1.
-                var createGraph       = new atRoot.AtNode();
+                var createGraphNodes = {};
+                var createGraph = createGraphNodes.createGraph =  new atRoot.AtNode();
                 createGraph.id        = "createGraph"; //awesome :)
                 namespace(createGraph, "traveller");
                     var codeBlock = 
@@ -329,7 +346,7 @@ atRoot.initialiseAtStore(atStore)
                 createGraph.traveller.codeBlock = codeBlock.toString().slice(6);
 
                 // we can factor this out to work ina single loop, by changing the atStore code to run a promise.All
-                var addNodesToSaveQueue = new atRoot.AtNode();
+                var addNodesToSaveQueue = createGraphNodes.addNodesToSaveQueue = new atRoot.AtNode();
                 addNodesToSaveQueue.id        = "createGraph.addNodesToSaveQueue"; //awesome :)
                 namespace(addNodesToSaveQueue, "traveller");
                     var codeBlock = 
@@ -350,7 +367,7 @@ atRoot.initialiseAtStore(atStore)
                       };
                 addNodesToSaveQueue.traveller.codeBlock = codeBlock.toString().slice(6);
 
-                var buildGraph = new atRoot.AtNode();
+                var buildGraph = createGraphNodes.buildGraph =  new atRoot.AtNode();
                 buildGraph.id        = "createGraph.buildGraph"; //awesome :)
                 namespace(buildGraph, "traveller");
                     var codeBlock = 
@@ -397,7 +414,7 @@ atRoot.initialiseAtStore(atStore)
                       };
                 buildGraph.traveller.codeBlock = codeBlock.toString().slice(6);
 
-                var runInits = new atRoot.AtNode();
+                var runInits = createGraphNodes.runInits =  new atRoot.AtNode();
                 runInits.id  = "createGraph.runInits";
                 namespace(runInits, "traveller");
                     var codeBlock =
@@ -445,8 +462,10 @@ atRoot.initialiseAtStore(atStore)
                 // 4.
                 // at the same time as we install the callback, also save the two nodes we have just made above, into the atStore, so we can traverse to them
                 //  using suggestedExit, as below :) #namedNodes #12
-                namespace(traveller, "atStore").bootstrapGraphBuilder = { "insert": [ [ createGraph, addNodesToSaveQueue, buildGraph, runInits ] ]};
-
+                for (var key in createGraphNodes)
+                { var graphNode = createGraphNodes[key];
+                  namespace(traveller, "atStore")["bootstrapGraphBuilder_"+key] = { "insert": [ {"id": graphNode.id}, graphNode, {"upsert": true} ]};
+                }
                 // 5.
                 //configre the mocha callback
                 namespace(traveller, "traveller.mocha");
@@ -488,22 +507,16 @@ atRoot.initialiseAtStore(atStore)
 
                       var request = require("request");
 
-                      var issueData =
-                          { 
-                          }
-
-                      var fs          = require("fs");
-                      var githubToken = fs.readFileSync("githubToken", "utf8").replace("\n", "");
                       var defaultRequestOptions = 
                           {   
                             // "url":    "https://gitlab.holochain.net/api/v4/projects/6/issues",
                             // "url": "https://api.github.com",
-                            "url": "https://api.github.com/repos/christopherreay/thePlan/issues",
+                            "url": traveller.thePlan.config.repoURL+"/issues",
                             "headers":
                                 { //"PRIVATE-TOKEN": "NZxriTAsS7WSbcLiwi6Z",
                                   "Accept": "application/vnd.github.v3+json",
                                   "User-Agent": "Awesome-thePlan-App",
-                                  "Authorization": githubToken,
+                                  "Authorization": traveller.thePlan.config.githubToken,
                                 },
                           };
                           
@@ -517,15 +530,16 @@ atRoot.initialiseAtStore(atStore)
                         ( () => 
                           { debugger;
 
-                            requestOptions = defaultRequestOptions;
-                            requestOptions.method = "GET";
-                            requestOptions.url = 
-                                "https://api.github.com/repos/christopherreay/thePlan/issues" +
-                                "/" + traveller.traveller.twilio["issue[number]"]             +
-                                "/comments"                                                   +
-                                "";
                             var completeCommentList = [];
 
+                            requestOptions        = defaultRequestOptions;
+                            requestOptions.method = "GET";
+                            requestOptions.url    = 
+                                traveller.traveller.thePlan.repoURL + "/issues"     +
+                                "/" + traveller.traveller.twilio["issue[number]"]   +
+                                "/comments"                                         +
+                                "";
+                            
                             var requestFunction = 
                             ( (currentPage) =>
                               { var pageSize = 100;
@@ -773,14 +787,15 @@ atRoot.initialiseAtStore(atStore)
                             { "$set": 
                                 { "traveller.codeBlock": nodeCodeBlock,
                                   "traveller.thePlan.striationDict":
-                                  { "red":    {"name": "Core Holochain Integration",  "rgb": "(255, 0,   0  )", "label": "HardCore" ,   },
-                                    "orange": {"name": "Events Attendance Outreach",  "rgb": "(255, 148, 0  )", "label": "Infra"    ,   },
-                                    "yellow": {"name": "Organizational Outreach",     "rgb": "(255, 255, 0  )", "label": "Servo"    ,   },
-                                    "green":  {"name": "Networking Outreach",         "rgb": "(0,   255, 0  )", "label": "Socio"    ,   },
-                                    "blue":   {"name": "Social Forms Innovation",     "rgb": "(0,   0,   255)", "label": "Produ"    ,   },
-                                    "indigo": {"name": "Design / Strategy Talk",      "rgb": "(255, 0,   255)", "label": "Exa"      ,   },
-                                    "violet": {"name": "Meta / Politics",             "rgb": "(255, 146, 147)", "label": "Iso"      ,   },
-                                  },
+                                      { "red":    {"name": "Core Holochain Integration",  "rgb": "(255, 0,   0  )", "label": "HardCore" ,   },
+                                        "orange": {"name": "Events Attendance Outreach",  "rgb": "(255, 148, 0  )", "label": "Infra"    ,   },
+                                        "yellow": {"name": "Organizational Outreach",     "rgb": "(255, 255, 0  )", "label": "Servo"    ,   },
+                                        "green":  {"name": "Networking Outreach",         "rgb": "(0,   255, 0  )", "label": "Socio"    ,   },
+                                        "blue":   {"name": "Social Forms Innovation",     "rgb": "(0,   0,   255)", "label": "Produ"    ,   },
+                                        "indigo": {"name": "Design / Strategy Talk",      "rgb": "(255, 0,   255)", "label": "Exa"      ,   },
+                                        "violet": {"name": "Meta / Politics",             "rgb": "(255, 146, 147)", "label": "Iso"      ,   },
+                                      },
+                                  "traveller.thePlan.config": thePlanConfig,
                                 }, 
                             }, 
                           ], 
@@ -810,12 +825,6 @@ atRoot.initialiseAtStore(atStore)
             )
         }
       )
-    }
-  )
-  .catch
-  ( error => 
-    { ls("checking if connected: ", atRoot.connectedAtStore == atStore);
-      assert(atRoot.connectedAtStore == atStore);
     }
   )
   .catch 
