@@ -227,7 +227,10 @@ thePlan.openSideBar =
 
 thePlan.getAllIssues =
   () =>
-  { var ajaxOptions = 
+  { thePlan.fullSizeModalSpinner  = $("<div class='fullSizeModal spinner modal' />");
+  	$("body").append(thePlan.fullSizeModalSpinner.toggleClass("open", true));
+
+  	var ajaxOptions = 
     { "method": "POST",
       "url"   : "/",
       "data"  : {"operation": "getAllIssues"},
@@ -254,6 +257,9 @@ thePlan.getAllIssues =
           }
 
           thePlan.createDivs();
+          thePlan.checkModalState();
+          thePlan.fullSizeModalSpinner.toggleClass("open", false);
+	        thePlan.fullSizeModalSpinner.toggleClass(thePlan.selectedColor.color+"3", false)
         }
       );
 
@@ -390,8 +396,6 @@ thePlan.createDivs =
 
     thePlan.newIssueContainer     = $("<div class='newIssueContainer' />");
     thePlan.newIssueContainer.append(thePlan.issueTypeColorsContainer).append(thePlan.newIssueTitleField).append(thePlan.newIssueCreateButton);
-
-    thePlan.fullSizeModalSpinner  = $("<div class='fullSizeModal spinner modal' />");
 
     thePlan.doubleBuffer          = $("<div class='doubleBuffer' />");
     

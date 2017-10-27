@@ -21,6 +21,10 @@ var http = require('http');
  */
 
 var port = "5510";
+if (process.env.hasOwnProperty("ThePlan_PORT"))
+{ port = process.env.ThePlan_PORT
+}
+
 app.set('port', port);
 
 /**
