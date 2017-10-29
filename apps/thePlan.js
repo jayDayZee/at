@@ -9,7 +9,7 @@ var debug     = require('debug')('at:server');
 var http      = require('http');
 
 
-var fs          	       = require("fs");
+// var fs          	       = require("fs");
 // const readlinePackage    = require('readline');
 
 // DEV CHAT: required config fields must have either a default xor an exit value
