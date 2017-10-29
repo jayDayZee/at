@@ -4,7 +4,10 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "test": "mocha"
+    "test": "mocha",
+    "debug": "",
+    "thePlan": "node apps/thePlan.js 2> logs/lastRun.log",
+    "thePlanDebug": "node --inspect-brk=5.101.107.169:5501 apps/thePlan.js 2> logs/lastRun.log"
   },
   "dependencies": {
     "body-parser": "~1.17.1",

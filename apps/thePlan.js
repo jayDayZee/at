@@ -8,6 +8,8 @@ var assert = require("assert");
 var debug     = require('debug')('at:server');
 var http      = require('http');
 
+const Console     = require("console").Console;
+var   errConsole  = new Console(process.stderr);
 
 // var fs          	       = require("fs");
 // const readlinePackage    = require('readline');
@@ -142,7 +144,7 @@ var twilio    = require("twilio");
 
 atStore.index("id");
 
-atStore.find({}).then( docs => { ls("documents:", docs); } );
+// atStore.find({}).then( docs => { ls(errConsole, "documents:", docs); } );
 
 var traveller       = {};
 var addTestCallback = {};
@@ -176,7 +178,7 @@ atRoot.initialiseAtStore(atStore)
         .find( {"id": thePlanConfig.appName} )
         .then
         ( docs =>
-          { ls("@."+thePlanConfig.appName, docs);
+          { //ls("@."+thePlanConfig.appName, docs);
             if ( (docs.length != 1) || ! docs[0].hasOwnProperty("id") || docs[0].id != thePlanConfig.appName )
             { ls("@."+thePlanConfig.appName+" collection is malformed. Exiting");
               process.exit(1);
@@ -203,7 +205,7 @@ atRoot.initialiseAtStore(atStore)
               { traveller.traveller.callback = 
                   (traveller) => 
                   { ls("\n\n\n", "testResults");
-                    ls("\n  ", "traveller:\n  ", traveller);
+                    ls(errConsole, "\n  ", "traveller:\n  ", traveller);
 
                     //set final test success value
                     var success = true;
@@ -410,7 +412,7 @@ atRoot.initialiseAtStore(atStore)
                           }
                         }
 
-                        ls("\n\n\n", "createGraph.buildGraph: results:", graph);
+                        ls(errConsole, "\n\n\n", "createGraph.buildGraph: results:", graph);
                       };
                 buildGraph.traveller.codeBlock = codeBlock.toString().slice(6);
 
@@ -535,7 +537,7 @@ atRoot.initialiseAtStore(atStore)
                             requestOptions        = defaultRequestOptions;
                             requestOptions.method = "GET";
                             requestOptions.url    = 
-                                traveller.traveller.thePlan.repoURL + "/issues"     +
+                                context.traveller.thePlan.config.repoURL + "/issues"     +
                                 "/" + traveller.traveller.twilio["issue[number]"]   +
                                 "/comments"                                         +
                                 "";
@@ -610,18 +612,18 @@ atRoot.initialiseAtStore(atStore)
 
                                     for (var i=0; i < issueListLength; i++)
                                     { var issue = issueList[i];
-                                      var dictionaryKey = namespace(context, "traveller.thePlan.byIssueID."+issue.id+".xy", null, true)
-                                      ls("readEntryFromContext:", dictionaryKey);
+                                      //var dictionaryKey = namespace(context, "traveller.thePlan.byIssueID."+issue.id+".xy", null, true)
+                                      //ls(errConsole, "readEntryFromContext:", dictionaryKey);
 
-                                      dictionaryKey = getXYFromTitle.exec(issue.title)[1];
+                                      var dictionaryKey = getXYFromTitle.exec(issue.title)[1];
                                       // if (JSON.stringify(dictionaryKey) == JSON.stringify({})) dictionaryKey = false;
                                       // if (dictionaryKey == false)
                                       // { 
                                       //   ls("readEntryFromTitle", dictionaryKey);
                                       // }
                                       issue.xy = dictionaryKey;
-                                      ls(issue.state);
-                                      ls(issue.number);
+                                      ls(errConsole, issue.state);
+                                      ls(errConsole, issue.number);
 
                                       namespace(context, "traveller.thePlan.byIssueID")[issue.id] = issue;
                                     }

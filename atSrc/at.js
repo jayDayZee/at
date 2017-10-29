@@ -21,6 +21,8 @@ else
   // uuid = require("uuid");
 }
 
+const Console     = require("console").Console;
+var   errConsole  = new Console(process.stderr);
 
 ( function(window)
   { 
@@ -67,7 +69,7 @@ else
           );
       };
       this.initialiseAtStore = function(atStore)
-      { debugger;
+      { //debugger;
         atRoot.ls("atSrc/at.js: AtRoot.initialiseAtStore");
 
         //make sure the store is empty
@@ -81,7 +83,7 @@ else
           )
           .then
           ( () =>
-            { debugger;
+            { //debugger;
               return atStore
                 .insert
                 ( { "id": "@", "storeID": new atRoot.createID().idString } 
@@ -326,11 +328,11 @@ else
                   namespace(traveller, "results.atStore");
                   
                   var storeAndDeleteKey = function(key, functionName, functionParams)
-                  { ls("at.js: traverse: atStore:", functionName, functionParams, "\n\n");
+                  { //ls("at.js: traverse: atStore:", functionName, functionParams, "\n\n");
                     return atStore[functionName].apply(null, functionParams)
                       .then
                       ( (docs) => 
-                        { ls("at.js: traverse: atStore:", functionName, functionParams, "\ndocs:", docs, "\n\n");
+                        { //ls("at.js: traverse: atStore:", functionName, functionParams, "\ndocs:", docs, "\n\n");
                           traveller.results.atStore[key] = docs;
                           delete traveller.atStore[key];
                         }
@@ -373,7 +375,7 @@ else
                   //evaluate the code in the context against the traveller              
                   //  the node has the ability to set a suggested exit. A difference traverse function could ignore it (e.g. visualisation traveller)
                   var toEval = namespace(context, "traveller.codeBlock", ["toReturn = {}", "toReturn = ''"])
-                  console.log("traverse.toEval:\n  ", toEval);
+                  // ls(errConsole, "traverse.toEval:\n  ", toEval);
                   // toEvalFunction = new Function("traveller", "context", toEval);
                   // toEvalFunction(traveller, context);
                   // SOME SHIT ABOUT ACCESSING CLOSURES OVER LOCALS ANALYSE AND DESTROY. MIGHT HAVE TO PUT "traverse" INTO A CONTEXT OBJECT in the atStore
@@ -430,13 +432,23 @@ else
       }
 
       this.ls = function(listOfStuff)
-      { Array.from(arguments).forEach
+      { argumentList = Array.from(arguments);
+
+        var useConsole;
+        if (arguments[0].constructor == require("console").Console )
+        { useConsole = argumentList.shift();
+        }
+        else
+        { useConsole = console;
+        }
+
+        argumentList.forEach
         ( (thing) =>
           { if (typeof thing == "string")
-            { console.log(thing);
+            { useConsole.log(thing);
             }
             else
-            { console.log(util.inspect(thing, false, null))
+            { useConsole.log(util.inspect(thing, false, null))
             }
           }
         );
