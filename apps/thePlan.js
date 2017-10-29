@@ -5,13 +5,14 @@ var assert = require("assert");
 /**
  * Module dependencies.
  */
-var debug     = require('debug')('at:server');
-var http      = require('http');
+var debug         = require('debug')('at:server');
+var http          = require('http');
 
 const Console     = require("console").Console;
 var   errConsole  = new Console(process.stderr);
 
-// var fs          	       = require("fs");
+var fs            = require("fs");
+var jsmin         = require('jsmin').jsmin;
 // const readlinePackage    = require('readline');
 
 // DEV CHAT: required config fields must have either a default xor an exit value
@@ -20,7 +21,7 @@ var requiredConfigFields =
       "port"        : { "default"   : 5510 },
       "repoURL"     : { "default"   : "https://api.github.com/repos/christopherreay/thePlan"},
     }
-var thePlanConfig = require("../config.json", "utf8");
+var thePlanConfig = JSON.parse(jsmin(fs.readFileSync("./config.json", "utf8") ));
 for (var configFieldName in requiredConfigFields)
 { if (! thePlanConfig.hasOwnProperty(configFieldName) )
   { //const readLine = readlinePackage.createInterface
