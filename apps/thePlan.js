@@ -538,10 +538,11 @@ atRoot.initialiseAtStore(atStore)
                             requestOptions        = defaultRequestOptions;
                             requestOptions.method = "GET";
                             requestOptions.url    = 
-                                context.traveller.thePlan.config.repoURL + "/issues"     +
-                                "/" + traveller.traveller.twilio["issue[number]"]   +
-                                "/comments"                                         +
-                                "";
+                                traveller.traveller.twilio["issue[comments_url]"];
+                                // context.traveller.thePlan.config.repoURL + "/issues"     +
+                                // "/" + traveller.traveller.twilio["issue[number]"]   +
+                                // "/comments"                                         +
+                                // "";
                             
                             var requestFunction = 
                             ( (currentPage) =>
