@@ -5,5 +5,5 @@
   "repoURL"     : "https://api.github.com/repos/christopherreay/thePlan",
   // currently is a github user OAuth token for someone who has access to the repo
   //   this really needs to be changed to something else. And should be stored in memory not in the database lol
-  "githubToken" : "token ee4aee253dac2ebc1b90426d056df6dc3e8e3a52"
+  "githubToken" : "token <SOME GITHUB TOKEN>"
 }
