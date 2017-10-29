@@ -190,7 +190,7 @@ atRoot.initialiseAtStore(atStore)
         )
         .then
         ( () =>
-          { return atStore.insert( { "id": "commitChanges"}, {"$set": { "traveller.codeBlock": "" }}, {"upsert": true} );
+          { return atStore.update( { "id": "commitChanges"}, {"$set": { "traveller.codeBlock": "" }}, {"upsert": true} );
           }
         )
         .then
@@ -464,7 +464,7 @@ atRoot.initialiseAtStore(atStore)
                 //  using suggestedExit, as below :) #namedNodes #12
                 for (var key in createGraphNodes)
                 { var graphNode = createGraphNodes[key];
-                  namespace(traveller, "atStore")["bootstrapGraphBuilder_"+key] = { "insert": [ {"id": graphNode.id}, graphNode, {"upsert": true} ]};
+                  namespace(traveller, "atStore")["bootstrapGraphBuilder_"+key] = { "update": [ {"id": graphNode.id}, graphNode, {"upsert": true} ]};
                 }
                 // 5.
                 //configre the mocha callback
@@ -506,17 +506,17 @@ atRoot.initialiseAtStore(atStore)
                     { debugger;
 
                       var request = require("request");
-
+                      debugger;
                       var defaultRequestOptions = 
                           {   
                             // "url":    "https://gitlab.holochain.net/api/v4/projects/6/issues",
                             // "url": "https://api.github.com",
-                            "url": traveller.thePlan.config.repoURL+"/issues",
+                            "url": context.traveller.thePlan.config.repoURL+"/issues",
                             "headers":
                                 { //"PRIVATE-TOKEN": "NZxriTAsS7WSbcLiwi6Z",
                                   "Accept": "application/vnd.github.v3+json",
                                   "User-Agent": "Awesome-thePlan-App",
-                                  "Authorization": traveller.thePlan.config.githubToken,
+                                  "Authorization": context.traveller.thePlan.config.githubToken,
                                 },
                           };
                           
@@ -600,7 +600,7 @@ atRoot.initialiseAtStore(atStore)
                                   { //console.log("thePlan.js: gitlabRequstResponse", "error", error, "response", response, "\n\nbody", body);
 
                                     // console.log("body:", body);
-                                    var issueList = JSON.parse(body);
+                                    var issueList       = JSON.parse(body);
                                     var issueListLength = issueList.length;
                                     // if (createdIssue.hasOwnProperty("id") )
                                     
@@ -633,7 +633,7 @@ atRoot.initialiseAtStore(atStore)
                                     { traveller.atStore = {};
                                       namespace(traveller, "atStore")["updateThePlanIssues"] = {"update": [{"id": "thePlanIssueTracker__0_1_20"}, context ]};
 
-                                      traveller.traveller.express.req.res.send(JSON.stringify(namespace(context, "traveller.thePlan.byIssueID") , null, 3))
+                                      traveller.traveller.express.req.res.json(namespace(context, "traveller.thePlan.byIssueID") )
                                       traveller.traveller.express.req.res.end();
 
                                       traveller.traveller.suggestedExit = "commitChanges";

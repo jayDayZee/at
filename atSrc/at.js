@@ -326,10 +326,12 @@ else
                   namespace(traveller, "results.atStore");
                   
                   var storeAndDeleteKey = function(key, functionName, functionParams)
-                  { return atStore[functionName].apply(null, functionParams)
+                  { ls("at.js: traverse: atStore:", functionName, functionParams, "\n\n");
+                    return atStore[functionName].apply(null, functionParams)
                       .then
                       ( (docs) => 
-                        { traveller.results.atStore[key] = docs;
+                        { ls("at.js: traverse: atStore:", functionName, functionParams, "\ndocs:", docs, "\n\n");
+                          traveller.results.atStore[key] = docs;
                           delete traveller.atStore[key];
                         }
                      );
