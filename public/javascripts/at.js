@@ -24,7 +24,9 @@ $(document).on
   { if (document.readyState == "complete")
     { setTimeout
       ( () =>
-        { thePlan.markDownConverter = new showdown.Converter();
+        { $('head > title').text("Ideas for a Plan - ideationBoard+");
+
+          thePlan.markDownConverter = new showdown.Converter();
 
           thePlan.eschatonNaturalHeight = $(".eschaton").get(0).naturalHeight;
           thePlan.eschatonNaturalWidth  = $(".eschaton").get(0).naturalWidth;
