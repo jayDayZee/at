@@ -5,7 +5,7 @@ var atRoot  = require("../atSrc/at.js")
 router.get('/', function(req, res, next) {
   debugger;
 
-  res.render('index', { "title": req.atConfiguration.appName, "backgroundImageURL": req.atConfiguration.repoURL.replace("api.github.com/repos", "rawgit.com")+"/master/discussionSurface.svg"})
+  res.render('index', { "title": req.atConfiguration.appTitle+" - ideas for a plan", "backgroundImageURL": req.atConfiguration.repoURL.replace("api.github.com/repos", "rawgit.com")+"/master/discussionSurface.svg"})
 });
 
 router.post('*', function(req, res, next) {

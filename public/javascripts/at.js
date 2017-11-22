@@ -24,7 +24,7 @@ $(document).on
   { if (document.readyState == "complete")
     { setTimeout
       ( () =>
-        { $('head > title').text("Ideas for a Plan - ideationBoard+");
+        { //$('head > title').text("Ideas for a Plan - ideationBoard+");
 
           thePlan.markDownConverter = new showdown.Converter();
 

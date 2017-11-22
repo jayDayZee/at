@@ -1,5 +1,10 @@
 { // The appName is used as a key for databases, etc.
+  //   if you change this then a new database will be created.
   "appName"     : "ThePlan_testBed",
+
+  // This is purely visible, and you can change it as much as you like
+  //   It is displayed on things like the web page title
+  "appTitle"	: "testBed",
 
   // currently can only be a github repo
   "repoURL"     : "https://api.github.com/repos/christopherreay/thePlan_testBed",
