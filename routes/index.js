@@ -1,11 +1,11 @@
 var express = require('express');
-var router = express.Router();
-var atRoot = require("../atSrc/at.js")
+var router  = express.Router();
+var atRoot  = require("../atSrc/at.js")
 /* GET home page. */
 router.get('/', function(req, res, next) {
   debugger;
 
-  res.render('index', { title: 'thePlan', message: 'Hello there!' })
+  res.render('index', { "title": req.atConfiguration.appName, "backgroundImageURL": req.atConfiguration.repoURL.replace("api.github.com/repos", "rawgit.com")+"/master/discussionSurface.svg"})
 });
 
 router.post('*', function(req, res, next) {

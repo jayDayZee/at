@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-var path = require('path');
-var assert = require("assert");
+var path          = require('path');
+var assert        = require("assert");
 
 /**
  * Module dependencies.
@@ -19,7 +19,7 @@ var jsmin         = require('jsmin').jsmin;
 var requiredConfigFields = 
     { "appName"     : { "exitValue" : 101  },
       "port"        : { "default"   : 5510 },
-      "repoURL"     : { "default"   : "https://api.github.com/repos/christopherreay/thePlan"},
+      "repoURL"     : { "default"   : "https://api.github.com/repos/christopherreay/thePlan_testBed"},
     }
 var thePlanConfig = JSON.parse(jsmin(fs.readFileSync("./config.json", "utf8") ));
 for (var configFieldName in requiredConfigFields)
@@ -46,7 +46,7 @@ for (var configFieldName in requiredConfigFields)
 var monk      = require("monk");
 var db        = monk("localhost/"+thePlanConfig.appName+"_at_thePlan");
 var atStore   = db.get('atStore_'+thePlanConfig.appName);
-var app       = require("../app.js")(monk, db, atStore);
+var app       = require("../app.js")(monk, db, atStore, thePlanConfig);
 
 // var AtRoot = require("../atSrc/at.js");
 

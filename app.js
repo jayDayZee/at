@@ -1,5 +1,5 @@
 var buildApp = 
-(monk, db, atStore) =>
+(monk, db, atStore, appConfiguration) =>
 
 { var express = require('express');
   var path = require('path');
@@ -54,8 +54,9 @@ var buildApp =
   app.use(express.static(path.join(__dirname, 'public')));
 
   app.use(function(req,res,next){
-      req.atRoot  = atRoot;
-      req.atStore = atStore;
+      req.atRoot          = atRoot;
+      req.atStore         = atStore;
+      req.atConfiguration = appConfiguration;
       next();
   });
 
