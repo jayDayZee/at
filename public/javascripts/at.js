@@ -1,17 +1,17 @@
 thePlan = 
 { "waiting": "idle",
 
-  "striationOrder": ["violet", "indigo", "blue", "green", "yellow", "orange", "red"],
-  "striationLabels": ["HardCore", "Infra", "Servo", "Socio", "Produ", "Exa", "Iso"],
-  "striationDict":
-  { "red":    {"name": "Core Holochain Integration",  "rgb": "(255, 0,   0  )", "label": "HardCore" ,   },
-    "orange": {"name": "Events Attendance Outreach",  "rgb": "(255, 148, 0  )", "label": "Infra"    ,   },
-    "yellow": {"name": "Organizational Outreach",     "rgb": "(255, 255, 0  )", "label": "Servo"    ,   },
-    "green":  {"name": "Networking Outreach",         "rgb": "(0,   255, 0  )", "label": "Socio"    ,   },
-    "blue":   {"name": "Social Forms Innovation",     "rgb": "(0,   0,   255)", "label": "Produ"    ,   },
-    "indigo": {"name": "Design / Strategy Talk",      "rgb": "(255, 0,   255)", "label": "Exa"      ,   },
-    "violet": {"name": "Meta / Politics",             "rgb": "(255, 146, 147)", "label": "Iso"      ,   },
-  },
+  "striationOrder"    : ["violet", "indigo", "blue", "green", "yellow", "orange", "red"],
+  "striationLabels"   : ["HardCore", "Infra", "Servo", "Socio", "Produ", "Exa", "Iso"],
+  "striationDict"     :
+      { "red":    {"name": "Core Holochain Integration",  "rgb": "(255, 0,   0  )", "label": "HardCore" ,   },
+        "orange": {"name": "Events Attendance Outreach",  "rgb": "(255, 148, 0  )", "label": "Infra"    ,   },
+        "yellow": {"name": "Organizational Outreach",     "rgb": "(255, 255, 0  )", "label": "Servo"    ,   },
+        "green":  {"name": "Networking Outreach",         "rgb": "(0,   255, 0  )", "label": "Socio"    ,   },
+        "blue":   {"name": "Social Forms Innovation",     "rgb": "(0,   0,   255)", "label": "Produ"    ,   },
+        "indigo": {"name": "Design / Strategy Talk",      "rgb": "(255, 0,   255)", "label": "Exa"      ,   },
+        "violet": {"name": "Meta / Politics",             "rgb": "(255, 146, 147)", "label": "Iso"      ,   },
+      },
   "tabindex": 0,
   "selectedColor": "red",
 
@@ -50,7 +50,8 @@ $(document).on
           // .appendTo($("body"));
 
 
-          thePlan.containerHeight = $(window).height();
+          // Work out how big the container should be in pixels. This works on chrome onlye
+          thePlan.containerHeight = $(window).height() * window.devicePixelRatio;
           $(".thePlanContainer").css( {"height": thePlan.containerHeight-38, "width": thePlan.containerHeight * thePlan.eschatonRatio } );
 
           $(".thePlanContainer").on
@@ -69,6 +70,7 @@ $(document).on
                 thePlan.openSideBar();
               } 
             );
+
 
           // thePlan.resize();
 
