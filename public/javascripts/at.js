@@ -1,5 +1,13 @@
 thePlan = 
-{ "waiting": "idle",
+{ "browserSupport": 
+      { "navigator.userAgent.toLowerCase().indexOf('webkit') == -1": 
+            ` window.confirm("<strong>ideas for a plan</strong> is currently only built for webkit-* compatible browsers (chromium, google-chrome and safari)");
+              $("body").html("<strong>ideas for a plan</strong> is currently only built for webkit-* compatible browsers (chromium, google-chrome and safari)");
+              toReturn = true;
+            `
+      },
+
+  "waiting": "idle",
 
   "striationOrder"    : ["violet", "indigo", "blue", "green", "yellow", "orange", "red"],
   "striationLabels"   : ["HardCore", "Infra", "Servo", "Socio", "Produ", "Exa", "Iso"],
@@ -24,9 +32,12 @@ $(document).on
   { if (document.readyState == "complete")
     { setTimeout
       ( () =>
-        { if ( navigator.userAgent.toLowerCase().indexOf("webkit") == -1 )
-          { $("body").html("<strong>ideas for a plan</strong> is currently only built for webkit-* compatible browsers (chromium, google-chrome and safari)");
-            return;
+        { for (var key in thePlan.browserSupport)
+          { if ( eval(key) )
+            { var toReturn=false;
+              eval(thePlan.browserSupport[key]);
+              if (toReturn) return;
+            }
           }
 
 
@@ -39,11 +50,11 @@ $(document).on
 
           thePlan.eschatonRatio = thePlan.eschatonNaturalWidth / thePlan.eschatonNaturalHeight;
 
-          // $(window).resize
-          // ( () =>
-          //   { thePlan.waitOnResize(); 
-          //   } 
-          // ); 
+          $(window).resize
+          ( () =>
+            { thePlan.waitOnResize(); 
+            } 
+          ); 
 
           // $(` <div class="wrapper">
           //       <div class="popup">
@@ -281,14 +292,25 @@ thePlan.resize =
   () =>
   { thePlan.waiting       = "idle";
     
-    thePlan.calculateSizes();
-    thePlan.setContainerWidth();
-    thePlan.setSeventhDivStyle();
+    // thePlan.calculateSizes();
+    // thePlan.setContainerWidth();
+    // thePlan.setSeventhDivStyle();
+
+    console.log(window.devicePixelRatio);
+    if (window.devicePixelRatio <= 1)
+    { thePlan.interactiveContainer.toggleClass("zoomedIn", false);
+      $(".dot").toggleClass("displayNone", false);
+    }
+
   };
 
 thePlan.waitOnResize = 
   () =>
-  { if (thePlan.waiting == "idle")
+  { //thePlan.interactiveContainer.toggleClass("displayNone", true);
+    thePlan.interactiveContainer.css( {"height": thePlan.containerHeight-38} );
+    $(".dot").toggleClass("displayNone", true);
+    thePlan.interactiveContainer.toggleClass("zoomedIn", true);
+    if (thePlan.waiting == "idle")
     { thePlan.waiting = "waiting";
       setTimeout
       ( () =>
@@ -301,7 +323,7 @@ thePlan.waitOnResize =
             setImmediate(thePlan.resize);
           }
         },
-        100
+        300
       )
     }
     else if (thePlan.waiting == "waiting")
@@ -340,14 +362,17 @@ thePlan.setSeventhDivStyle =
 thePlan.createDivs = 
 ( () =>
   { 
+    thePlan.striationColorsContainer  = $(".striationColorsContainer");
+    thePlan.interactiveContainer      = $(".interactiveContainer");
 
     var numberOfDivs_vertical   = 49;
     var numberOfDivs_horizontal = Math.floor($(".thePlanContainer").width() / ($(".thePlanContainer").height() / 49) );
     var sizeOfDots = $(".thePlanContainer").height() / 59;
 
     for (var striation=0; striation < 7; striation ++)
-    { var striationColor    = thePlan.striationOrder[striation];
-      var striationObject   = thePlan.striationDict[striationColor];
+    { var striationColor          = thePlan.striationOrder[striation];
+      var striationObject         = thePlan.striationDict[striationColor];
+      // var currentStriation  = $("<div class='striation"+" "+striationColor+"3' />");
       var currentStriation  = $("<div class='striation"+" "+striationColor+"3' />");
       var striationLabel    = $("<div class='striationLabel modalCloser'>"+striationObject.label+"</div>").appendTo(currentStriation);
 
@@ -388,7 +413,7 @@ thePlan.createDivs =
         }
       }
       
-      currentStriation.appendTo($(".interactiveContainer"));
+      currentStriation.appendTo(thePlan.interactiveContainer);
     }
 
 
