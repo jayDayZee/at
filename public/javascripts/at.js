@@ -24,7 +24,13 @@ $(document).on
   { if (document.readyState == "complete")
     { setTimeout
       ( () =>
-        { //$('head > title').text("Ideas for a Plan - ideationBoard+");
+        { if ( navigator.userAgent.toLowerCase().indexOf("webkit") == -1 )
+          { $("body").html("<strong>ideas for a plan</strong> is currently only built for webkit-* compatible browsers (chromium, google-chrome and safari)");
+            return;
+          }
+
+
+          //$('head > title').text("Ideas for a Plan - ideationBoard+");
 
           thePlan.markDownConverter = new showdown.Converter();
 
