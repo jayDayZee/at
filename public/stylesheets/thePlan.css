@@ -37,7 +37,7 @@ body
   margin-left: 120px;
 }
 
-.interactiveContainer
+.interactiveContainer, .striationColorsContainer
 { position: absolute;
 
   top:    0px;
@@ -47,6 +47,12 @@ body
   width:  100%;
 
   overflow: hidden;
+}
+.interactiveContainer.zoomedIn
+{ width: 40px;
+  position: fixed;
+
+  
 }
 
 .striation
@@ -325,6 +331,10 @@ body
 /* ########## TOOOLS
 */
 
+.displayNone
+{ display: none;
+}
+
 .fullSizeModal
 { display: none;
 
@@ -356,7 +366,9 @@ body
 { position: absolute;
   left:     -2000px;
   top:      -2000px;
+  display: none;
 }
+
 .externalLinkSymbol
 {     background-image: url(/graphics/externalLinkSymbol.svg);
     background-size: contain;
