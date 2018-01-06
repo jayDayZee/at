@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "test": "mocha",
-    "debug": "",
+    "testDebug": "mocha --inspect-brk=5.101.107.169:4000",
     "thePlan": "node apps/thePlan.js 2> logs/lastRun.log",
     "thePlanDebug": "node --inspect-brk=5.101.107.169:5501 apps/thePlan.js 2> logs/lastRun.log"
   },

@@ -4,7 +4,12 @@
 var requiredConfigFields = 
     { "port"        : { "default"   : 5510 },
     }
-var atApplication = require("../app.js")("test", requiredConfigFields);
+// ############# DO NOT CHANGE THE NAME OF THE TEST APP UNLESS YOU REALLY KNOW WHAT YOUARE DOING THIS COULD CAUSE DESTRUCTIONS OF YOUR APP DATABASES
+var atApplication = require("../app.js")("test_atCoreTests", requiredConfigFields);
+if (atApplication.appName != "test_atCoreTests")
+{ console.log("@: test.js: init: DO NOT CHANGE THE NAME OF THE TEST APP")
+  process.exit()
+}
 
 // ############### @pplication specifics
 // imports for mocha
@@ -26,6 +31,35 @@ var atStore = atApplication.registers.atStore;
 
 var testObject = {};
 ls(atRoot);
+
+describe
+  ( "\n\n\n\nCheck that this app has the correct name, since it is destructive to the database",
+    function()
+    { it
+      ( "is called test_atCoreTets",
+        function()
+        { assert(atApplication.appName == "test_atCoreTests");
+          
+        }
+      );
+    }
+  );
+describe
+  ( "\n\n\n\nDESTROY THE AT COLLECTION DO NOT DO THIS",
+    function()
+    { it
+      ( "DETROY",
+        function(done)
+        { if (atApplication.appName == "test_atCoreTests")
+          { atStore.drop().then( () => { done(assert(atApplication.appName == "test_atCoreTests")) } );
+          }
+
+        }
+      );
+    }
+  );
+
+
 
 describe
 ( "\n\n\n\ntest namespace functions",
@@ -979,7 +1013,8 @@ describe
             namespace(runInits, "traveller");
                 var codeBlock =
                   () =>
-                  { var graph = traveller.traveller.createGraph.results.graph;
+                  { 
+                    var graph = traveller.traveller.createGraph.results.graph;
 
                     for (var name in graph)
                     { var node = context = graph[name];
@@ -1213,45 +1248,3 @@ describe
     );
   }
 );
-
-describe
-  ( "\n\n\n\nDESTROY THE AT COLLECTION DO NOT DO THIS",
-    function()
-    { it
-      ( "DETROY",
-        function(done)
-        { atStore.drop().then( () => done() );
-
-
-        }
-      );
-    }
-  );
-
-describe
-  ( "\n\n\n\nCheck the DB is empty",
-    function()
-    { it
-      ( "should find a length of 0 documents in the database",
-        function(done)
-        { var monkTraveller = {"atStore": { "checkEmptyDB": {"find":[{}]} } };
-
-          namespace(monkTraveller, "traveller.callback");
-          monkTraveller.traveller.callback = 
-            function(completedTraveller)
-            { ls("\n\n\n\ntestResults");
-              ls("traveller:\n  ", completedTraveller);
-              
-              ls("completedTraveller.results.atStore.checkEmptyDB.length", completedTraveller.results.atStore.checkEmptyDB.length);
-              assert
-              (   completedTraveller.results.atStore.checkEmptyDB.length == 0
-              );
-
-              done();
-            };
-
-          atRoot.traverse(monkTraveller, {});
-        }
-      );
-    }
-  );
