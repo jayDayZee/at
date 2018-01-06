@@ -281,7 +281,7 @@ var   errConsole  = new Console(process.stderr);
       this.namespace.cp(this, this.public, ["newAtNode", "namespace", "createID"]);
 
       
-      this.traverse = function(traveller, context, atStore)
+      this.traverse = function(traveller, context, appGlobals)
       { //function which takes the traveller and the context. this avoids hard coding the name of the codeBlock / program field into the objects
         // TODO make it possible to run the code synchronously
         // TODO 

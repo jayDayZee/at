@@ -768,7 +768,7 @@ describe
 
                   //complete mocha test
                   namespace.rm(traveller, "traveller.mocha.assertConditions");
-                  namespace.rm(traveller, "traveller.mocha.done")(assert(success));
+                  namespace.rm(traveller, "traveller.mocha.done")(require("assert")(success));
                 };
             }
             addTestCallback.traveller.codeBlock = addTestCallback.traveller.codeBlock.toString().slice(6);
