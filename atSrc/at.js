@@ -189,7 +189,7 @@ var   errConsole  = new Console(process.stderr);
           { defaultCounter ++;
           }
         }
-        if (leafObject != null)
+        if (leafObject != null && current == null)
         { current = last[wayPoint] = leafObject;
         }
           

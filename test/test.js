@@ -191,6 +191,23 @@ describe
       }
     );
     describe
+    ( "\n\n\n\ntest leafNode is not destructive",
+      function()
+      { it
+        ( "",
+          function()
+          { atRoot.namespace(testObject, "create.using.leafNode.going.on.for.a.while", ["leafNode:"], "");
+            console.log("testObject\n  ", JSON.stringify(testObject));
+            console.log(JSON.stringify(testObject.create.using.leafNode.going.on.for.a));
+            var result = 
+                (testObject.create.using.leafNode.going.on.for.a.while == "someFunnyComment") && JSON.stringify(testObject.create.using.leafNode.going.on.for.a) == `{"while":"someFunnyComment"}` ;
+
+            assert.equal(result, true);
+          }
+        );
+      }
+    );
+    describe
     ( "\n\n\n\ntest namespace.rm editing",
       function()
       { it
