@@ -25,11 +25,12 @@ var namespace = atRoot.namespace;
 // atStore.find({}).then( docs => { ls(errConsole, "documents:", docs); } );
 
 var traveller       = {};
-var addTestCallback = {};
+var addTestCallback = new atRoot.AtNode();
 
 var atStore = atApplication.registers.atStore;
 
 var testObject = {};
+
 ls(atRoot);
 
 describe
@@ -765,7 +766,7 @@ describe
       }
     );
 
-    var addTestCallback = new atRoot.AtNode();
+    
     describe
     ( "\n\n\n\nmake traveller.traveller.callback do stuff and call done",
       function()
@@ -952,16 +953,22 @@ describe
                       traveller.traveller.createGraph.results = {};
                     }
 
+                    namespace(traveller, "atRoot");
                     nodeDefinitions.forEach
                     ( (nodeDefinition) =>
-                      { namespace(traveller, "atRoot");
-                        traveller.atRoot[nodeDefinition.name] = { "newAtNode": [] };
+                      { var nodeToCreate = {};
+                        delete nodeDefinition._id;
+                        if (nodeDefinition.hasOwnProperty("id"))
+                        { nodeToCreate.id = nodeDefinition.id;
+                        }
+                        traveller.atRoot[nodeDefinition.name] = { "newAtNode": [nodeToCreate] };
                       }
                     );
                   };
             createGraph.traveller.codeBlock = codeBlock.toString().slice(6);
 
             // we can factor this out to work ina single loop, by changing the atStore code to run a promise.All
+            //   DONE
             var addNodesToSaveQueue = new atRoot.AtNode();
             addNodesToSaveQueue.id        = "createGraph.addNodesToSaveQueue"; //awesome :)
             namespace(addNodesToSaveQueue, "traveller");
@@ -1000,7 +1007,8 @@ describe
                         var node = graph[name] = traveller.results.atRoot[name];
                         for (var key in nodeDefinition)
                         { namespace(node, key, ["leafNode:"], nodeDefinition[key]);
-                        }                        
+                        }
+
                       }
                     );
                     for (var name in graph)
@@ -1180,7 +1188,6 @@ describe
         ( "should cause the backend to reevaluate the contents of the publicJSON from the object specification in the atApplication, and return it as a JSON object",
           function(done)
           { var request = require("request");
-            debugger;
             var requestOptions = 
                 {   
                   "url": "http://127.0.0.1:"+atApplication.configuration.port+"/publicJSON",
@@ -1191,12 +1198,12 @@ describe
               (error, response, body) =>
               { var publicJSON = JSON.parse(body);
                 ls(publicJSON);
-                done( assert
-                      (     JSON.stringify(publicJSON) == JSON.stringify(atApplication.getPublicJSON()) 
-                        &&  JSON.stringify(publicJSON) == JSON.stringify({"configuration": {"port": 40000} })
-                      ) 
-                    );                
-
+                done( 
+                  assert
+                  (     JSON.stringify(publicJSON) == JSON.stringify(atApplication.getPublicJSON()) 
+                    &&  JSON.stringify(publicJSON) == JSON.stringify({"configuration": {"port": 40000} })
+                  )
+                );
               }
             );
 
@@ -1223,6 +1230,88 @@ describe
             //       "description": "",
             //       "labels": [traveller.traveller.twilio.githubLabel],
             //     };
+          }
+        );
+      }
+    );
+    describe
+    ( "\n\n\n\n create a basic router graphNode that can field travellers sent over http to the atApplication",
+      function()
+      { it
+        ( "should create a graphNode that is a router that accepts some namespace in a traveller and routes it to one of many destinations",
+          function(done)
+          { debugger;
+            namespace(traveller, "traveller.createGraph");
+
+            traveller.traveller.createGraph.nodeDefinitions =
+            [ { "name"                : "htmlPOSTRouter",
+                "id"                  : atApplication.appName+"_htmlPOSTRouter",
+                "traveller.codeBlock" : 
+                    ( () =>
+                      { debugger;
+                        ls("\n\n@: htmlPOSTRouter: requestBody:", traveller.traveller.express.requestBody)
+
+                        setImmediate
+                        ( () => 
+                          { debugger;
+                            traveller.traveller.express.req.res.send(JSON.stringify(traveller.traveller.express.requestBody , null, 3));
+                            traveller.traveller.express.req.res.end();
+                          }
+                        );
+                      }
+                    ).toString().slice(6)
+                ,
+              },
+              { "name"                : "htmlPOSTRouter_test",
+                "traveller.codeBlock" : 
+                    ( () =>
+                      { debugger;
+                        namespace(traveller, "traveller").pause = true;
+
+                        var request = require("request");
+                        debugger;
+                        var defaultRequestOptions = 
+                            {   
+                              "url": "http://127.0.0.1:"+getConfiguration("port")+"/",
+                            };
+                        var requestOptions = defaultRequestOptions;
+                        requestOptions.method = "POST";
+                        requestOptions.json =  
+                            { "htmlPOSTRouter_test": "someContents",
+                            };
+
+                        request
+                        ( requestOptions,
+                          (error, response, body) =>
+                          { debugger;
+                            delete traveller.traveller.pause;
+                            namespace(traveller, "traveller.htmlPOSTRouter").requestBody = body;
+                            traverse(traveller, {});
+                          }
+                        );
+                      }
+                    ).toString().slice(6)
+                ,
+              },
+            ];
+
+            traveller.traveller.callback = 
+                (traveller) =>
+                { traveller.traveller.suggestedExit = traveller.traveller.createGraph.results.graph.htmlPOSTRouter_test.id;
+
+                  namespace(traveller, "traveller.mocha");
+                  traveller.traveller.mocha.assertConditions = 
+                      { "receivedPost to htmlPostRouter": "pass = JSON.stringify(traveller.traveller.htmlPOSTRouter.requestBody) == JSON.stringify({ 'htmlPOSTRouter_test': 'someContents', })",
+                      };
+
+                  traveller.traveller.mocha.done = done;
+                  debugger;
+                  atRoot.traverse(traveller, addTestCallback);
+
+                };
+            
+            traveller.traveller.suggestedExit = "createGraph";
+            atRoot.traverse(traveller, {});
           }
         );
       }

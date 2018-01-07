@@ -31,23 +31,12 @@ var buildAtRouter =
         function(req, res, next) 
         { debugger;
 
-          // req.atRoot.connectedAtStore
-          //   .find({"id":"twilioPostToEmail", })
-          //   .then
-          //   ( (docs) =>
-          //     { console.log(docs);
-          //     }      
-          //   )
-          var namespace = atRoot.namespace;
-
-
-
           var traveller = {};
           req.atRoot.namespace(traveller, "traveller").express =
               { "requestBody" : JSON.parse(JSON.stringify(req.body)),
                 "req"         : req,
               }
-          traveller.traveller.suggestedExit = atApplication.appName+"_rootRouter";
+          traveller.traveller.suggestedExit = atApplication.appName+"_htmlPOSTRouter";
           req.atRoot.traverse(traveller, {});
         }
       );
