@@ -13,7 +13,9 @@ var buildAtApplication =
                 { "pathToConfigurationFromDisk":  "./apps/"+appName+".config.json",
                   "requiredConfigFields":         requiredConfigFields,
                 },
+
           };
+
 
       // DEFAULT DEFAULT CONFIG
       // TODO: this should be parameterised by some kind of default default configuration
@@ -58,11 +60,27 @@ var buildAtApplication =
         }
       }
 
+      atApplication.getPublicJSON = 
+        () =>
+        { debugger;
+          var publicJSON = atRoot.namespace(atApplication, "configuration.publicJSON", ["leafNode:"], []);
+          
+          var toReturn = {};
+          for (var i=0, len=publicJSON.length; i < len; i++)
+          { atRoot.namespace(toReturn, publicJSON[i], ["leafNode:"], atRoot.namespace(atApplication, publicJSON[i]));
+          } 
+          return toReturn;
+        }
+
+
+      // ################ create registers ####################
       var registers     = atApplication.registers = {};
       registers.monk    = require("monk");
       registers.db      = registers.monk("localhost/"+atApplication.appName+"_atApplication");
       registers.atStore = registers.db.get('atStore_'+atApplication.appName);
       
+
+      // ################ create express app ##################
       var expressApp = atApplication.expressApp = buildExpressApp(atApplication);
 
        /**
@@ -149,6 +167,8 @@ var buildAtApplication =
       server.on('listening', onListening);
 
       return atApplication;
+
+      // ############ END CREATE EXPRESS APP #################
       
     }
 
@@ -184,7 +204,7 @@ var buildExpressApp =
         next();
     });
 
-    var index = require('./routes/index');
+    var index = require('./routes/index')(atApplication);
     app.use('/', index);
 
     // catch 404 and forward to error handler

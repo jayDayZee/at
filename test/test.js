@@ -1170,6 +1170,68 @@ describe
 );
 
 describe
+( "\n\n\n testing http interface",
+  () =>
+  {
+    describe
+    ( "\n\n\n\n get the publicJSON content",
+      function()
+      { it
+        ( "should cause the backend to reevaluate the contents of the publicJSON from the object specification in the atApplication, and return it as a JSON object",
+          function(done)
+          { var request = require("request");
+            debugger;
+            var requestOptions = 
+                {   
+                  "url": "http://127.0.0.1:"+atApplication.configuration.port+"/publicJSON",
+                };
+
+            request
+            ( requestOptions,
+              (error, response, body) =>
+              { var publicJSON = JSON.parse(body);
+                ls(publicJSON);
+                done( assert
+                      (     JSON.stringify(publicJSON) == JSON.stringify(atApplication.getPublicJSON()) 
+                        &&  JSON.stringify(publicJSON) == JSON.stringify({"configuration": {"port": 40000} })
+                      ) 
+                    );                
+
+              }
+            );
+
+
+            // var request = require("request");
+            // debugger;
+            // var defaultRequestOptions = 
+            //     {   
+            //       // "url":    "https://gitlab.holochain.net/api/v4/projects/6/issues",
+            //       // "url": "https://api.github.com",
+            //       "url": context.traveller.thePlan.config.repoURL+"/issues",
+            //       "headers":
+            //           { //"PRIVATE-TOKEN": "NZxriTAsS7WSbcLiwi6Z",
+            //             "Accept": "application/vnd.github.v3+json",
+            //             "User-Agent": "Awesome-thePlan-App",
+            //             "Authorization": context.traveller.thePlan.config.githubToken,
+            //           },
+            //     };
+            // var requestOptions = defaultRequestOptions;
+            // requestOptions.method = "POST";
+            // requestOptions.json =  
+            //     { //"id":    6,
+            //       "title": issueTitle,
+            //       "description": "",
+            //       "labels": [traveller.traveller.twilio.githubLabel],
+            //     };
+          }
+        );
+      }
+    );
+  }
+);
+
+
+describe
 ( "\n\n\ngit compatible datastore",
   () =>
   {

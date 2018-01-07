@@ -1,34 +1,58 @@
-var express = require('express');
-var router  = express.Router();
-var atRoot  = require("../atSrc/at.js")
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  debugger;
+var buildAtRouter = 
+(atApplication) =>
 
-  res.render('index', { "title": req.atConfiguration.appTitle+" - ideas for a plan", "backgroundImageURL": req.atConfiguration.repoURL.replace("api.github.com/repos", "rawgit.com")+"/master/discussionSurface.svg"})
-});
+{ var express = require('express');
+  var router  = express.Router();
+  var atRoot  = atApplication.atRoot;
 
-router.post('*', function(req, res, next) {
-  debugger;
+  /* GET home page. */
+  router
+      .get
+      ( '/', 
+        function(req, res, next) 
+        { debugger;
+          res.render('index', { "publicJSON": atApplication.publicJSON } );
+        }
+      );
+  /* GET home page. */
+  router
+      .get
+      ( '/publicJSON', 
+        function(req, res, next) 
+        { debugger;
+          req.res.json(atApplication.getPublicJSON());
+          req.res.end();
+        }
+      );
 
-  // req.atRoot.connectedAtStore
-  //   .find({"id":"twilioPostToEmail", })
-  //   .then
-  //   ( (docs) =>
-  //     { console.log(docs);
-  //     }      
-  //   )
-var namespace = atRoot.namespace;
+  router
+      .post
+      ( '*', 
+        function(req, res, next) 
+        { debugger;
+
+          // req.atRoot.connectedAtStore
+          //   .find({"id":"twilioPostToEmail", })
+          //   .then
+          //   ( (docs) =>
+          //     { console.log(docs);
+          //     }      
+          //   )
+          var namespace = atRoot.namespace;
 
 
 
-  var traveller = {};
-  req.atRoot.namespace(traveller, "traveller").twilio = JSON.parse(JSON.stringify(req.body));
-  console.log("post req body", req.body);
-  req.atRoot.namespace(traveller, "traveller.express").req = req;
-  traveller.traveller.suggestedExit = "thePlanIssueTracker__0_1_20";
-  req.atRoot.traverse(traveller, {});
+          var traveller = {};
+          req.atRoot.namespace(traveller, "traveller").express =
+              { "requestBody" : JSON.parse(JSON.stringify(req.body)),
+                "req"         : req,
+              }
+          traveller.traveller.suggestedExit = atApplication.appName+"_rootRouter";
+          req.atRoot.traverse(traveller, {});
+        }
+      );
 
-});
+  return router;
+}
 
-module.exports = router;
+module.exports = buildAtRouter;
