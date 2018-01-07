@@ -1244,12 +1244,12 @@ describe
             namespace(traveller, "traveller.createGraph");
 
             traveller.traveller.createGraph.nodeDefinitions =
-            [ { "name"                : "htmlPOSTRouter",
-                "id"                  : atApplication.appName+"_htmlPOSTRouter",
+            [ { "name"                : "httpPOSTRouter",
+                "id"                  : atApplication.appName+"_httpPOSTRouter",
                 "traveller.codeBlock" : 
                     ( () =>
                       { debugger;
-                        ls("\n\n@: htmlPOSTRouter: requestBody:", traveller.traveller.express.requestBody)
+                        ls("\n\n@: httpPOSTRouter: requestBody:", traveller.traveller.express.requestBody)
 
                         setImmediate
                         ( () => 
@@ -1262,7 +1262,7 @@ describe
                     ).toString().slice(6)
                 ,
               },
-              { "name"                : "htmlPOSTRouter_test",
+              { "name"                : "httpPOSTRouter_test",
                 "traveller.codeBlock" : 
                     ( () =>
                       { debugger;
@@ -1277,7 +1277,7 @@ describe
                         var requestOptions = defaultRequestOptions;
                         requestOptions.method = "POST";
                         requestOptions.json =  
-                            { "htmlPOSTRouter_test": "someContents",
+                            { "httpPOSTRouter_test": "someContents",
                             };
 
                         request
@@ -1285,7 +1285,7 @@ describe
                           (error, response, body) =>
                           { debugger;
                             delete traveller.traveller.pause;
-                            namespace(traveller, "traveller.htmlPOSTRouter").requestBody = body;
+                            namespace(traveller, "traveller.httpPOSTRouter").requestBody = body;
                             traverse(traveller, {});
                           }
                         );
@@ -1297,11 +1297,11 @@ describe
 
             traveller.traveller.callback = 
                 (traveller) =>
-                { traveller.traveller.suggestedExit = traveller.traveller.createGraph.results.graph.htmlPOSTRouter_test.id;
+                { traveller.traveller.suggestedExit = traveller.traveller.createGraph.results.graph.httpPOSTRouter_test.id;
 
                   namespace(traveller, "traveller.mocha");
                   traveller.traveller.mocha.assertConditions = 
-                      { "receivedPost to htmlPostRouter": "pass = JSON.stringify(traveller.traveller.htmlPOSTRouter.requestBody) == JSON.stringify({ 'htmlPOSTRouter_test': 'someContents', })",
+                      { "receivedPost to htmlPostRouter": "pass = JSON.stringify(traveller.traveller.httpPOSTRouter.requestBody) == JSON.stringify({ 'httpPOSTRouter_test': 'someContents', })",
                       };
 
                   traveller.traveller.mocha.done = done;

@@ -36,7 +36,7 @@ var buildAtRouter =
               { "requestBody" : JSON.parse(JSON.stringify(req.body)),
                 "req"         : req,
               }
-          traveller.traveller.suggestedExit = atApplication.appName+"_htmlPOSTRouter";
+          traveller.traveller.suggestedExit = atApplication.appName+"_httpPOSTRouter";
           req.atRoot.traverse(traveller, {});
         }
       );
