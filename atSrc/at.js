@@ -280,6 +280,9 @@ var   errConsole  = new Console(process.stderr);
       this.public = {}
       this.namespace.cp(this, this.public, ["newAtNode", "namespace", "createID"]);
 
+      this.getConfiguration = function(address)
+        { return atRoot.namespace(atRoot.atApplication.configuration, address, null, true);          
+        }
       
       this.traverse = function(traveller, context, atStore)
       { //function which takes the traveller and the context. this avoids hard coding the name of the codeBlock / program field into the objects
@@ -294,7 +297,8 @@ var   errConsole  = new Console(process.stderr);
               var namespace = atRoot.namespace
               var atStore   = atStore || atRoot.connectedAtStore;
               
-              
+              var getConfiguration = atRoot.getConfiguration;
+
               //atRoot and atStore should be in "named contexts", rather than embedded here like this
               //  that requires graphBuilding. Which is doable.
               for (var key in namespace(traveller, "atRoot", null, true) )

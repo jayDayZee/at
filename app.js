@@ -3,7 +3,7 @@ var buildAtApplication =
     { var AtRoot = require("./atSrc/at.js")
       var atRoot = new AtRoot();
 
-      var atApplication = 
+      var atApplication = atRoot.atApplication = 
           { "appName":                      appName,
             "appRuntimeTimestamp":          new Date().getTime(),
             
