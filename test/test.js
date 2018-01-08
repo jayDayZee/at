@@ -780,7 +780,12 @@ describe
             { traveller.traveller.callback = 
                 (traveller) => 
                 { ls("\n\n\n", "testResults");
-                  ls("\n  ", "traveller:\n  ", traveller);
+                  if (traveller.traveller.mocha.notVerbose) 
+                  { 
+                  }
+                  else
+                  { ls("\n  ", "traveller:\n  ", traveller);
+                  }
 
                   //set final test success value
                   var success = true;
@@ -1390,6 +1395,7 @@ describe
                     ( () =>
                       { debugger;
                         namespace(traveller, "traveller").pause = true;
+                        traveller.traveller.suggestedExit = context.traveller.exit;
 
                         var webTraveller = {};
                         namespace(webTraveller, "traveller.createGraph").nodeDefinitions =
@@ -1398,6 +1404,8 @@ describe
                                 ( () =>
                                   { debugger;
                                     ls("\n\n@: createdThroughWebInterface: Hello World")
+
+                                    namespace(traveller, "traveller").createdThroughWebInterface = true;
                                   }
                                 ).toString().slice(6)
                             ,
@@ -1426,8 +1434,42 @@ describe
                           }
                         );
                       }
-                    ).toString().slice(6)
-                ,
+                    ).toString().slice(6),
+                    "traveller.exit": "httpPOSTRouter_test_confirmStoredNode",
+              },
+              { "name"                : "httpPOSTRouter_test_confirmStoredNode",
+                "traveller.codeBlock" : 
+                    ( () =>
+                      { debugger;
+                        namespace(traveller, "traveller").pause = true;
+
+                        var webTraveller = {};
+                        var returnedNode = traveller.traveller.httpPOSTRouter.responseBody.traveller.createGraph.results.graph.createdThroughWebInterface;
+
+                        namespace(webTraveller, "traveller.router").route = [returnedNode.id];
+
+                        var request = require("request");
+                        debugger;
+                        var defaultRequestOptions = 
+                            {   
+                              "url": "http://127.0.0.1:"+getConfiguration("port")+"/",
+                            };
+                        var requestOptions = defaultRequestOptions;
+                        requestOptions.method = "POST";
+                        requestOptions.json   = webTraveller;
+
+                        request
+                        ( requestOptions,
+                          (error, response, body) =>
+                          { debugger;
+                            delete traveller.traveller.pause;
+                            namespace(traveller, "traveller.httpPOSTRouter").responseBody = body;
+                            ls("\n\n\nresponseBody:", traveller.traveller.httpPOSTRouter.responseBody);
+                            traverse(traveller, {});
+                          }
+                        );
+                      }
+                    ).toString().slice(6),
               },
             ];
 
@@ -1436,8 +1478,10 @@ describe
                 { traveller.traveller.suggestedExit = traveller.traveller.createGraph.results.graph.httpPOSTRouter_test.id;
 
                   namespace(traveller, "traveller.mocha");
+                  traveller.traveller.mocha.notVerbose = true;
                   traveller.traveller.mocha.assertConditions = 
-                      { "ran createGraph on webTraveller, and received results": "pass = traveller.traveller.httpPOSTRouter.responseBody.traveller.createGraph.results.graph.hasOwnProperty('createdThroughWebInterface');",
+                      { //"ran createGraph on webTraveller, and received results": "pass = traveller.traveller.httpPOSTRouter.responseBody.traveller.createGraph.results.graph.hasOwnProperty('createdThroughWebInterface');",
+                        "the node was travelled over also": "pass = traveller.traveller.httpPOSTRouter.responseBody.traveller.createdThroughWebInterface == true",
                       };
 
                   traveller.traveller.mocha.done = done;
