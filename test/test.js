@@ -1180,14 +1180,22 @@ describe
 describe
 ( "\n\n\n testing http interface",
   () =>
-  {
+  { it
+    ( "should reset the traveller to being empty for this next batch of tests",
+      function()
+      { traveller = {};
+      ls("traveller: ", traveller);
+        assert(JSON.stringify(traveller) == JSON.stringify({}));
+      }
+    );
     describe
     ( "\n\n\n\n get the publicJSON content",
       function()
       { it
         ( "should cause the backend to reevaluate the contents of the publicJSON from the object specification in the atApplication, and return it as a JSON object",
           function(done)
-          { var request = require("request");
+          { 
+            var request = require("request");
             var requestOptions = 
                 {   
                   "url": "http://127.0.0.1:"+atApplication.configuration.port+"/publicJSON",
@@ -1305,9 +1313,7 @@ describe
                       };
 
                   traveller.traveller.mocha.done = done;
-                  debugger;
                   atRoot.traverse(traveller, addTestCallback);
-
                 };
             
             traveller.traveller.suggestedExit = "createGraph";
