@@ -402,7 +402,7 @@ var   errConsole  = new Console(process.stderr);
                   ls("traverse.setExit: ", destination);
                   if (!destination)
                     if ( namespace(traveller, "traveller.suggestedExitQueue", null, true) )
-                      destination = traveller.suggestedExitQueue.shift();
+                      destination = traveller.traveller.suggestedExitQueue.shift();
 
                   if (!destination) 
                   { //console.dir("End context:", traveller)

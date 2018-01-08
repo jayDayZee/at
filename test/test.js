@@ -1256,12 +1256,12 @@ describe
                 "id"                  : atApplication.appName+"_httpPOSTRouter",
                 "traveller.codeBlock" : 
                     ( () =>
-                      { debugger;
+                      { //debugger;
                         ls("\n\n@: httpPOSTRouter: requestBody:", traveller.traveller.express.requestBody)
 
                         setImmediate
                         ( () => 
-                          { debugger;
+                          { //debugger;
                             traveller.traveller.express.req.res.send(JSON.stringify(traveller.traveller.express.requestBody , null, 3));
                             traveller.traveller.express.req.res.end();
                           }
@@ -1273,11 +1273,11 @@ describe
               { "name"                : "httpPOSTRouter_test",
                 "traveller.codeBlock" : 
                     ( () =>
-                      { debugger;
+                      { //debugger;
                         namespace(traveller, "traveller").pause = true;
 
                         var request = require("request");
-                        debugger;
+                        // debugger;
                         var defaultRequestOptions = 
                             {   
                               "url": "http://127.0.0.1:"+getConfiguration("port")+"/",
@@ -1310,6 +1310,134 @@ describe
                   namespace(traveller, "traveller.mocha");
                   traveller.traveller.mocha.assertConditions = 
                       { "receivedPost to htmlPostRouter": "pass = JSON.stringify(traveller.traveller.httpPOSTRouter.requestBody) == JSON.stringify({ 'httpPOSTRouter_test': 'someContents', })",
+                      };
+
+                  traveller.traveller.mocha.done = done;
+                  atRoot.traverse(traveller, addTestCallback);
+                };
+            
+            traveller.traveller.suggestedExit = "createGraph";
+            atRoot.traverse(traveller, {});
+          }
+        ); 
+
+        it
+        ( "send a traveller to a specified graphNode id, and return the resulting traveller",
+          function(done)
+          { debugger;
+            
+
+            namespace(traveller, "atStore").updateNode      = 
+            { "update": 
+                [ { "id"  : atApplication.appName+"_httpPOSTRouter"
+                  }, 
+                  { "$set": 
+                      { "traveller.codeBlock": 
+                            ( () =>
+                              { debugger;
+                                ls("\n\n@: httpPOSTRouter: requestBody:", traveller.traveller.express.requestBody)
+                                
+                                
+                                traveller.traveller.pause = true;
+                                namespace(traveller, "traveller").suggestedExit = getConfiguration("appName")+"_httpPOSTRouter_return";
+
+
+                                var webTraveller = traveller.traveller.express.requestBody;
+
+                                namespace(webTraveller, "traveller.suggestedExitQueue", ['leafNode:'], []);
+                                route = namespace(webTraveller, "traveller.router.route", null, true) || [];
+                                webTraveller.traveller.suggestedExitQueue = webTraveller.traveller.router.route.concat(webTraveller.traveller.suggestedExitQueue);
+
+                                webTraveller.traveller.callback = 
+                                    (webTraveller) =>
+                                    { debugger;
+                                      namespace(traveller, "traveller.httpPOSTRouter").returningTraveller = webTraveller;
+                                      delete traveller.traveller.pause;
+                                      traverse(traveller, {});
+                                    }
+                                traverse(webTraveller, {});
+
+
+                              }
+                            ).toString().slice(6)
+                      }, 
+                  }, 
+                ], 
+            };
+
+            namespace(traveller, "traveller.createGraph");
+            traveller.traveller.createGraph.nodeDefinitions =
+            [ { "name"                : "httpPOSTRouter_return",
+                "id"                  : atApplication.appName+"_httpPOSTRouter_return",
+                "traveller.codeBlock" : 
+                    ( () =>
+                      { debugger;
+                        ls("\n\n@: httpPOSTRouter: traveller:", traveller.traveller.httpPOSTRouter.returningTraveller)
+
+                        setImmediate
+                        ( () => 
+                          { debugger;
+                            traveller.traveller.express.req.res.send(JSON.stringify(traveller.traveller.httpPOSTRouter.returningTraveller , null, 3));
+                            traveller.traveller.express.req.res.end();
+                          }
+                        );
+                      }
+                    ).toString().slice(6)
+                ,
+              },
+              { "name"                : "httpPOSTRouter_test",
+                "traveller.codeBlock" : 
+                    ( () =>
+                      { debugger;
+                        namespace(traveller, "traveller").pause = true;
+
+                        var webTraveller = {};
+                        namespace(webTraveller, "traveller.createGraph").nodeDefinitions =
+                        [ { "name"                : "createdThroughWebInterface",
+                            "traveller.codeBlock" : 
+                                ( () =>
+                                  { debugger;
+                                    ls("\n\n@: createdThroughWebInterface: Hello World")
+                                  }
+                                ).toString().slice(6)
+                            ,
+                          },
+                        ];
+                        namespace(webTraveller, "traveller.router").route = ["createGraph"];
+
+                        var request = require("request");
+                        debugger;
+                        var defaultRequestOptions = 
+                            {   
+                              "url": "http://127.0.0.1:"+getConfiguration("port")+"/",
+                            };
+                        var requestOptions = defaultRequestOptions;
+                        requestOptions.method = "POST";
+                        requestOptions.json   = webTraveller;
+
+                        request
+                        ( requestOptions,
+                          (error, response, body) =>
+                          { debugger;
+                            delete traveller.traveller.pause;
+                            namespace(traveller, "traveller.httpPOSTRouter").responseBody = body;
+                            ls("\n\n\nresponseBody:", traveller.traveller.httpPOSTRouter.responseBody);
+                            traverse(traveller, {});
+                          }
+                        );
+                      }
+                    ).toString().slice(6)
+                ,
+              },
+            ];
+
+            traveller.traveller.callback = 
+                (traveller) =>
+                { traveller.traveller.suggestedExit = traveller.traveller.createGraph.results.graph.httpPOSTRouter_test.id;
+
+                  namespace(traveller, "traveller.mocha");
+                  traveller.traveller.mocha.assertConditions = 
+                      { "receivedPost to htmlPostRouter": "pass = traveller.traveller.httpPOSTRouter.responseBody.traveller.createGraph.results.graph.hasOwnProperty('createdThroughWebInterface');",
                       };
 
                   traveller.traveller.mocha.done = done;

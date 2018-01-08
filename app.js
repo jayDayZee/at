@@ -38,6 +38,7 @@ var buildAtApplication =
           JSON.parse(jsmin(fs.readFileSync(atApplication.preConfiguration.pathToConfigurationFromDisk, "utf8") ));
 
       var configuration = atApplication.configuration = JSON.parse(JSON.stringify(configurationFromDisk));
+      configuration.appName = atApplication.appName;
 
       for (var configFieldName in atApplication.preConfiguration.requiredConfigFields)
       { if (! configurationFromDisk.hasOwnProperty(configFieldName) )
