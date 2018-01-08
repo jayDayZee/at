@@ -1437,7 +1437,7 @@ describe
 
                   namespace(traveller, "traveller.mocha");
                   traveller.traveller.mocha.assertConditions = 
-                      { "receivedPost to htmlPostRouter": "pass = traveller.traveller.httpPOSTRouter.responseBody.traveller.createGraph.results.graph.hasOwnProperty('createdThroughWebInterface');",
+                      { "ran createGraph on webTraveller, and received results": "pass = traveller.traveller.httpPOSTRouter.responseBody.traveller.createGraph.results.graph.hasOwnProperty('createdThroughWebInterface');",
                       };
 
                   traveller.traveller.mocha.done = done;
