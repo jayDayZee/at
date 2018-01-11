@@ -288,7 +288,7 @@ var   errConsole  = new Console(process.stderr);
       { traveller.traveller.pause = true;        
       }
       this.unPauseTraveller = function(traveller)
-      { namespace.rm(traveller, "traveller.pause");
+      { delete traveller.traveller.pause;
         this.traverse(traveller, {});
       }
 
@@ -307,9 +307,11 @@ var   errConsole  = new Console(process.stderr);
               var traverse          = atRoot.traverse;
               var pauseTraveller    = atRoot.pauseTraveller;
               var unPauseTraveller  = atRoot.unPauseTraveller;
-              var namespace         = atRoot.namespace             
-              
-              
+              var namespace         = atRoot.namespace     
+
+              var emptyDictionary   = {};
+              var isString          = (item) => { return Object.prototype.toString.call(item) === "[object String]" };
+        
 
               //atRoot and atStore should be in "named contexts", rather than embedded here like this
               //  that requires graphBuilding. Which is doable.
