@@ -284,6 +284,14 @@ var   errConsole  = new Console(process.stderr);
         { return atRoot.namespace(atRoot.atApplication.configuration, address, null, true);          
         }
       
+      this.pauseTraveller = function(traveller)
+      { traveller.traveller.pause = true;        
+      }
+      this.unPauseTraveller = function(traveller)
+      { namespace.rm(traveller, "traveller.pause");
+        this.traverse(traveller, {});
+      }
+
       this.traverse = function(traveller, context, atStore)
       { //function which takes the traveller and the context. this avoids hard coding the name of the codeBlock / program field into the objects
         // TODO make it possible to run the code synchronously
@@ -291,13 +299,17 @@ var   errConsole  = new Console(process.stderr);
         
         setImmediate(
             function()
-            { var ls        = atRoot.ls;
-              var traverse  = atRoot.traverse;
+            { var atStore           = atStore || atRoot.connectedAtStore;
 
-              var namespace = atRoot.namespace
-              var atStore   = atStore || atRoot.connectedAtStore;
+              var ls                = atRoot.ls;
+              var getConfiguration  = atRoot.getConfiguration;
+
+              var traverse          = atRoot.traverse;
+              var pauseTraveller    = atRoot.pauseTraveller;
+              var unPauseTraveller  = atRoot.unPauseTraveller;
+              var namespace         = atRoot.namespace             
               
-              var getConfiguration = atRoot.getConfiguration;
+              
 
               //atRoot and atStore should be in "named contexts", rather than embedded here like this
               //  that requires graphBuilding. Which is doable.
