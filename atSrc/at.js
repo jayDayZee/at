@@ -299,7 +299,12 @@ var   errConsole  = new Console(process.stderr);
         
         setImmediate(
             function()
-            { var atStore           = atStore || atRoot.connectedAtStore;
+            { if (! context)
+              { atRoot.ls("@: ERROR: at.js: traverse: context is: ", context);
+                throw new Error("@: ERROR: at.js: traverse: context is: "+ context);
+              }
+
+              var atStore           = atStore || atRoot.connectedAtStore;
 
               var ls                = atRoot.ls;
               var getConfiguration  = atRoot.getConfiguration;
@@ -416,7 +421,9 @@ var   errConsole  = new Console(process.stderr);
                   ls("traverse.setExit: ", destination);
                   if (!destination)
                     if ( namespace(traveller, "traveller.suggestedExitQueue", null, true) )
+                    { //debugger;
                       destination = traveller.traveller.suggestedExitQueue.shift();
+                    }
 
                   if (!destination) 
                   { //console.dir("End context:", traveller)
@@ -439,7 +446,10 @@ var   errConsole  = new Console(process.stderr);
                       .findOne({"id": destination})
                       .then
                       ( (doc) =>
-                        { atRoot.traverse(traveller, doc);
+                        { if (! doc)
+                          { throw new Error("@: at.js: traverse: searched atStore for:"+ destination+", found null");
+                          }
+                          atRoot.traverse(traveller, doc);
                         }
                       );
                   }
