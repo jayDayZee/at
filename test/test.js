@@ -1253,7 +1253,7 @@ describe
       { it
         ( "should create a graphNode that is a router that accepts some namespace in a traveller and routes it to one of many destinations",
           function(done)
-          { debugger;
+          { //debugger;
             namespace(traveller, "traveller.createGraph");
 
             traveller.traveller.createGraph.nodeDefinitions =
@@ -1296,7 +1296,7 @@ describe
                         request
                         ( requestOptions,
                           (error, response, body) =>
-                          { debugger;
+                          { //debugger;
                             delete traveller.traveller.pause;
                             namespace(traveller, "traveller.httpPOSTRouter").requestBody = body;
                             traverse(traveller, {});
@@ -1329,7 +1329,7 @@ describe
         it
         ( "send a traveller to a specified graphNode id, and return the resulting traveller",
           function(done)
-          { debugger;
+          { //debugger;
             
 
             namespace(traveller, "atStore").updateNode      = 
@@ -1339,7 +1339,7 @@ describe
                   { "$set": 
                       { "traveller.codeBlock": 
                             ( () =>
-                              { debugger;
+                              { //debugger;
                                 ls("\n\n@: httpPOSTRouter: requestBody:", traveller.traveller.express.requestBody)
                                 
                                 
@@ -1355,7 +1355,7 @@ describe
 
                                 webTraveller.traveller.callback = 
                                     (webTraveller) =>
-                                    { debugger;
+                                    { //debugger;
                                       namespace(traveller, "traveller.httpPOSTRouter").returningTraveller = webTraveller;
                                       delete traveller.traveller.pause;
                                       traverse(traveller, {});
@@ -1376,12 +1376,12 @@ describe
                 "id"                  : atApplication.appName+"_httpPOSTRouter_return",
                 "traveller.codeBlock" : 
                     ( () =>
-                      { debugger;
+                      { //debugger;
                         ls("\n\n@: httpPOSTRouter: traveller:", traveller.traveller.httpPOSTRouter.returningTraveller)
 
                         setImmediate
                         ( () => 
-                          { debugger;
+                          { //debugger;
                             traveller.traveller.express.req.res.send(JSON.stringify(traveller.traveller.httpPOSTRouter.returningTraveller , null, 3));
                             traveller.traveller.express.req.res.end();
                           }
@@ -1393,7 +1393,7 @@ describe
               { "name"                : "httpPOSTRouter_test",
                 "traveller.codeBlock" : 
                     ( () =>
-                      { debugger;
+                      { //debugger;
                         namespace(traveller, "traveller").pause = true;
                         traveller.traveller.suggestedExit = context.traveller.exit;
 
@@ -1402,7 +1402,7 @@ describe
                         [ { "name"                : "createdThroughWebInterface",
                             "traveller.codeBlock" : 
                                 ( () =>
-                                  { debugger;
+                                  { //debugger;
                                     ls("\n\n@: createdThroughWebInterface: Hello World")
 
                                     namespace(traveller, "traveller").createdThroughWebInterface = true;
@@ -1414,7 +1414,7 @@ describe
                         namespace(webTraveller, "traveller.router").route = ["createGraph"];
 
                         var request = require("request");
-                        debugger;
+                        //debugger;
                         var defaultRequestOptions = 
                             {   
                               "url": "http://127.0.0.1:"+getConfiguration("port")+"/",
@@ -1426,7 +1426,7 @@ describe
                         request
                         ( requestOptions,
                           (error, response, body) =>
-                          { debugger;
+                          { //debugger;
                             delete traveller.traveller.pause;
                             namespace(traveller, "traveller.httpPOSTRouter").responseBody = body;
                             ls("\n\n\nresponseBody:", traveller.traveller.httpPOSTRouter.responseBody);
@@ -1440,7 +1440,7 @@ describe
               { "name"                : "httpPOSTRouter_test_confirmStoredNode",
                 "traveller.codeBlock" : 
                     ( () =>
-                      { debugger;
+                      { //debugger;
                         namespace(traveller, "traveller").pause = true;
 
                         var webTraveller = {};
@@ -1449,7 +1449,7 @@ describe
                         namespace(webTraveller, "traveller.router").route = [returnedNode.id];
 
                         var request = require("request");
-                        debugger;
+                        //debugger;
                         var defaultRequestOptions = 
                             {   
                               "url": "http://127.0.0.1:"+getConfiguration("port")+"/",
@@ -1461,7 +1461,7 @@ describe
                         request
                         ( requestOptions,
                           (error, response, body) =>
-                          { debugger;
+                          { //debugger;
                             delete traveller.traveller.pause;
                             namespace(traveller, "traveller.httpPOSTRouter").responseBody = body;
                             ls("\n\n\nresponseBody:", traveller.traveller.httpPOSTRouter.responseBody);
@@ -1493,8 +1493,11 @@ describe
           }
         );
 
+
+
+
         it
-        ( "create a routerAsAService node, and use that to negotiate the given route",
+        ( "has a very basic http router with endPoint descriptions",
           function(done)
           { debugger;
             
@@ -1517,13 +1520,37 @@ describe
                                 var webTraveller = traveller.traveller.express.requestBody;
 
                                 namespace(webTraveller, "traveller.suggestedExitQueue", ['leafNode:'], []);
-                                route = namespace(webTraveller, "traveller.router.route", null, true) || [];
-                                webTraveller.traveller.suggestedExitQueue = webTraveller.traveller.router.route.concat(webTraveller.traveller.suggestedExitQueue);
+                                var route     = namespace(webTraveller, "traveller.router.route", null, true) || [];
+                                var endPoints = namespace(context, "traveller.router.endPoints", ['leafNode:'], {});
+                                for (var i=0, len=route.length; i<len; i++)
+                                { var address = route[i];
+                                  if (endPoints.hasOwnProperty(address))
+                                  { route[i] = endPoints[address].databaseID;
+                                  }
+                                }
+                                webTraveller.traveller.suggestedExitQueue = route.concat(webTraveller.traveller.suggestedExitQueue);
 
                                 webTraveller.traveller.callback = 
                                     (webTraveller) =>
                                     { debugger;
                                       namespace(traveller, "traveller.httpPOSTRouter").returningTraveller = webTraveller;
+
+                                      if (webTraveller.traveller.router.hasOwnProperty("createEndPoint"))
+                                      { var newEndPoint         = webTraveller.traveller.router.createEndPoint
+                                        var startNode           = webTraveller.traveller.createGraph.results.graph[newEndPoint.startNodeName];
+                                        newEndPoint.databaseID  = startNode.id;
+                                        var newEndPointName     = newEndPoint.startNodeName;
+                                        var mongoSetAddress     = "traveller.router.endPoints."+newEndPointName;
+                                        var mongoSetDictionary  = {};
+                                        mongoSetDictionary[mongoSetAddress] = newEndPoint;
+                                        namespace(traveller, "atStore")["htmlRouter.writeEndPoint"] = 
+                                            { "update": 
+                                                  [ {"id":    context.id}, 
+                                                    {"$set":  mongoSetDictionary, },
+                                                  ],
+                                            };
+                                      }
+
                                       delete traveller.traveller.pause;
                                       traverse(traveller, {});
                                     }
@@ -1537,186 +1564,33 @@ describe
                 ], 
             };
 
+            namespace(traveller, "atStore").updateReturn      = 
+            { "update": 
+                [ { "id":                   atApplication.appName+"_httpPOSTRouter_return",
+                  },
+                  { "$set": 
+                    { "traveller.codeBlock" : 
+                        ( () =>
+                          { debugger;
+                            ls("\n\n@: httpPOSTRouter: traveller:", traveller.traveller.httpPOSTRouter.returningTraveller)
+
+                            setImmediate
+                            ( () => 
+                              { debugger;
+                                traveller.traveller.express.req.res.send(JSON.stringify(traveller.traveller.httpPOSTRouter.returningTraveller , null, 3));
+                                traveller.traveller.express.req.res.end();
+                              }
+                            );
+                          }
+                        ).toString().slice(6)
+                    },
+                  },
+                ], 
+            };
+
             namespace(traveller, "traveller.createGraph");
             traveller.traveller.createGraph.nodeDefinitions =
-            [ { "name"                : "routerAsAService",
-                "id"                  : "routerAsAService",
-                "traveller.codeBlock" : 
-                    ( () =>
-                      { debugger;
-                        
-                        // pause our client traveller
-                        traveller.traveller.pause = true;
-                        
-                        // file any behaviour that was caused earlier. this might also be a space where it is possible
-                        //  * to do some kind of analysis of if there are other routers getting involved, and maybe 
-                        //    aggregate them or something.
-                        //  * And maybe some dimensional stuff
-                        var previousRouteItem = namespace(traveller, "traveller.router.current", null, true)
-                        if (previousRouteItem)
-                        { namespace(traveller, "traveller.router.history", ["leafNode:"], []).unshift(previousRouteItem);
-                        }
-
-                        var route = namespace(traveller, "traveller.router.route", null, true);
-                        if (route == null || route == undefined || route == false || route === [] )
-                        { unPauseTraveller(traveller);
-                        }
-                        else if (!Array.isArray(route) )
-                        { console.log("@: test.js: routerAsAService node: traveller.traveller.router.route is not an array");
-                          namespace(traveller, "traveller.router.history", ["leafNode:"], [])
-                              .unshift({"error": { "message": "route is not an array", "whatWasIt": route} } );
-                          unPauseTraveller(traveller);                        
-                        }
-                        else
-                        { // make sure there is some kind of suggestedExitQueue to simplify later code
-                          namespace(traveller, "traveller.suggestedExitQueue", ["leafNode:"], []);
-
-                          //  get the current route item
-                          namespace(traveller, "traveller.router").current = route.shift();
-                          var currentRouteItem = traveller.traveller.router.current;
-                          
-                          if (currentRouteItem.hasOwnProperty("node") )
-                          { traveller.traveller.suggestedExitQueue.unshift("routerAsAService");
-                            delete traveller.traveller.pause;
-                            traverse(traveller, currentRouteItem.node);
-                          }
-                          else if (currentRouteItem.hasOwnProperty("id") )
-                          { traveller.traveller.suggestedExitQueue.unshift(currentRouteItem.id, "routerAsAService");
-                            unPauseTraveller(traveller);
-                          }
-                          else if (currentRouteItem.hasOwnProperty("localSignPost") )
-                          { // ALTERNATIVE
-
-                            // check if traveller.traveller.router.routingContext.runtimeReference
-                            //   and/or traveller.traveller.router.routingContext.id have content
-                            // if the runtimeReference is there, use it.
-                            // if the runtimeReference is not there, and the id is there, then use suggestedExit in the
-                            //   routingAsAService context to route to another node in this graph that uses the atStore to
-                            //   load the routingContext object from the database using its id, and then return here with the object
-                            //   loaded into traveller.traveller.router.routingContext.runtimeReference.
-
-                            var currentRouteAddressList   = currentRouteItem.localSignPost.address.split(".");
-
-                            var currentContext = namespace(context, "context.router", null, true);// || emptyDictionary;
-                            for (var i=0, len=currentRouteAddressList.length; i<len; i++)
-                            { var addressFragment = currentRouteAddressList[i];
-                              
-                              if (!currentContext.hasOwnProperty(addressFragment) )
-                              { if (! currentRouteItem.localSignPost.proactiveNameSpace)
-                                { namespace(currentRouteItem, "error", ["leafNode:"], [])
-                                      .push
-                                      ( { "error":    "key not in dictionary", 
-                                          "key":      addressFragment, 
-                                          "index":    i, 
-                                          "address":  currentRouteAddressList, 
-                                          "context":  context.id
-                                        }
-                                      );
-                                }
-                                // else
-                                // { if (currentContext == emptyDictionary)
-                                //   { namespace(context, "context.router");
-                                //     currentContext = context.context.router;
-                                //   }
-                                //   if (i == len-1)
-                                //   { currentContext[addressFragment] =     namespace(currentRouteItem, "localSignPost.leafNode", null, true) 
-                                //                                       ||  namespace(currentRouteItem, "localSignPost.hierarchyNode", null, true)
-                                //                                       ||  {};
-                                //   }
-                                //   else
-                                //   { currentContext[addressFragment] =     namespace(currentRouteItem, "localSignPost.hierarchyNode", null, true)
-                                //                                       ||  {};
-                                //   }
-                                //   currentContext = currentContext[addressFragment];
-                                // }
-                              }
-                              else
-                              { var targetContext = currentContext[addressFragment];
-
-                                if ( namespace(targetContext, "context.router", null, true) )
-                                { var remainingRouteAddressList = currentRouteAddressList.slice(i);
-                                  if (remainingRouteAddressList.length > 0)
-                                  { traveller.traveller.router.route.unshift(remainingRouteAddressList.join(".");
-                                  }
-                                  traveller.traveller.router.route.unshift.apply(targetContext.context.router.route);
-                                  traveller.traveller.suggestedExit = "routerAsAService";
-                                  unPauseTraveller(traveller);
-                                }
-                                else
-                                { currentContext = targetContext;
-                                }
-
-                              }
-                            }
-                          }
-                          else if (currentRouteItem.hasOwnProperty("prologSignPost") )
-                          { // TODO: work out some kind of history of location mechanim and allow prolog style route matching
-                          }
-                          else if ( isString(currentRouteItem) )
-                          { var currentRouteAddressList = currentRouteItem.split(".");
-
-                            if (currentRouteAddressList.length > 1)
-                            { traveller.router.route.unshift.apply(currentRouteAddressList);
-                              traveller.traveller.suggestedExit = "routerAsAService";
-                              unPauseTraveller(traveller);
-                            }
-                            else
-                            { var addressFragment = currentRouteAddressList[0];
-                              
-                              if (!currentContext.hasOwnProperty(addressFragment) )
-                              { if (! currentRouteItem.localSignPost.proactiveNameSpace)
-                                { namespace(currentRouteItem, "error", ["leafNode:"], [])
-                                      .push
-                                      ( { "error":    "key not in dictionary", 
-                                          "key":      addressFragment, 
-                                          "index":    i, 
-                                          "address":  currentRouteAddressList, 
-                                          "context":  context.id
-                                        }
-                                      );
-                                }
-                                // else
-                                // { if (currentContext == emptyDictionary)
-                                //   { namespace(context, "context.router");
-                                //     currentContext = context.context.router;
-                                //   }
-                                //   if (i == len-1)
-                                //   { currentContext[addressFragment] =     namespace(currentRouteItem, "localSignPost.leafNode", null, true) 
-                                //                                       ||  namespace(currentRouteItem, "localSignPost.hierarchyNode", null, true)
-                                //                                       ||  {};
-                                //   }
-                                //   else
-                                //   { currentContext[addressFragment] =     namespace(currentRouteItem, "localSignPost.hierarchyNode", null, true)
-                                //                                       ||  {};
-                                //   }
-                                //   currentContext = currentContext[addressFragment];
-                                // }
-                              }
-                              else
-                              { var targetContext = currentContext[addressFragment];
-
-                                if ( namespace(targetContext, "context.router", null, true) )
-                                { var remainingRouteAddressList = currentRouteAddressList.slice(i);
-                                  if (remainingRouteAddressList.length > 0)
-                                  { traveller.traveller.router.route.unshift(remainingRouteAddressList.join(".");
-                                  }
-                                  traveller.traveller.router.route.unshift.apply(targetContext.context.router.route);
-                                  traveller.traveller.suggestedExit = "routerAsAService";
-                                  unPauseTraveller(traveller);
-                                }
-                                else
-                                { currentContext = targetContext;
-                                }
-
-                              }
-                            }
-                            }
-                          }
-                        }
-                      }
-                    ).toString().slice(6)
-                ,
-              },
+            [ 
               { "name"                : "httpPOSTRouter_test",
                 "traveller.codeBlock" : 
                     ( () =>
@@ -1726,18 +1600,23 @@ describe
 
                         var webTraveller = {};
                         namespace(webTraveller, "traveller.createGraph").nodeDefinitions =
-                        [ { "name"                : "createdThroughWebInterface",
+                        [ { "name"                : "writtenToAnEndPoint",
                             "traveller.codeBlock" : 
                                 ( () =>
                                   { debugger;
-                                    ls("\n\n@: createdThroughWebInterface: Hello World")
+                                    ls("\n\n@: written to an endPoint: Hello World")
 
-                                    namespace(traveller, "traveller").createdThroughWebInterface = true;
+                                    namespace(traveller, "traveller").writtenToAnEndPoint = true;
                                   }
                                 ).toString().slice(6)
                             ,
                           },
                         ];
+                        namespace(webTraveller, "traveller.router").createEndPoint =
+                            { "startNodeName":  "writtenToAnEndPoint",
+                              "name":           "written to an end point",
+                              "description":    "this is a basic test plugin / endPoint, which can be called by name",
+                            }
                         namespace(webTraveller, "traveller.router").route = ["createGraph"];
 
                         var request = require("request");
@@ -1773,7 +1652,7 @@ describe
                         var webTraveller = {};
                         var returnedNode = traveller.traveller.httpPOSTRouter.responseBody.traveller.createGraph.results.graph.createdThroughWebInterface;
 
-                        namespace(webTraveller, "traveller.router").route = [returnedNode.id];
+                        namespace(webTraveller, "traveller.router").route = ["writtenToAnEndPoint"];
 
                         var request = require("request");
                         debugger;
@@ -1802,13 +1681,14 @@ describe
 
             traveller.traveller.callback = 
                 (traveller) =>
-                { traveller.traveller.suggestedExit = traveller.traveller.createGraph.results.graph.httpPOSTRouter_test.id;
+                { debugger;
+                  traveller.traveller.suggestedExit = traveller.traveller.createGraph.results.graph.httpPOSTRouter_test.id;
 
                   namespace(traveller, "traveller.mocha");
                   traveller.traveller.mocha.notVerbose = true;
                   traveller.traveller.mocha.assertConditions = 
                       { //"ran createGraph on webTraveller, and received results": "pass = traveller.traveller.httpPOSTRouter.responseBody.traveller.createGraph.results.graph.hasOwnProperty('createdThroughWebInterface');",
-                        "the node was travelled over also": "pass = traveller.traveller.httpPOSTRouter.responseBody.traveller.createdThroughWebInterface == true",
+                        "the node was travelled over also": "pass = traveller.traveller.httpPOSTRouter.responseBody.traveller.writtenToAnEndPoint == true",
                       };
 
                   traveller.traveller.mocha.done = done;
@@ -1819,6 +1699,333 @@ describe
             atRoot.traverse(traveller, {});
           }
         );
+
+        // it
+        // ( "create a routerAsAService node, and use that to negotiate the given route",
+        //   function(done)
+        //   { debugger;
+            
+
+        //     namespace(traveller, "atStore").updateNode      = 
+        //     { "update": 
+        //         [ { "id"  : atApplication.appName+"_httpPOSTRouter"
+        //           }, 
+        //           { "$set": 
+        //               { "traveller.codeBlock": 
+        //                     ( () =>
+        //                       { debugger;
+        //                         ls("\n\n@: httpPOSTRouter: requestBody:", traveller.traveller.express.requestBody)
+                                
+                                
+        //                         traveller.traveller.pause = true;
+        //                         namespace(traveller, "traveller").suggestedExit = getConfiguration("appName")+"_httpPOSTRouter_return";
+
+
+        //                         var webTraveller = traveller.traveller.express.requestBody;
+
+        //                         namespace(webTraveller, "traveller.suggestedExitQueue", ['leafNode:'], []);
+        //                         route = namespace(webTraveller, "traveller.router.route", null, true) || [];
+        //                         webTraveller.traveller.suggestedExitQueue = webTraveller.traveller.router.route.concat(webTraveller.traveller.suggestedExitQueue);
+
+        //                         webTraveller.traveller.callback = 
+        //                             (webTraveller) =>
+        //                             { debugger;
+        //                               namespace(traveller, "traveller.httpPOSTRouter").returningTraveller = webTraveller;
+        //                               delete traveller.traveller.pause;
+        //                               traverse(traveller, {});
+        //                             }
+        //                         traverse(webTraveller, {});
+
+
+        //                       }
+        //                     ).toString().slice(6)
+        //               }, 
+        //           }, 
+        //         ], 
+        //     };
+
+        //     namespace(traveller, "traveller.createGraph");
+        //     traveller.traveller.createGraph.nodeDefinitions =
+        //     [ { "name"                : "routerAsAService",
+        //         "id"                  : "routerAsAService",
+        //         "traveller.codeBlock" : 
+        //             ( () =>
+        //               { debugger;
+                        
+        //                 // pause our client traveller
+        //                 traveller.traveller.pause = true;
+                        
+        //                 // file any behaviour that was caused earlier. this might also be a space where it is possible
+        //                 //  * to do some kind of analysis of if there are other routers getting involved, and maybe 
+        //                 //    aggregate them or something.
+        //                 //  * And maybe some dimensional stuff
+        //                 var previousRouteItem = namespace(traveller, "traveller.router.current", null, true)
+        //                 if (previousRouteItem)
+        //                 { namespace(traveller, "traveller.router.history", ["leafNode:"], []).unshift(previousRouteItem);
+        //                 }
+
+        //                 var route = namespace(traveller, "traveller.router.route", null, true);
+        //                 if (route == null || route == undefined || route == false || route === [] )
+        //                 { unPauseTraveller(traveller);
+        //                 }
+        //                 else if (!Array.isArray(route) )
+        //                 { console.log("@: test.js: routerAsAService node: traveller.traveller.router.route is not an array");
+        //                   namespace(traveller, "traveller.router.history", ["leafNode:"], [])
+        //                       .unshift({"error": { "message": "route is not an array", "whatWasIt": route} } );
+        //                   unPauseTraveller(traveller);                        
+        //                 }
+        //                 else
+        //                 { // make sure there is some kind of suggestedExitQueue to simplify later code
+        //                   namespace(traveller, "traveller.suggestedExitQueue", ["leafNode:"], []);
+
+        //                   //  get the current route item
+        //                   namespace(traveller, "traveller.router").current = route.shift();
+        //                   var currentRouteItem = traveller.traveller.router.current;
+                          
+        //                   if (currentRouteItem.hasOwnProperty("node") )
+        //                   { traveller.traveller.suggestedExitQueue.unshift("routerAsAService");
+        //                     delete traveller.traveller.pause;
+        //                     traverse(traveller, currentRouteItem.node);
+        //                   }
+        //                   else if (currentRouteItem.hasOwnProperty("id") )
+        //                   { traveller.traveller.suggestedExitQueue.unshift(currentRouteItem.id, "routerAsAService");
+        //                     unPauseTraveller(traveller);
+        //                   }
+        //                   else if (currentRouteItem.hasOwnProperty("localSignPost") )
+        //                   { // ALTERNATIVE
+
+        //                     // check if traveller.traveller.router.routingContext.runtimeReference
+        //                     //   and/or traveller.traveller.router.routingContext.id have content
+        //                     // if the runtimeReference is there, use it.
+        //                     // if the runtimeReference is not there, and the id is there, then use suggestedExit in the
+        //                     //   routingAsAService context to route to another node in this graph that uses the atStore to
+        //                     //   load the routingContext object from the database using its id, and then return here with the object
+        //                     //   loaded into traveller.traveller.router.routingContext.runtimeReference.
+
+        //                     var currentRouteAddressList   = currentRouteItem.localSignPost.address.split(".");
+
+        //                     var currentContext = namespace(context, "context.router", null, true);// || emptyDictionary;
+        //                     for (var i=0, len=currentRouteAddressList.length; i<len; i++)
+        //                     { var addressFragment = currentRouteAddressList[i];
+                              
+        //                       if (!currentContext.hasOwnProperty(addressFragment) )
+        //                       { if (! currentRouteItem.localSignPost.proactiveNameSpace)
+        //                         { namespace(currentRouteItem, "error", ["leafNode:"], [])
+        //                               .push
+        //                               ( { "error":    "key not in dictionary", 
+        //                                   "key":      addressFragment, 
+        //                                   "index":    i, 
+        //                                   "address":  currentRouteAddressList, 
+        //                                   "context":  context.id
+        //                                 }
+        //                               );
+        //                         }
+        //                         // else
+        //                         // { if (currentContext == emptyDictionary)
+        //                         //   { namespace(context, "context.router");
+        //                         //     currentContext = context.context.router;
+        //                         //   }
+        //                         //   if (i == len-1)
+        //                         //   { currentContext[addressFragment] =     namespace(currentRouteItem, "localSignPost.leafNode", null, true) 
+        //                         //                                       ||  namespace(currentRouteItem, "localSignPost.hierarchyNode", null, true)
+        //                         //                                       ||  {};
+        //                         //   }
+        //                         //   else
+        //                         //   { currentContext[addressFragment] =     namespace(currentRouteItem, "localSignPost.hierarchyNode", null, true)
+        //                         //                                       ||  {};
+        //                         //   }
+        //                         //   currentContext = currentContext[addressFragment];
+        //                         // }
+        //                       }
+        //                       else
+        //                       { var targetContext = currentContext[addressFragment];
+
+        //                         if ( namespace(targetContext, "context.router", null, true) )
+        //                         { var remainingRouteAddressList = currentRouteAddressList.slice(i);
+        //                           if (remainingRouteAddressList.length > 0)
+        //                           { traveller.traveller.router.route.unshift(remainingRouteAddressList.join(".");
+        //                           }
+        //                           traveller.traveller.router.route.unshift.apply(targetContext.context.router.route);
+        //                           traveller.traveller.suggestedExit = "routerAsAService";
+        //                           unPauseTraveller(traveller);
+        //                         }
+        //                         else
+        //                         { currentContext = targetContext;
+        //                         }
+
+        //                       }
+        //                     }
+        //                   }
+        //                   else if (currentRouteItem.hasOwnProperty("prologSignPost") )
+        //                   { // TODO: work out some kind of history of location mechanim and allow prolog style route matching
+        //                   }
+        //                   else if ( isString(currentRouteItem) )
+        //                   { var currentRouteAddressList = currentRouteItem.split(".");
+
+        //                     if (currentRouteAddressList.length > 1)
+        //                     { traveller.router.route.unshift.apply(currentRouteAddressList);
+        //                       traveller.traveller.suggestedExit = "routerAsAService";
+        //                       unPauseTraveller(traveller);
+        //                     }
+        //                     else
+        //                     { var addressFragment = currentRouteAddressList[0];
+                              
+        //                       if (!currentContext.hasOwnProperty(addressFragment) )
+        //                       { if (! currentRouteItem.localSignPost.proactiveNameSpace)
+        //                         { namespace(currentRouteItem, "error", ["leafNode:"], [])
+        //                               .push
+        //                               ( { "error":    "key not in dictionary", 
+        //                                   "key":      addressFragment, 
+        //                                   "index":    i, 
+        //                                   "address":  currentRouteAddressList, 
+        //                                   "context":  context.id
+        //                                 }
+        //                               );
+        //                         }
+        //                         // else
+        //                         // { if (currentContext == emptyDictionary)
+        //                         //   { namespace(context, "context.router");
+        //                         //     currentContext = context.context.router;
+        //                         //   }
+        //                         //   if (i == len-1)
+        //                         //   { currentContext[addressFragment] =     namespace(currentRouteItem, "localSignPost.leafNode", null, true) 
+        //                         //                                       ||  namespace(currentRouteItem, "localSignPost.hierarchyNode", null, true)
+        //                         //                                       ||  {};
+        //                         //   }
+        //                         //   else
+        //                         //   { currentContext[addressFragment] =     namespace(currentRouteItem, "localSignPost.hierarchyNode", null, true)
+        //                         //                                       ||  {};
+        //                         //   }
+        //                         //   currentContext = currentContext[addressFragment];
+        //                         // }
+        //                       }
+        //                       else
+        //                       { var targetContext = currentContext[addressFragment];
+
+        //                         if ( namespace(targetContext, "context.router", null, true) )
+        //                         { var remainingRouteAddressList = currentRouteAddressList.slice(i);
+        //                           if (remainingRouteAddressList.length > 0)
+        //                           { traveller.traveller.router.route.unshift(remainingRouteAddressList.join(".");
+        //                           }
+        //                           traveller.traveller.router.route.unshift.apply(targetContext.context.router.route);
+        //                           traveller.traveller.suggestedExit = "routerAsAService";
+        //                           unPauseTraveller(traveller);
+        //                         }
+        //                         else
+        //                         { currentContext = targetContext;
+        //                         }
+
+        //                       }
+        //                     }
+        //                     }
+        //                   }
+        //                 }
+        //               }
+        //             ).toString().slice(6)
+        //         ,
+        //       },
+        //       { "name"                : "httpPOSTRouter_test",
+        //         "traveller.codeBlock" : 
+        //             ( () =>
+        //               { debugger;
+        //                 namespace(traveller, "traveller").pause = true;
+        //                 traveller.traveller.suggestedExit = context.traveller.exit;
+
+        //                 var webTraveller = {};
+        //                 namespace(webTraveller, "traveller.createGraph").nodeDefinitions =
+        //                 [ { "name"                : "createdThroughWebInterface",
+        //                     "traveller.codeBlock" : 
+        //                         ( () =>
+        //                           { debugger;
+        //                             ls("\n\n@: createdThroughWebInterface: Hello World")
+
+        //                             namespace(traveller, "traveller").createdThroughWebInterface = true;
+        //                           }
+        //                         ).toString().slice(6)
+        //                     ,
+        //                   },
+        //                 ];
+        //                 namespace(webTraveller, "traveller.router").route = ["createGraph"];
+
+        //                 var request = require("request");
+        //                 debugger;
+        //                 var defaultRequestOptions = 
+        //                     {   
+        //                       "url": "http://127.0.0.1:"+getConfiguration("port")+"/",
+        //                     };
+        //                 var requestOptions = defaultRequestOptions;
+        //                 requestOptions.method = "POST";
+        //                 requestOptions.json   = webTraveller;
+
+        //                 request
+        //                 ( requestOptions,
+        //                   (error, response, body) =>
+        //                   { debugger;
+        //                     delete traveller.traveller.pause;
+        //                     namespace(traveller, "traveller.httpPOSTRouter").responseBody = body;
+        //                     ls("\n\n\nresponseBody:", traveller.traveller.httpPOSTRouter.responseBody);
+        //                     traverse(traveller, {});
+        //                   }
+        //                 );
+        //               }
+        //             ).toString().slice(6),
+        //             "traveller.exit": "httpPOSTRouter_test_confirmStoredNode",
+        //       },
+        //       { "name"                : "httpPOSTRouter_test_confirmStoredNode",
+        //         "traveller.codeBlock" : 
+        //             ( () =>
+        //               { debugger;
+        //                 namespace(traveller, "traveller").pause = true;
+
+        //                 var webTraveller = {};
+        //                 var returnedNode = traveller.traveller.httpPOSTRouter.responseBody.traveller.createGraph.results.graph.createdThroughWebInterface;
+
+        //                 namespace(webTraveller, "traveller.router").route = [returnedNode.id];
+
+        //                 var request = require("request");
+        //                 debugger;
+        //                 var defaultRequestOptions = 
+        //                     {   
+        //                       "url": "http://127.0.0.1:"+getConfiguration("port")+"/",
+        //                     };
+        //                 var requestOptions = defaultRequestOptions;
+        //                 requestOptions.method = "POST";
+        //                 requestOptions.json   = webTraveller;
+
+        //                 request
+        //                 ( requestOptions,
+        //                   (error, response, body) =>
+        //                   { debugger;
+        //                     delete traveller.traveller.pause;
+        //                     namespace(traveller, "traveller.httpPOSTRouter").responseBody = body;
+        //                     ls("\n\n\nresponseBody:", traveller.traveller.httpPOSTRouter.responseBody);
+        //                     traverse(traveller, {});
+        //                   }
+        //                 );
+        //               }
+        //             ).toString().slice(6),
+        //       },
+        //     ];
+
+        //     traveller.traveller.callback = 
+        //         (traveller) =>
+        //         { traveller.traveller.suggestedExit = traveller.traveller.createGraph.results.graph.httpPOSTRouter_test.id;
+
+        //           namespace(traveller, "traveller.mocha");
+        //           traveller.traveller.mocha.notVerbose = true;
+        //           traveller.traveller.mocha.assertConditions = 
+        //               { //"ran createGraph on webTraveller, and received results": "pass = traveller.traveller.httpPOSTRouter.responseBody.traveller.createGraph.results.graph.hasOwnProperty('createdThroughWebInterface');",
+        //                 "the node was travelled over also": "pass = traveller.traveller.httpPOSTRouter.responseBody.traveller.createdThroughWebInterface == true",
+        //               };
+
+        //           traveller.traveller.mocha.done = done;
+        //           atRoot.traverse(traveller, addTestCallback);
+        //         };
+            
+        //     traveller.traveller.suggestedExit = "createGraph";
+        //     atRoot.traverse(traveller, {});
+        //   }
+        // );
       }
     );
   }
