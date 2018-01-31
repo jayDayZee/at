@@ -423,6 +423,9 @@ var   errConsole  = new Console(process.stderr);
                     if ( namespace(traveller, "traveller.suggestedExitQueue", null, true) )
                     { //debugger;
                       destination = traveller.traveller.suggestedExitQueue.shift();
+                      if (!destination)
+                      { delete traveller.traveller.suggestedExitQueue;
+                      }
                     }
 
                   if (!destination) 
