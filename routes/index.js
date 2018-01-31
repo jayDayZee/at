@@ -11,7 +11,12 @@ var buildAtRouter =
       ( '/', 
         function(req, res, next) 
         { //debugger;
+          // TODO:
+          //   make the javascript loading load modules from the backend on an address space basis.
+          //   any request that is made to a module that isnt loaded just gets loaded from the backend and then called
+          //   this can be called using a traveller / context paradigm. Simple. Sick.
           res.render('index', { "publicJSON": atApplication.publicJSON } );
+
         }
       );
   /* GET home page. */

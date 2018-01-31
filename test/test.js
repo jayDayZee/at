@@ -1521,6 +1521,7 @@ describe
 
                                 namespace(webTraveller, "traveller.suggestedExitQueue", ['leafNode:'], []);
                                 var route     = namespace(webTraveller, "traveller.router.route", null, true) || [];
+                                route = route.slice(0);
                                 var endPoints = namespace(context, "traveller.router.endPoints", ['leafNode:'], {});
                                 for (var i=0, len=route.length; i<len; i++)
                                 { var address = route[i];
@@ -1535,6 +1536,11 @@ describe
                                     { debugger;
                                       namespace(traveller, "traveller.httpPOSTRouter").returningTraveller = webTraveller;
 
+                                      // TODO: move this to a thread safe model
+                                      //         add a node to the graph that does traveller atomic threading,
+                                      //         just send the id of this node. The target node can probably
+                                      //         be a generic widget that runs a single thread per target node
+                                      //         sick.
                                       if (webTraveller.traveller.router.hasOwnProperty("createEndPoint"))
                                       { var newEndPoint         = webTraveller.traveller.router.createEndPoint
                                         var startNode           = webTraveller.traveller.createGraph.results.graph[newEndPoint.startNodeName];
