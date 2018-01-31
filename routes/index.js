@@ -10,7 +10,7 @@ var buildAtRouter =
       .get
       ( '/', 
         function(req, res, next) 
-        { debugger;
+        { //debugger;
           res.render('index', { "publicJSON": atApplication.publicJSON } );
         }
       );
@@ -19,7 +19,7 @@ var buildAtRouter =
       .get
       ( '/publicJSON', 
         function(req, res, next) 
-        { debugger;
+        { //debugger;
           req.res.json(atApplication.getPublicJSON());
           req.res.end();
         }
@@ -29,7 +29,7 @@ var buildAtRouter =
       .post
       ( '*', 
         function(req, res, next) 
-        { debugger;
+        { //debugger;
 
           var traveller = {};
           req.atRoot.namespace(traveller, "traveller").express =
