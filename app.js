@@ -63,7 +63,7 @@ var buildAtApplication =
 
       atApplication.getPublicJSON = 
         () =>
-        { debugger;
+        { //debugger;
           var publicJSON = atRoot.namespace(atApplication, "configuration.publicJSON", ["leafNode:"], []);
           
           var toReturn = {};
