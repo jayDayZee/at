@@ -481,7 +481,7 @@ atStore
                   traveller.traveller.createGraph.nodeDefinitions =
                   [ { "name"                    : "twilioPostToEmail",
                       "id"                      : "twilioPostToEmail",
-                      "traveller.twilio.apiKey" : "key-19da2c3c2d7396180e5c8967e0efc5ea",
+                      "traveller.twilio.apiKey" : "key-ENTERKEYHERE",
                       "traveller.twilio.domain" : 'christopherreay.com',
                       "init"                    : "context.traveller.js2xmlparser = graph.js2xmlparser",
                       "traveller.codeBlock" : 
